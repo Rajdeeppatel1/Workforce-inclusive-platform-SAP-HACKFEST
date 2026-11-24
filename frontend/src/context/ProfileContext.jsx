@@ -46,8 +46,24 @@ const INITIAL_PROFILE = {
 export function ProfileProvider({ children }) {
   const [profile, setProfile] = useState(() => {
     try {
+      if (typeof window === 'undefined' || !window.localStorage) {
+        return INITIAL_PROFILE;
+      }
       const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : INITIAL_PROFILE;
+      if (!stored) return INITIAL_PROFILE;
+      const parsed = JSON.parse(stored);
+      if (!parsed || typeof parsed !== 'object') return INITIAL_PROFILE;
+      return {
+        ...INITIAL_PROFILE,
+        ...parsed,
+        skills: Array.isArray(parsed.skills) && parsed.skills.length > 0 ? parsed.skills : INITIAL_PROFILE.skills,
+        alternative_evidence: Array.isArray(parsed.alternative_evidence)
+          ? parsed.alternative_evidence
+          : INITIAL_PROFILE.alternative_evidence,
+        certificates: Array.isArray(parsed.certificates)
+          ? parsed.certificates
+          : INITIAL_PROFILE.certificates,
+      };
     } catch {
       return INITIAL_PROFILE;
     }

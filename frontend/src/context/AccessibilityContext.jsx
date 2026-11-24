@@ -17,8 +17,15 @@ export function AccessibilityProvider({ children }) {
   const { i18n } = useTranslation();
   const [settings, setSettings] = useState(() => {
     try {
+      if (typeof window === 'undefined' || !window.localStorage) {
+        return DEFAULT_SETTINGS;
+      }
       const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? { ...DEFAULT_SETTINGS, ...JSON.parse(stored) } : DEFAULT_SETTINGS;
+      if (!stored) return DEFAULT_SETTINGS;
+      const parsed = JSON.parse(stored);
+      return parsed && typeof parsed === 'object'
+        ? { ...DEFAULT_SETTINGS, ...parsed }
+        : DEFAULT_SETTINGS;
     } catch {
       return DEFAULT_SETTINGS;
     }
