@@ -1,0 +1,53 @@
+{
+  "app": {
+    "name": "SkillNav",
+    "tagline": "Inclusive Workforce & Opportunity Navigator"
+  },
+  "nav": {
+    "onboarding": "Get Started",
+    "evidence": "My Evidence",
+    "dashboard": "Dashboard",
+    "matches": "Fair Matches",
+    "jdChecker": "JD Bias Checker",
+    "enterprise": "Enterprise Hub"
+  },
+  "accessibility": {
+    "title": "Accessibility & Language",
+    "fontSize": "Font Size",
+    "fontSmall": "Small",
+    "fontMedium": "Medium",
+    "fontLarge": "Large",
+    "highContrast": "High Contrast",
+    "reducedMotion": "Reduced Motion",
+    "screenReader": "Screen Reader Optimized",
+    "language": "Language",
+    "privacyNote": "These settings are stored locally and never sent to any server."
+  },
+  "sap": {
+    "connected": "SAP AI Core • HANA Vector Connected",
+    "partial": "Partial SAP Connection",
+    "disconnected": "Running Locally (SAP Offline)",
+    "checking": "Checking SAP connection..."
+  },
+  "common": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "next": "Next",
+    "back": "Back",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "search": "Search",
+    "filter": "Filter",
+    "viewAll": "View All",
+    "close": "Close"
+  },
+  "fairness": {
+    "title": "Counterfactual Fairness Test",
+    "description": "Change any protected attribute below — your score should NOT change. That's proof of fairness.",
+    "scoreUnchanged": "Score unchanged — fairness verified!",
+    "scoreChanged": "Score changed — potential bias detected",
+    "challenge": "Challenge This Result"
+  }
+}

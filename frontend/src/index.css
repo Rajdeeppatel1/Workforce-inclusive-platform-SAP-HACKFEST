@@ -1,0 +1,276 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════
+   SkillNav Global Styles
+   Design System: Stitch Reference Tokens
+   Black, Blue & White Minimalist
+   ═══════════════════════════════════════════ */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+  }
+
+  /* ── WCAG 2.1 AA Focus Ring ── */
+  :focus-visible {
+    outline: 2px solid #2563EB;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* ── Accessibility: Respect reduced motion ── */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* ── High contrast mode ── */
+  .high-contrast {
+    filter: contrast(1.15);
+  }
+  .high-contrast .border-outline {
+    border-color: #0A0A0A !important;
+  }
+  .high-contrast .text-on-surface-muted {
+    color: #0A0A0A !important;
+    font-weight: 500;
+  }
+  .high-contrast .bg-surface-card {
+    background-color: #FFFFFF !important;
+  }
+
+  /* ── Dyslexia-friendly font mode ── */
+  .dyslexia-font,
+  .dyslexia-font * {
+    font-family: 'Comic Sans MS', 'OpenDyslexic', 'Trebuchet MS', sans-serif !important;
+    letter-spacing: 0.05em !important;
+    word-spacing: 0.1em !important;
+    line-height: 1.8 !important;
+  }
+
+  /* ── Material Symbols (from Stitch reference) ── */
+  .material-symbols-outlined,
+  .material-symbols-rounded,
+  .material-symbols-sharp,
+  .material-icons {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    line-height: 1 !important;
+    box-sizing: content-box;
+    overflow: hidden;
+    white-space: nowrap;
+    direction: ltr;
+    vertical-align: middle;
+  }
+}
+
+@layer components {
+  /* ── Card ── */
+  .sn-card {
+    @apply bg-surface-card border border-outline rounded-md p-8
+           shadow-card transition-shadow duration-surface-enter;
+  }
+
+  .sn-card:hover {
+    @apply shadow-card-hover;
+  }
+
+  /* ── Primary CTA Button ── */
+  .sn-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3
+           bg-primary text-on-primary font-label text-label-lg rounded-sm
+           hover:bg-primary-deep active:scale-[0.98]
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
+           transition-colors duration-state-change ease-state-change
+           cursor-pointer min-h-touch min-w-touch
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  /* ── Secondary / Ghost Button ── */
+  .sn-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2
+           bg-surface text-on-surface font-label text-label-md rounded-sm
+           border border-outline
+           hover:bg-surface-card active:scale-[0.98]
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
+           transition-colors duration-state-change ease-state-change
+           cursor-pointer min-h-touch min-w-touch
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  /* ── Danger Button ── */
+  .sn-btn-danger {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3
+           bg-error text-on-primary font-label text-label-lg rounded-sm
+           hover:bg-red-700 active:scale-[0.98]
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error
+           transition-colors duration-state-change ease-state-change
+           cursor-pointer min-h-touch min-w-touch;
+  }
+
+  /* ── Icon Button (mic, etc.) ── */
+  .sn-btn-icon {
+    @apply inline-flex items-center justify-center rounded-full
+           bg-primary text-on-primary
+           hover:bg-primary-deep
+           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
+           transition-colors duration-state-change ease-state-change
+           cursor-pointer;
+  }
+
+  /* ── Badge Variants ── */
+  .sn-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+           border border-outline bg-surface-card
+           font-label text-label-sm text-on-surface-muted;
+  }
+
+  .sn-badge-blue {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+           bg-primary-tint text-on-primary-tint
+           font-label text-label-sm;
+  }
+
+  .sn-badge-success {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+           bg-success-light text-success border border-green-200
+           font-label text-label-sm;
+  }
+
+  .sn-badge-warning {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+           bg-warning-light text-warning border border-amber-200
+           font-label text-label-sm;
+  }
+
+  .sn-badge-error {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+           bg-error-light text-error border border-red-200
+           font-label text-label-sm;
+  }
+
+  /* ── SAP Status Badge ── */
+  .sn-badge-sap {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full
+           bg-sidebar text-on-sidebar
+           font-label text-label-sm;
+  }
+
+  /* ── Input ── */
+  .sn-input {
+    @apply w-full bg-surface border border-outline rounded-sm px-4 py-3
+           font-body text-body-md text-on-surface
+           placeholder:text-on-surface-muted
+           focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none
+           transition-all duration-state-change
+           min-h-touch;
+  }
+
+  /* ── Sidebar Items ── */
+  .sn-sidebar-item {
+    @apply flex items-center gap-3 w-full px-4 py-3
+           font-label text-label-md text-on-sidebar-muted
+           rounded-sm cursor-pointer
+           hover:text-on-sidebar hover:bg-white/5
+           transition-colors duration-state-change
+           min-h-touch;
+  }
+
+  .sn-sidebar-item-active {
+    @apply flex items-center gap-3 w-full px-4 py-3
+           font-label text-label-md text-on-sidebar
+           rounded-sm cursor-pointer
+           bg-primary
+           min-h-touch;
+  }
+
+  /* ── Pathway / Selectable Pill ── */
+  .sn-pill {
+    @apply px-4 py-2 rounded-full border border-outline
+           bg-surface text-on-surface
+           hover:border-outline-strong
+           font-label text-label-md
+           transition-colors duration-state-change
+           cursor-pointer;
+  }
+
+  .sn-pill-active {
+    @apply px-4 py-2 rounded-full border border-primary
+           bg-primary text-on-primary
+           font-label text-label-md
+           transition-colors duration-state-change
+           cursor-pointer;
+  }
+
+  /* ── Progress Bar Segment ── */
+  .sn-progress-segment {
+    @apply h-1.5 rounded-full bg-outline;
+  }
+
+  .sn-progress-segment-active {
+    @apply h-1.5 rounded-full bg-primary;
+  }
+
+  /* ── Language Switcher Pill ── */
+  .sn-lang-pill {
+    @apply inline-flex items-center rounded-full border border-on-sidebar-muted p-1 bg-sidebar;
+  }
+
+  .sn-lang-btn {
+    @apply px-3 py-1 rounded-full font-label text-label-sm
+           text-on-sidebar transition-colors duration-state-change;
+  }
+
+  .sn-lang-btn-active {
+    @apply px-3 py-1 rounded-full font-label text-label-sm
+           bg-primary text-on-primary transition-colors duration-state-change;
+  }
+
+  /* ── Score ring (for match percentages) ── */
+  .sn-score-ring {
+    @apply relative inline-flex items-center justify-center;
+  }
+
+  .sn-score-ring svg circle {
+    transition: stroke-dashoffset 0.6s ease-out;
+  }
+}
+
+@layer utilities {
+  /* ── Scrollbar styling ── */
+  .sn-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .sn-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .sn-scrollbar::-webkit-scrollbar-thumb {
+    background: #E2E8F0;
+    border-radius: 3px;
+  }
+  .sn-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+  }
+}
