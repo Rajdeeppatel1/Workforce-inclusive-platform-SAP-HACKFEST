@@ -41,7 +41,7 @@ app = FastAPI(
 )
 
 # ═══════════════════════════════════════════
-# CORS — allow frontend dev server
+# CORS — allow frontend dev server and Vercel domains
 # ═══════════════════════════════════════════
 
 app.add_middleware(
@@ -50,7 +50,9 @@ app.add_middleware(
         "http://localhost:5173",
         "http://localhost:3000",
         "http://127.0.0.1:5173",
+        "https://*.vercel.app",
     ],
+    allow_origin_regex=r"^https://.*\.vercel\.app$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -60,23 +62,6 @@ app.add_middleware(
 app.include_router(matching_router)
 app.include_router(genai_router)
 app.include_router(fairness_router)
-
-
-# ═══════════════════════════════════════════
-# CORS — allow frontend dev server
-# ═══════════════════════════════════════════
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "http://127.0.0.1:5173",
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 
 # ═══════════════════════════════════════════
