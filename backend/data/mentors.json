@@ -1,0 +1,48 @@
+{
+  "mentors": [
+    {
+      "mentor_id": "mentor-01",
+      "naam": "Aakash Verma",
+      "role": "Staff Backend Architect",
+      "company": "Distributed Systems Lab",
+      "experience": "8+ yrs",
+      "skills": ["Python", "FastAPI", "System Design", "SQL", "Microservices"],
+      "bio": "Specializes in high-throughput API architecture and asynchronous event-driven microservices.",
+      "availability": "Available this week (Free 1:1 Community Mentorship)",
+      "avatar_initials": "AV"
+    },
+    {
+      "mentor_id": "mentor-02",
+      "naam": "Sneha Roy",
+      "role": "Lead Cloud & DevOps Engineer",
+      "company": "CloudScale Platforms",
+      "experience": "6+ yrs",
+      "skills": ["Docker", "Kubernetes", "CI/CD", "Linux", "Cloud Basics"],
+      "bio": "Mentoring early-career developers on container orchestration, automated deployment pipelines, and cloud resilience.",
+      "availability": "Available tomorrow",
+      "avatar_initials": "SR"
+    },
+    {
+      "mentor_id": "mentor-03",
+      "naam": "Vikram Sethi",
+      "role": "Senior Fullstack Engineer",
+      "company": "Modern Product Studios",
+      "experience": "7+ yrs",
+      "skills": ["React", "TypeScript", "Tailwind CSS", "REST APIs", "JavaScript"],
+      "bio": "Focused on frontend architecture, responsive component design, and accessible web systems (WCAG 2.1).",
+      "availability": "Available this weekend",
+      "avatar_initials": "VS"
+    },
+    {
+      "mentor_id": "mentor-04",
+      "naam": "Dr. Ananya Sen",
+      "role": "Principal AI & Search Scientist",
+      "company": "Cognitive AI Platforms",
+      "experience": "9+ yrs",
+      "skills": ["Machine Learning", "Vector Embeddings", "Vector Search", "Python", "Responsible AI"],
+      "bio": "Expert in blind matching algorithms, cosine vector similarity, and eliminating demographic bias in AI systems.",
+      "availability": "Available Thursday",
+      "avatar_initials": "AS"
+    }
+  ]
+}

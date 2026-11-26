@@ -454,3 +454,73 @@ async def validate_role(req: ValidateRoleRequest):
         "explanation": f"Matched {len(matched)} of {len(required_skills)} core skills required by {target_role.get('company')}."
     }
 
+
+# ═════════════════════════════════════════════════════════════
+# Mentors & Doubt Summarizer (Mentors from mentors.json, Gemini API)
+# ═════════════════════════════════════════════════════════════
+
+MENTORS_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "data", "mentors.json")
+)
+
+
+@router.get("/mentors")
+async def get_mentors():
+    """
+    Returns expert mentor profiles from backend/data/mentors.json.
+    """
+    if not os.path.exists(MENTORS_PATH):
+        raise HTTPException(status_code=404, detail="mentors.json not found")
+    try:
+        with open(MENTORS_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to load mentors: {str(e)}")
+
+
+class DoubtSummaryRequest(BaseModel):
+    doubt_text: str = Field(..., min_length=5, description="Candidate technical or career doubt")
+    mentor_naam: Optional[str] = "Expert Mentor"
+    mentor_role: Optional[str] = "Engineering Lead"
+
+
+@router.post("/mentors/summarize-doubt")
+async def summarize_doubt(req: DoubtSummaryRequest):
+    """
+    Uses Gemini API (or local resilient fallback) to summarize a user's doubt
+    and generate a professional draft message for the expert mentor.
+    """
+    from services.gemini_service import summarize_doubt_for_expert
+    summary_result = summarize_doubt_for_expert(
+        doubt_text=req.doubt_text,
+        mentor_naam=req.mentor_naam,
+        mentor_role=req.mentor_role
+    )
+    return summary_result
+
+
+class MentorBookRequest(BaseModel):
+    mentor_id: str
+    mentor_naam: str
+    slot: Optional[str] = "Tomorrow at 4:00 PM IST"
+    draft_message: Optional[str] = None
+
+
+@router.post("/mentors/book")
+async def book_mentor(req: MentorBookRequest):
+    """
+    Simulates booking a 1:1 mentorship session.
+    Booking sirf confirmation message, koi real booking nahi.
+    """
+    return {
+        "status": "confirmed_simulation",
+        "mentor_id": req.mentor_id,
+        "mentor_naam": req.mentor_naam,
+        "slot": req.slot,
+        "confirmation_message": f"Session request confirmed for {req.mentor_naam}! Aapko slot details email par bhej di gayi hain.",
+        "notice": "Booking sirf confirmation message hai, koi real booking nahi.",
+        "booking_reference": f"SIM-BOOK-{req.mentor_id.upper()}-2026"
+    }
+
+

@@ -15,6 +15,7 @@ import FresherTrack from './pages/FresherTrack';
 import EmployedTrack from './pages/EmployedTrack';
 import FresherTest from './pages/FresherTest';
 import FresherPrepare from './pages/FresherPrepare';
+import Mentorship from './pages/Mentorship';
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="/employed" element={<EmployedTrack />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/evidence" element={<Evidence />} />
+            <Route path="/mentors" element={<Mentorship />} />
             <Route
               path="/dashboard"
               element={

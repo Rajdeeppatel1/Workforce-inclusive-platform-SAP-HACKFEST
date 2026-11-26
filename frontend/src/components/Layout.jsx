@@ -22,6 +22,7 @@ import {
   ArrowRight,
   BookOpen,
   FileQuestion,
+  Users,
 } from 'lucide-react';
 
 export default function Layout({ children }) {
@@ -84,6 +85,12 @@ export default function Layout({ children }) {
       labelEn: 'Profile & Experience',
       labelHi: 'प्रोफ़ाइल और अनुभव',
       icon: User,
+    },
+    {
+      to: '/mentors',
+      labelEn: 'Mentors & Doubt Box',
+      labelHi: 'मेंटर और डाउट बॉक्स',
+      icon: Users,
     },
     {
       to: '/dashboard',
