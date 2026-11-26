@@ -22,12 +22,6 @@ export default function ConsentGate({ children }) {
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-4 bg-white">
       <div className="max-w-xl w-full border border-black rounded-lg p-8 shadow-2xl bg-white text-black relative">
-        <div className="absolute top-4 right-4">
-          <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 bg-amber-100 text-amber-900 border border-amber-300 rounded">
-            Synthetic Demo Data
-          </span>
-        </div>
-
         <div className="flex items-center gap-3 mb-6">
           <div className="w-12 h-12 bg-black text-white rounded-lg flex items-center justify-center">
             <ShieldCheck className="w-6 h-6 text-blue-500" />
@@ -40,10 +34,10 @@ export default function ConsentGate({ children }) {
 
         <div className="bg-neutral-50 border-l-4 border-blue-600 p-4 mb-6 rounded-r">
           <p className="text-base font-semibold text-neutral-900 mb-1">
-            "Ye data sirf skill matching ke liye use hoga."
+            "This data will strictly and exclusively be used for skill matching."
           </p>
           <p className="text-xs text-neutral-600">
-            This data will strictly and exclusively be used for skill-based opportunity matching.
+            Demographic markers and institution pedigree are strictly scrubbed prior to scoring algorithms.
           </p>
         </div>
 
@@ -51,19 +45,19 @@ export default function ConsentGate({ children }) {
           <div className="flex items-start gap-2.5">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
             <span>
-              <strong>Zero Demographic Bias:</strong> Protected attributes (naam, gender, college tier, career gap, city tier) scoring mein kabhi nahi jaate.
+              <strong>Zero Demographic Bias:</strong> Protected attributes (candidate name, gender, college tier, career break duration, city tier) are never evaluated during matching.
             </span>
           </div>
           <div className="flex items-start gap-2.5">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
             <span>
-              <strong>Skills & Evidence Only:</strong> Scored purely on verified code repositories, freelance outputs, and demonstrable competencies.
+              <strong>Skills &amp; Evidence Only:</strong> Scored purely on verified code repositories, technical outputs, and demonstrable competencies.
             </span>
           </div>
           <div className="flex items-start gap-2.5">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
             <span>
-              <strong>Full Appeal Rights:</strong> You can challenge any automated match decision at any time.
+              <strong>Full Appeal Rights:</strong> You can challenge automated match evaluations and request human review at any time.
             </span>
           </div>
         </div>
@@ -77,9 +71,9 @@ export default function ConsentGate({ children }) {
               className="mt-1 w-4 h-4 rounded border-neutral-400 text-blue-600 focus:ring-blue-500 cursor-pointer"
             />
             <span className="text-xs text-neutral-800 leading-relaxed">
-              Main sahmati deta/deti hoon ki mera data sirf skill matching aur readiness insights ke liye sanitize karke evaluate kiya jaaye.
+              I consent to having my profile evaluated strictly and anonymously based on demonstrable skills, code evidence, and technical competencies.
               <span className="block text-[11px] text-neutral-500 mt-0.5">
-                (Consent required to unlock Main Candidate Dashboard)
+                (Consent required to unlock Candidate Dashboard)
               </span>
             </span>
           </label>

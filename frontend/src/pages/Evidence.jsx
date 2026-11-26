@@ -70,7 +70,8 @@ export default function Evidence() {
 
   // Extracted Mock OCR Data
   const [ocrData, setOcrData] = useState({
-    naam: 'Rajdeep Patel',
+    candidate_name: 'Priya Sharma',
+    naam: 'Priya Sharma',
     title: 'Python for Everybody Specialization',
     issuer: 'Coursera / DeepLearning',
     date: '2024-10',
@@ -146,7 +147,8 @@ export default function Evidence() {
     } catch (e) {
       console.warn('Mock OCR fallback error:', e);
       setOcrData({
-        naam: 'Rajdeep Patel',
+        candidate_name: profile.name || 'Priya Sharma',
+        naam: profile.name || 'Priya Sharma',
         title: 'Python for Backend & Microservices',
         issuer: 'Coursera / DeepLearning',
         date: '2024-10',
@@ -198,8 +200,8 @@ export default function Evidence() {
         role_title: 'Full Stack Developer',
         company: 'Inclusive Tech Enterprises',
         eligible: true,
-        result_message: 'Aap is role ke liye eligible hain',
-        notice: 'Aap is role ke liye eligible hain (apply ho gaya nahi)',
+        result_message: 'You meet the eligibility criteria for this role',
+        notice: 'Verified eligibility criteria — application has not been submitted yet.',
         matched_skills: ['Python', 'React', 'REST APIs', 'SQL'],
         missing_skills: [],
         match_percentage: 100.0,
@@ -272,9 +274,6 @@ export default function Evidence() {
             <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
               Evidence, Certificate OCR &amp; Role Validation
             </h1>
-            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded">
-              Synthetic Demo Data
-            </span>
           </div>
           <p className="text-xs text-neutral-500">
             Extract certificate metadata via mock OCR, confirm details, and validate eligibility against target roles from <code className="bg-neutral-100 px-1 py-0.5 rounded">backend/data/roles.json</code>.
@@ -375,11 +374,13 @@ export default function Evidence() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div>
-                <label className="block font-semibold text-neutral-700 mb-0.5">Naam on Cert</label>
+                <label className="block font-semibold text-neutral-700 mb-0.5">Candidate Name</label>
                 <input
                   type="text"
-                  value={ocrData.naam}
-                  onChange={(e) => setOcrData({ ...ocrData, naam: e.target.value })}
+                  value={ocrData.candidate_name || ocrData.naam}
+                  onChange={(e) =>
+                    setOcrData({ ...ocrData, candidate_name: e.target.value, naam: e.target.value })
+                  }
                   className="w-full px-2.5 py-1.5 border border-neutral-300 rounded bg-white font-medium"
                 />
               </div>
@@ -603,7 +604,7 @@ export default function Evidence() {
 
         {/* ═════════════════════════════════════════════════════════
             VALIDATION RESULT DISPLAY:
-            "Aap is role ke liye eligible hain" (apply ho gaya nahi)
+            "You are eligible for this role" (Preliminary Match)
             ═════════════════════════════════════════════════════════ */}
         {validationResult && (
           <div

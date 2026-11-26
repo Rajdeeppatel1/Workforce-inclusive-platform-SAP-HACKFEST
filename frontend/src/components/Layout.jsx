@@ -194,7 +194,7 @@ export default function Layout({ children }) {
                   <div className="text-xs font-semibold text-white truncate max-w-[110px]">
                     {profile.name}
                   </div>
-                  <div className="text-[10px] text-amber-300 font-medium">Synthetic Demo</div>
+                  <div className="text-[10px] text-blue-300 font-medium">Candidate Profile</div>
                 </div>
               </div>
               <span
@@ -269,11 +269,6 @@ export default function Layout({ children }) {
               <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
               <span>Blind Matching Active</span>
             </span>
-
-            {/* Synthetic Data Indicator */}
-            <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-300 text-amber-800 text-xs font-semibold">
-              Synthetic Demo Data
-            </span>
           </div>
 
           {/* Action Buttons: Language Switcher, Sign In & Accessibility (44px Minimum Touch Target) */}
@@ -335,14 +330,14 @@ export default function Layout({ children }) {
             </button>
 
             <div className="mb-5">
-              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded">
-                Synthetic Demo Sign-In
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 bg-blue-50 text-blue-900 border border-blue-200 rounded">
+                Candidate Sign-In
               </span>
               <h2 className="text-xl font-bold text-neutral-900 mt-2">
-                Aapka Career Status Chune
+                Select Your Career Pathway
               </h2>
               <p className="text-xs text-neutral-500 mt-0.5">
-                Choose your track to view tailored skills-first navigation:
+                Choose your pathway for tailored skills-first navigation and opportunities:
               </p>
             </div>
 
@@ -360,7 +355,7 @@ export default function Layout({ children }) {
                     Fresher
                   </div>
                   <p className="text-[11px] text-neutral-500 mt-1 leading-snug">
-                    Student, self-taught coder, ya early-career job seeker.
+                    Students, self-taught developers, and early-career job seekers.
                   </p>
                 </div>
                 <div className="flex items-center gap-1 text-[11px] font-bold text-blue-600">
@@ -382,7 +377,7 @@ export default function Layout({ children }) {
                     Employed
                   </div>
                   <p className="text-[11px] text-neutral-500 mt-1 leading-snug">
-                    Working professional, reskilling, ya career transition.
+                    Working professionals, career transitioners, and reskilling developers.
                   </p>
                 </div>
                 <div className="flex items-center gap-1 text-[11px] font-bold text-neutral-900">

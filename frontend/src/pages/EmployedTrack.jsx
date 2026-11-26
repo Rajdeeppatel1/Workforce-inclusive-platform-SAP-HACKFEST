@@ -26,9 +26,6 @@ export default function EmployedTrack() {
             <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
               Employed Professional Pathway
             </h1>
-            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded">
-              Synthetic Demo Data
-            </span>
           </div>
           <p className="text-xs text-neutral-500">
             Skills-first career progression, reskilling, and fair opportunity transitions for working professionals.
@@ -50,7 +47,7 @@ export default function EmployedTrack() {
           Protected Experience Evaluation
         </div>
         <p>
-          "Ye data sirf skill matching ke liye use hoga." Career break duration, current employer pedigree, aur location scoring mein consider nahi kiye jaate.
+          This evaluation is strictly skills-first. Career break durations, past employer pedigree, and location are excluded from matching algorithms.
         </p>
       </div>
 

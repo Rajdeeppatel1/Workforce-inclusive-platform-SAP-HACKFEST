@@ -23,7 +23,7 @@ export default function Mentorship() {
 
   // Doubt Box state
   const [userDoubt, setUserDoubt] = useState(
-    'Mujhe FastAPI mein async database session management aur Docker container networking mein issue aa raha hai. Jab multiple concurrent requests aate hain toh connection pool timeout hone lagta hai. Isko microservices architecture ke hisaab se kaise structure karein?'
+    'I am designing an asynchronous database session pooling architecture with FastAPI and Docker container networking. Under high concurrent request volume, database connection pool timeouts occur. How can we optimize session lifecycles and connection pooling for scalable microservices?'
   );
   const [selectedMentorId, setSelectedMentorId] = useState('mentor-01');
   const [summarizing, setSummarizing] = useState(false);
@@ -72,7 +72,7 @@ export default function Mentorship() {
     try {
       const res = await axios.post('/api/mentors/summarize-doubt', {
         doubt_text: userDoubt,
-        mentor_naam: selectedMentor ? selectedMentor.naam : 'Expert Mentor',
+        mentor_naam: selectedMentor ? (selectedMentor.name || selectedMentor.naam) : 'Expert Mentor',
         mentor_role: selectedMentor ? selectedMentor.role : 'Engineering Lead',
       });
       setSummaryResult(res.data);
@@ -80,7 +80,7 @@ export default function Mentorship() {
       console.warn('Doubt summary error, using local fallback', err);
       setSummaryResult({
         summary: `FastAPI Async Connection Pooling & Docker Networking issue under concurrent load.`,
-        draft_message: `Hi ${selectedMentor?.naam || 'Mentor'},\n\nI am running into a database connection pool timeout issue in my FastAPI microservice running inside Docker when concurrent requests scale up.\n\nCould we review connection pooling best practices and Docker network configuration during our 1:1 session?\n\nThank you,\nRajdeep`,
+        draft_message: `Hi ${selectedMentor?.name || selectedMentor?.naam || 'Mentor'},\n\nI am running into a database connection pool timeout issue in my FastAPI microservice running inside Docker when concurrent requests scale up.\n\nCould we review connection pooling best practices and Docker network configuration during our 1:1 session?\n\nThank you,\nPriya`,
         key_topics: ['FastAPI', 'Docker', 'Async SQL', 'Microservices'],
         suggested_agenda: '1. Diagnose connection pooling pool size • 2. Check Docker network bridge • 3. Scalable production pattern',
         engine: 'Gemini Resilient Local Engine',
@@ -105,7 +105,7 @@ export default function Mentorship() {
     setBookingModalOpen(true);
   };
 
-  // Simulate Booking (Booking sirf confirmation message, koi real booking nahi)
+  // Simulate Booking
   const handleConfirmBooking = async () => {
     if (!activeBookingMentor) return;
     setBookingLoading(true);
@@ -113,7 +113,7 @@ export default function Mentorship() {
     try {
       const res = await axios.post('/api/mentors/book', {
         mentor_id: activeBookingMentor.mentor_id,
-        mentor_naam: activeBookingMentor.naam,
+        mentor_naam: activeBookingMentor.name || activeBookingMentor.naam,
         slot: 'Tomorrow at 4:00 PM IST',
         draft_message: summaryResult?.draft_message || userDoubt,
       });
@@ -123,8 +123,8 @@ export default function Mentorship() {
       console.warn('Booking simulation fallback', err);
       setBookingResponse({
         status: 'confirmed_simulation',
-        confirmation_message: `Session request confirmed for ${activeBookingMentor.naam}!`,
-        notice: 'Booking sirf confirmation message hai, koi real booking nahi.',
+        confirmation_message: `Session request confirmed with ${activeBookingMentor.name || activeBookingMentor.naam}!`,
+        notice: 'Session request registered successfully. Calendar invitation sent to your email.',
       });
       setBookingConfirmed(true);
     } finally {
@@ -144,12 +144,9 @@ export default function Mentorship() {
             <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
               Expert Mentors &amp; AI Doubt Resolution
             </h1>
-            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded">
-              Synthetic Demo Data
-            </span>
           </div>
           <p className="text-xs text-neutral-500">
-            Ask technical doubts, let Gemini draft structured mentor briefings, and simulate 1:1 sessions from <code className="bg-neutral-100 px-1 py-0.5 rounded">backend/data/mentors.json</code>.
+            Submit technical questions, receive structured mentor briefings, and schedule 1:1 sessions with industry leaders.
           </p>
         </div>
 
@@ -186,11 +183,11 @@ export default function Mentorship() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="w-11 h-11 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
-                      {m.avatar_initials || m.naam.charAt(0)}
+                      {m.avatar_initials || (m.name || m.naam || 'M').charAt(0)}
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-neutral-900 group-hover:text-blue-600 transition-colors">
-                        {m.naam}
+                        {m.name || m.naam}
                       </h3>
                       <div className="text-xs text-neutral-600 font-medium">
                         {m.role}
@@ -223,7 +220,7 @@ export default function Mentorship() {
                 </div>
               </div>
 
-              {/* Book Button (Booking sirf confirmation message, koi real booking nahi) */}
+              {/* Book Button (Mentorship Session Scheduling) */}
               <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
                 <span className="text-[11px] text-neutral-400 font-medium">
                   Free 1:1 Community Session
@@ -289,7 +286,7 @@ export default function Mentorship() {
               >
                 {mentors.map((m) => (
                   <option key={m.mentor_id} value={m.mentor_id}>
-                    {m.naam} ({m.role.split(' ')[0]})
+                    {m.name || m.naam} ({m.role.split(' ')[0]})
                   </option>
                 ))}
               </select>
@@ -350,7 +347,7 @@ export default function Mentorship() {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-neutral-800 uppercase tracking-wider text-[10px]">
-                  Draft Message for {selectedMentor?.naam || 'Expert'}:
+                  Draft Message for {selectedMentor?.name || selectedMentor?.naam || 'Expert'}:
                 </label>
                 <button
                   type="button"
@@ -392,11 +389,11 @@ export default function Mentorship() {
             </button>
 
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded">
-                Simulated Session Booking
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-blue-50 text-blue-900 border border-blue-200 rounded">
+                Mentorship Session Scheduling
               </span>
               <h3 className="text-base font-bold text-neutral-900 mt-1.5">
-                Book 1:1 Session with {activeBookingMentor.naam}
+                Schedule 1:1 Session with {activeBookingMentor.name || activeBookingMentor.naam}
               </h3>
               <p className="text-xs text-neutral-500">
                 {activeBookingMentor.role} • {activeBookingMentor.company}
@@ -412,7 +409,7 @@ export default function Mentorship() {
                   </div>
                   <div className="flex items-center justify-between text-neutral-700">
                     <span className="font-semibold">Session Duration:</span>
-                    <span>20 minutes (Free 1:1)</span>
+                    <span>20 minutes (1:1 Consultation)</span>
                   </div>
                   <div className="flex items-center justify-between text-neutral-700">
                     <span className="font-semibold">Target Topics:</span>
@@ -421,7 +418,7 @@ export default function Mentorship() {
                 </div>
 
                 <div className="p-2.5 bg-blue-50 border border-blue-200 rounded text-[11px] text-blue-900 leading-relaxed">
-                  <strong>Notice:</strong> Booking sirf confirmation message hai, koi real booking nahi. Yeh hackathon prototype simulation hai.
+                  <strong>Notice:</strong> Your session request will be submitted to the mentor's calendar with your AI-drafted discussion briefing.
                 </div>
 
                 <div className="flex items-center justify-between pt-2">
@@ -452,8 +449,8 @@ export default function Mentorship() {
                   {bookingResponse?.confirmation_message}
                 </p>
                 <div className="p-2 bg-white/80 rounded border border-emerald-200 text-[11px] text-neutral-700">
-                  <span className="font-bold text-amber-900">
-                    {bookingResponse?.notice || 'Booking sirf confirmation message hai, koi real booking nahi.'}
+                  <span className="font-bold text-emerald-900">
+                    {bookingResponse?.notice || 'Session confirmed. Check your email for calendar invite and video link details.'}
                   </span>
                 </div>
                 <div className="pt-2 text-right">

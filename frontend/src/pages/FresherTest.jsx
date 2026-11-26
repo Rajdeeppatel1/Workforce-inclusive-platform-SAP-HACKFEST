@@ -139,9 +139,6 @@ export default function FresherTest() {
             <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
               Skills Assessment &amp; Quiz
             </h1>
-            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded">
-              Synthetic Demo Data
-            </span>
           </div>
           <p className="text-xs text-neutral-500">
             Take 5-minute foundational skill quizzes. Scores are verified and saved directly into your profile.

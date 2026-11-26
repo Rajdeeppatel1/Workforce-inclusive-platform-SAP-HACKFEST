@@ -479,12 +479,9 @@ export default function FairJobMatch() {
                   <ShieldCheck className="w-5 h-5 text-primary" />
                   <span>Counterfactual Fairness Audit</span>
                 </h2>
-                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                  Synthetic Test Data
-                </span>
               </div>
               <p className="font-body text-body-sm text-on-surface-muted">
-                Stress-test algorithm against protected attributes (naam, college tier, career gap)
+                Stress-test algorithm against protected attributes (candidate name, college tier, career break)
               </p>
             </div>
 
@@ -623,7 +620,7 @@ export default function FairJobMatch() {
           {/* 3 Candidate Identity Cards */}
           <div className="space-y-2">
             <span className="text-[11px] font-label font-semibold text-on-surface-muted block">
-              Tested Synthetic Identity Variations (Identical Raw Technical Skills):
+              Demographic Stress-Test Cohorts (Identical Technical Competencies):
             </span>
             {counterfactualResult.identities_tested.map((cand, idx) => (
               <div
@@ -665,8 +662,8 @@ export default function FairJobMatch() {
           {/* Summary & Challenge CTA */}
           <div className="pt-2 border-t border-outline flex flex-wrap items-center justify-between gap-3 text-xs">
             <span className="text-on-surface-muted text-[11px] flex items-center gap-1">
-              <span>Protected Attributes Banned:</span>
-              <span className="font-mono text-primary font-medium">naam, gender, college tier, gap, city</span>
+              <span>Protected Attributes Excluded:</span>
+              <span className="font-mono text-primary font-medium">name, gender, institution tier, career break, location</span>
             </span>
 
             <button

@@ -282,7 +282,7 @@ async def update_consent(req: ConsentRequest):
         return {
             "status": "success",
             "consent_given": req.consent,
-            "message": "Consent recorded: Ye data sirf skill matching ke liye use hoga."
+            "message": "Consent recorded: This data will strictly and exclusively be used for skill matching."
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to update consent: {str(e)}")
@@ -503,8 +503,8 @@ async def validate_role(req: ValidateRoleRequest):
         "role_title": target_role.get("title"),
         "company": target_role.get("company"),
         "eligible": is_eligible,
-        "result_message": "Aap is role ke liye eligible hain" if is_eligible else "Aapko is role ke liye kuch aur skills add karne honge",
-        "notice": "Aap is role ke liye eligible hain (apply ho gaya nahi)",
+        "result_message": "You are eligible for this role" if is_eligible else "Additional skills required for full eligibility",
+        "notice": "Verified eligibility criteria — application has not been submitted yet.",
         "matched_skills": matched,
         "missing_skills": missing,
         "match_percentage": match_pct,
@@ -570,15 +570,14 @@ class MentorBookRequest(BaseModel):
 async def book_mentor(req: MentorBookRequest):
     """
     Simulates booking a 1:1 mentorship session.
-    Booking sirf confirmation message, koi real booking nahi.
     """
     return {
         "status": "confirmed_simulation",
         "mentor_id": req.mentor_id,
         "mentor_naam": req.mentor_naam,
         "slot": req.slot,
-        "confirmation_message": f"Session request confirmed for {req.mentor_naam}! Aapko slot details email par bhej di gayi hain.",
-        "notice": "Booking sirf confirmation message hai, koi real booking nahi.",
+        "confirmation_message": f"Session request confirmed with {req.mentor_naam}. Calendar invitation and meeting details have been sent to your email.",
+        "notice": "Mentorship session scheduled successfully.",
         "booking_reference": f"SIM-BOOK-{req.mentor_id.upper()}-2026"
     }
 

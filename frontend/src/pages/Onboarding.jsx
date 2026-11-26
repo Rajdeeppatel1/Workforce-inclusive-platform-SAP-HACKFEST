@@ -124,12 +124,12 @@ export default function Onboarding() {
     }
   };
 
-  // Instant Hackathon Demo Voice Simulation
+  // Instant Voice Input Simulation
   const triggerDemoHindiVoice = () => {
-    const demoHinglish = 'Main Bhopal se hoon, maine Python, React, FastAPI aur Docker se cloud portal banaya hai';
-    setTranscript(`"${demoHinglish}"`);
-    setDetectedLang('Detected: Hinglish (Hindi + English)');
-    ['Python', 'React', 'FastAPI', 'Docker'].forEach(addSkill);
+    const demoNatural = 'Fullstack software developer with hands-on experience in Python, React, FastAPI, SQL, and Docker containerization';
+    setTranscript(`"${demoNatural}"`);
+    setDetectedLang('Natural Language Voice Input Processed');
+    ['Python', 'React', 'FastAPI', 'Docker', 'SQL'].forEach(addSkill);
   };
 
   const handleAddSkillKey = (e) => {

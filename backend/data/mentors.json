@@ -2,6 +2,7 @@
   "mentors": [
     {
       "mentor_id": "mentor-01",
+      "name": "Aakash Verma",
       "naam": "Aakash Verma",
       "role": "Staff Backend Architect",
       "company": "Distributed Systems Lab",
@@ -13,6 +14,7 @@
     },
     {
       "mentor_id": "mentor-02",
+      "name": "Sneha Roy",
       "naam": "Sneha Roy",
       "role": "Lead Cloud & DevOps Engineer",
       "company": "CloudScale Platforms",
@@ -24,6 +26,7 @@
     },
     {
       "mentor_id": "mentor-03",
+      "name": "Vikram Sethi",
       "naam": "Vikram Sethi",
       "role": "Senior Fullstack Engineer",
       "company": "Modern Product Studios",
@@ -35,6 +38,7 @@
     },
     {
       "mentor_id": "mentor-04",
+      "name": "Dr. Ananya Sen",
       "naam": "Dr. Ananya Sen",
       "role": "Principal AI & Search Scientist",
       "company": "Cognitive AI Platforms",

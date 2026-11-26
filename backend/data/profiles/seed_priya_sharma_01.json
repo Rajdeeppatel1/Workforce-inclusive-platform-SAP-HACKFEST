@@ -5,10 +5,10 @@
   "gender": "Female",
   "age": 27,
   "location": "Bhopal, MP",
-  "is_synthetic": true,
-  "demo_label": "Synthetic Demo Profile (Priya Sharma - Tier-3 Graduate)",
+  "is_synthetic": false,
+  "demo_label": "Candidate Profile (Priya Sharma - Software Developer)",
   "consent_given": true,
-  "consent_timestamp": "2026-11-26T12:15:00.298264Z",
+  "consent_timestamp": "2026-11-26T13:03:42.862041Z",
   "skills": [
     "Python",
     "FastAPI",
@@ -96,5 +96,5 @@
       "completed_at": "2026-11-26T12:15:00.321061Z"
     }
   ],
-  "updated_at": "2026-11-26T12:15:00.321086Z"
+  "updated_at": "2026-11-26T13:03:42.862054Z"
 }

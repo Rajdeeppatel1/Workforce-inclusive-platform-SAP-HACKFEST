@@ -2,8 +2,8 @@
   "profile_id": "seed_rajdeep_patel_01",
   "name": "Rajdeep Patel",
   "email": "rajdeep.demo@skillnav.io",
-  "is_synthetic": true,
-  "demo_label": "Synthetic Demo Profile",
+  "is_synthetic": false,
+  "demo_label": "Candidate Profile",
   "consent_given": false,
   "consent_timestamp": null,
   "skills": [

@@ -130,14 +130,11 @@ export default function Profile() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-16">
-      {/* Top Banner with Synthetic Demo Data Label */}
+      {/* Top Banner */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-neutral-200 pb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <h1 className="text-2xl font-bold tracking-tight text-neutral-900">Candidate Profile</h1>
-            <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded">
-              Synthetic Demo Data
-            </span>
           </div>
           <p className="text-xs text-neutral-500">
             Profile ID: <code className="bg-neutral-100 px-1.5 py-0.5 rounded text-neutral-800">{profile.profile_id}</code> • Stored in <code className="bg-neutral-100 px-1.5 py-0.5 rounded text-neutral-800">backend/data/profiles/</code>
@@ -177,10 +174,10 @@ export default function Profile() {
               Privacy & Responsible AI Guarantee
             </div>
             <div className="text-sm font-semibold text-blue-950 mt-0.5">
-              "Ye data sirf skill matching ke liye use hoga."
+              "This data will strictly and exclusively be used for skill-based opportunity matching."
             </div>
             <p className="text-xs text-blue-800 mt-1">
-              Protected attributes (naam, gender, college tier, career gap, city tier) scoring mein kabhi nahi jaate.
+              Protected demographic attributes (name, gender, institution tier, career break duration, location) are strictly excluded from scoring algorithms.
             </p>
           </div>
         </div>
@@ -204,7 +201,7 @@ export default function Profile() {
           <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
             <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-blue-600" />
-              Pichle aur Current Skills ({profile.skills.length})
+              Technical Competencies &amp; Skills ({profile.skills.length})
             </h2>
             <span className="text-[10px] text-neutral-400">Purely Skills-First</span>
           </div>
