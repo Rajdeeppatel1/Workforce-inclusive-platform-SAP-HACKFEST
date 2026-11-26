@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAccessibility } from '../context/AccessibilityContext';
 import { useProfile } from '../context/ProfileContext';
 import AccessibilityDrawer from './AccessibilityDrawer';
+import VoiceNavigator from './VoiceNavigator';
 import {
   Sparkles,
   LayoutDashboard,
@@ -390,7 +391,10 @@ export default function Layout({ children }) {
         </div>
       )}
 
-      {/* 4. Slide-Over Accessibility Drawer */}
+      {/* 4. Voice Assistant Floating Navigator */}
+      <VoiceNavigator />
+
+      {/* 5. Slide-Over Accessibility Drawer */}
       <AccessibilityDrawer />
     </div>
   );

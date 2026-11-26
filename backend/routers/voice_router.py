@@ -38,7 +38,8 @@ ALLOWED_ACTIONS_MAP: Dict[str, Optional[str]] = {
 
 
 class VoiceCommandRequest(BaseModel):
-    command: str = Field(..., min_length=1, description="Raw speech-to-text voice utterance")
+    command: Optional[str] = Field(None, description="Raw speech-to-text voice utterance")
+    transcript: Optional[str] = Field(None, description="Alternative field for speech transcript")
     language: Optional[str] = "hi-IN"
 
 
@@ -57,6 +58,25 @@ class VoiceIntentResponse(BaseModel):
     engine: str = "Gemini Intent Engine"
 
 
+@router.get("/actions")
+async def get_allowed_voice_actions():
+    """
+    Returns the fixed whitelist of allowed actions supported by the voice navigator.
+    """
+    actions = [
+        {"action": "NAVIGATE_TEST", "route": "/fresher/test", "description": "Open 5-MCQ skill quiz", "sample_utterances": ["test kholo", "quiz shuru karo", "take test"]},
+        {"action": "NAVIGATE_PREPARE", "route": "/fresher/prepare", "description": "Open practice and learning resources", "sample_utterances": ["prepare kholo", "learning resources", "practice karo"]},
+        {"action": "NAVIGATE_DASHBOARD", "route": "/dashboard", "description": "Navigate to candidate dashboard", "sample_utterances": ["dashboard kholo", "my score", "readiness dekho"]},
+        {"action": "NAVIGATE_EVIDENCE", "route": "/evidence", "description": "Navigate to verified evidence & certificates", "sample_utterances": ["evidence kholo", "praman dekho", "certificate upload"]},
+        {"action": "NAVIGATE_MATCHES", "route": "/matches", "description": "Navigate to fair job matches", "sample_utterances": ["jobs dikhao", "job match kholo", "matching roles"]},
+        {"action": "NAVIGATE_MENTORS", "route": "/mentors", "description": "Open mentor booking & doubt box", "sample_utterances": ["mentor se milao", "doubt poochna hai", "mentorship"]},
+        {"action": "NAVIGATE_PROFILE", "route": "/profile", "description": "View candidate profile & experience", "sample_utterances": ["profile kholo", "meri profile"]},
+        {"action": "SPEAK_TRENDING_SKILLS", "route": None, "description": "Read aloud trending market skills via TTS", "sample_utterances": ["trending skills suno", "market skills kya hain"]},
+        {"action": "SPEAK_HELP", "route": None, "description": "Read aloud voice navigation help", "sample_utterances": ["help", "madad", "kaise use karein"]}
+    ]
+    return {"allowed_actions": actions, "count": len(actions)}
+
+
 @router.post("/intent", response_model=VoiceIntentResponse)
 async def classify_voice_intent(req: VoiceCommandRequest):
     """
@@ -64,7 +84,10 @@ async def classify_voice_intent(req: VoiceCommandRequest):
     using Gemini API (with deterministic fallback).
     Returns route to navigate or text to speak via Web Speech TTS.
     """
-    raw_cmd = req.command.strip().lower()
+    raw_cmd = (req.command or req.transcript or "").strip().lower()
+    display_cmd = (req.command or req.transcript or "").strip()
+    if not raw_cmd:
+        raise HTTPException(status_code=400, detail="Voice command or transcript cannot be empty")
 
     # Rule-Based Fast Path / Fallback mapping
     if any(k in raw_cmd for k in ["test", "quiz", "assessment", "pariksha", "mcq"]):
@@ -73,7 +96,7 @@ async def classify_voice_intent(req: VoiceCommandRequest):
             route="/fresher/test",
             tts_speech="Opening skill assessment test.",
             allowed=True,
-            command_received=req.command,
+            command_received=display_cmd,
             engine="Fast Classification Rule"
         )
     elif any(k in raw_cmd for k in ["trending", "trend", "skill suno", "market skill", "demand"]):
@@ -82,7 +105,7 @@ async def classify_voice_intent(req: VoiceCommandRequest):
             route=None,
             tts_speech="Currently in high demand are FastAPI, Docker, React, and Vector Search.",
             allowed=True,
-            command_received=req.command,
+            command_received=display_cmd,
             engine="Fast Classification Rule"
         )
     elif any(k in raw_cmd for k in ["dashboard", "readiness", "score ring"]):
@@ -91,7 +114,7 @@ async def classify_voice_intent(req: VoiceCommandRequest):
             route="/dashboard",
             tts_speech="Opening candidate dashboard.",
             allowed=True,
-            command_received=req.command,
+            command_received=display_cmd,
             engine="Fast Classification Rule"
         )
     elif any(k in raw_cmd for k in ["evidence", "certificate", "praman", "github", "proof"]):
@@ -100,7 +123,7 @@ async def classify_voice_intent(req: VoiceCommandRequest):
             route="/evidence",
             tts_speech="Opening evidence and certificate ledger.",
             allowed=True,
-            command_received=req.command,
+            command_received=display_cmd,
             engine="Fast Classification Rule"
         )
     elif any(k in raw_cmd for k in ["match", "job", "naukri", "opportunity", "fair match"]):
@@ -109,7 +132,7 @@ async def classify_voice_intent(req: VoiceCommandRequest):
             route="/matches",
             tts_speech="Opening fair job matching workspace.",
             allowed=True,
-            command_received=req.command,
+            command_received=display_cmd,
             engine="Fast Classification Rule"
         )
     elif any(k in raw_cmd for k in ["mentor", "expert", "doubt", "sawaal", "guidance"]):
@@ -118,7 +141,7 @@ async def classify_voice_intent(req: VoiceCommandRequest):
             route="/mentors",
             tts_speech="Opening domain experts and doubt box.",
             allowed=True,
-            command_received=req.command,
+            command_received=display_cmd,
             engine="Fast Classification Rule"
         )
     elif any(k in raw_cmd for k in ["prepare", "practice", "study", "padhai", "tayari"]):
@@ -127,7 +150,7 @@ async def classify_voice_intent(req: VoiceCommandRequest):
             route="/fresher/prepare",
             tts_speech="Opening practice platforms and learning resources.",
             allowed=True,
-            command_received=req.command,
+            command_received=display_cmd,
             engine="Fast Classification Rule"
         )
     elif any(k in raw_cmd for k in ["profile", "experience", "education"]):
@@ -136,7 +159,7 @@ async def classify_voice_intent(req: VoiceCommandRequest):
             route="/profile",
             tts_speech="Opening candidate profile and goals.",
             allowed=True,
-            command_received=req.command,
+            command_received=display_cmd,
             engine="Fast Classification Rule"
         )
 
@@ -169,7 +192,7 @@ async def classify_voice_intent(req: VoiceCommandRequest):
             route=ALLOWED_ACTIONS_MAP[action_name],
             tts_speech=llm_result.tts_speech,
             allowed=True,
-            command_received=req.command,
+            command_received=display_cmd,
             engine="Gemini 1.5 Flash Intent Engine"
         )
 
