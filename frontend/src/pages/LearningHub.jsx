@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import fallbackResources from '../data/resources.json';
 import {
   BookOpen,
   ExternalLink,
@@ -32,18 +33,15 @@ export default function LearningHub() {
     const fetchResources = async () => {
       try {
         const res = await axios.get('/api/resources');
-        if (isMounted && res.data) {
+        if (isMounted && Array.isArray(res.data)) {
           setResources(res.data);
+        } else if (isMounted) {
+          setResources(fallbackResources);
         }
       } catch (err) {
-        console.warn('Failed to fetch from /api/resources, falling back to /api/fresher/catalog', err);
-        try {
-          const catRes = await axios.get('/api/fresher/catalog');
-          if (isMounted && catRes.data?.resources) {
-            setResources(catRes.data.resources);
-          }
-        } catch (catErr) {
-          console.error('Could not load learning resources', catErr);
+        console.warn('API unavailable, loading bundled resources', err);
+        if (isMounted) {
+          setResources(fallbackResources);
         }
       } finally {
         if (isMounted) setLoading(false);

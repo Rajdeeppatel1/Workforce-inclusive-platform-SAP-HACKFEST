@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useProfile } from '../context/ProfileContext';
+import fallbackQuizBank from '../data/quiz_bank.json';
 import {
   FileQuestion,
   Search,
@@ -64,14 +65,39 @@ export default function FresherTest() {
   const fetchCategories = useCallback(async () => {
     setLoading(true);
     setLoadError(false);
+    const loadFromFallback = () => {
+      const bankQuizzes = (fallbackQuizBank.quizzes || []).map((q) => ({
+        id: q.id,
+        name: q.name,
+        displayName: q.displayName,
+        group: q.group || 'General',
+        description: q.description || '',
+        status: 'live',
+        total_questions: q.questions?.length || 0,
+        estimated_minutes: q.estimated_minutes || 10,
+        skills_awarded: q.skills_awarded || [q.name],
+      }));
+      const bankGroups = [];
+      bankQuizzes.forEach((q) => {
+        if (!bankGroups.includes(q.group)) bankGroups.push(q.group);
+      });
+      setQuizzes(bankQuizzes);
+      setGroups(bankGroups);
+      setPassMark(fallbackQuizBank.pass_mark_percent || 60);
+    };
+
     try {
       const res = await axios.get('/api/quiz/categories');
-      setQuizzes(res.data?.quizzes || []);
-      setGroups(res.data?.groups || []);
-      if (res.data?.pass_mark_percent) setPassMark(res.data.pass_mark_percent);
+      if (res.data && typeof res.data === 'object' && Array.isArray(res.data.quizzes)) {
+        setQuizzes(res.data.quizzes);
+        setGroups(res.data.groups || []);
+        if (res.data.pass_mark_percent) setPassMark(res.data.pass_mark_percent);
+      } else {
+        loadFromFallback();
+      }
     } catch (err) {
-      console.warn('Could not load quizzes from server', err);
-      setLoadError(true);
+      console.warn('Could not load quizzes from server, using bundled bank', err);
+      loadFromFallback();
     } finally {
       setLoading(false);
     }
@@ -101,17 +127,35 @@ export default function FresherTest() {
   const handleStartQuiz = async (quiz) => {
     setOpeningId(quiz.id);
     setOpenError(null);
+    const openFromFallback = () => {
+      const found = (fallbackQuizBank.quizzes || []).find((q) => q.id === quiz.id || q.name === quiz.name);
+      if (found) {
+        setActiveQuiz(found);
+        setCurrentQuestionIndex(0);
+        setUserAnswers({});
+        setResult(null);
+        setSubmitError(false);
+        window.scrollTo({ top: 0 });
+      } else {
+        setOpenError(quiz.id);
+      }
+    };
+
     try {
       const res = await axios.get(`/api/quiz/${encodeURIComponent(quiz.id)}`);
-      setActiveQuiz(res.data);
-      setCurrentQuestionIndex(0);
-      setUserAnswers({});
-      setResult(null);
-      setSubmitError(false);
-      window.scrollTo({ top: 0 });
+      if (res.data && typeof res.data === 'object' && Array.isArray(res.data.questions)) {
+        setActiveQuiz(res.data);
+        setCurrentQuestionIndex(0);
+        setUserAnswers({});
+        setResult(null);
+        setSubmitError(false);
+        window.scrollTo({ top: 0 });
+      } else {
+        openFromFallback();
+      }
     } catch (err) {
-      console.warn('Could not load quiz questions', err);
-      setOpenError(quiz.id);
+      console.warn('Could not load quiz questions from server, using bundled bank', err);
+      openFromFallback();
     } finally {
       setOpeningId(null);
     }
@@ -126,15 +170,57 @@ export default function FresherTest() {
     if (!activeQuiz) return;
     setSubmitting(true);
     setSubmitError(false);
-    try {
-      const res = await axios.post(`/api/quiz/${encodeURIComponent(activeQuiz.id)}/submit`, {
-        profile_id: profile.profile_id,
-        answers: userAnswers,
-      });
-      const data = res.data;
-      setResult(data);
 
-      // Keep the profile held in the browser in step with the server record.
+    const gradeLocally = () => {
+      const bankQuiz = (fallbackQuizBank.quizzes || []).find((q) => q.id === activeQuiz.id) || activeQuiz;
+      const questions = bankQuiz.questions || [];
+      let score = 0;
+      const breakdown = questions.map((q) => {
+        const selected = userAnswers[q.id];
+        const isCorrect = selected === q.correctIndex;
+        if (isCorrect) score += 1;
+        return {
+          id: q.id,
+          question: q.question,
+          options: q.options,
+          selected_index: selected ?? null,
+          correct_index: q.correctIndex,
+          is_correct: isCorrect,
+          explanation: q.explanation || '',
+        };
+      });
+      const total = questions.length;
+      const percentage = total ? Math.round((score / total) * 1000) / 10 : 0;
+      const passed = percentage >= passMark;
+      const entry = {
+        quiz_id: activeQuiz.id,
+        category: activeQuiz.name,
+        display_name: activeQuiz.displayName,
+        score,
+        total,
+        percentage,
+        passed,
+        completed_at: new Date().toISOString(),
+      };
+      return {
+        quiz_id: activeQuiz.id,
+        category: activeQuiz.name,
+        display_name: activeQuiz.displayName,
+        score,
+        total,
+        percentage,
+        pass_mark_percent: passMark,
+        passed,
+        breakdown,
+        skills_awarded: passed ? activeQuiz.skills_awarded || [activeQuiz.name] : [],
+        profile_entry: entry,
+        saved: true,
+        save_message: 'Result saved locally in browser session.',
+      };
+    };
+
+    const applyResult = (data) => {
+      setResult(data);
       setProfile((prev) => {
         const nextScores = Array.isArray(data.quiz_scores)
           ? data.quiz_scores
@@ -148,9 +234,21 @@ export default function FresherTest() {
         };
       });
       window.scrollTo({ top: 0 });
+    };
+
+    try {
+      const res = await axios.post(`/api/quiz/${encodeURIComponent(activeQuiz.id)}/submit`, {
+        profile_id: profile.profile_id,
+        answers: userAnswers,
+      });
+      if (res.data && typeof res.data === 'object' && Array.isArray(res.data.breakdown)) {
+        applyResult(res.data);
+      } else {
+        applyResult(gradeLocally());
+      }
     } catch (err) {
-      console.error('Quiz submission failed', err);
-      setSubmitError(true);
+      console.warn('Server quiz submission failed, grading locally', err);
+      applyResult(gradeLocally());
     } finally {
       setSubmitting(false);
     }

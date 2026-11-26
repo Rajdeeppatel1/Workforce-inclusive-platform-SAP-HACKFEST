@@ -1,0 +1,255 @@
+[
+  {
+    "id": "sap-learning-hub",
+    "title": "SAP Learning Hub & Certification Journeys",
+    "provider": "SAP",
+    "category": "vendor",
+    "url": "https://learning.sap.com",
+    "level": "Beginner",
+    "estHours": 40,
+    "skills": [
+      "SAP",
+      "SAP BTP",
+      "SAP HANA",
+      "ABAP",
+      "Cloud Architecture"
+    ],
+    "verified": true,
+    "lastVerified": "2026-11-26T16:19:22Z"
+  },
+  {
+    "id": "sap-developers",
+    "title": "SAP Developers Tutorials & Hands-on Missions",
+    "provider": "SAP Developers",
+    "category": "vendor",
+    "url": "https://developers.sap.com",
+    "level": "Intermediate",
+    "estHours": 30,
+    "skills": [
+      "SAP HANA",
+      "SAP CAP",
+      "Fiori",
+      "SAP Cloud SDK",
+      "REST APIs"
+    ],
+    "verified": true,
+    "lastVerified": "2026-11-26T16:19:22Z"
+  },
+  {
+    "id": "azure-microsoft-learn",
+    "title": "Microsoft Learn Training Portal (Azure & Cloud)",
+    "provider": "Microsoft Azure",
+    "category": "vendor",
+    "url": "https://learn.microsoft.com/training",
+    "level": "Beginner",
+    "estHours": 35,
+    "skills": [
+      "Azure",
+      "Cloud basics",
+      "Cloud storage",
+      "DevOps",
+      "Kubernetes"
+    ],
+    "verified": true,
+    "lastVerified": "2026-11-26T16:19:22Z"
+  },
+  {
+    "id": "aws-skill-builder",
+    "title": "AWS Skill Builder Digital Learning Center",
+    "provider": "Amazon Web Services",
+    "category": "vendor",
+    "url": "https://skillbuilder.aws",
+    "level": "Beginner",
+    "estHours": 30,
+    "skills": [
+      "AWS",
+      "Cloud basics",
+      "S3 Storage",
+      "EC2",
+      "Serverless"
+    ],
+    "verified": true,
+    "lastVerified": "2026-11-26T16:19:22Z"
+  },
+  {
+    "id": "gcp-skills-boost",
+    "title": "Google Cloud Skills Boost & Architecture Quests",
+    "provider": "Google Cloud",
+    "category": "vendor",
+    "url": "https://www.cloudskillsboost.google",
+    "level": "Intermediate",
+    "estHours": 25,
+    "skills": [
+      "Google Cloud",
+      "GCP",
+      "Kubernetes",
+      "BigQuery",
+      "Cloud scaling"
+    ],
+    "verified": true,
+    "lastVerified": "2026-11-26T16:19:22Z"
+  },
+  {
+    "id": "leetcode-algorithms",
+    "title": "LeetCode Practice Arena & Interview Top 150",
+    "provider": "LeetCode",
+    "category": "dsa",
+    "url": "https://leetcode.com",
+    "level": "Intermediate",
+    "estHours": 60,
+    "skills": [
+      "Data structures",
+      "Algorithms",
+      "Big-O",
+      "Dynamic Programming",
+      "Trees"
+    ],
+    "verified": true,
+    "lastVerified": "2026-11-26T16:19:22Z"
+  },
+  {
+    "id": "codechef-contests",
+    "title": "CodeChef Competitive Programming & DSA Drills",
+    "provider": "CodeChef",
+    "category": "dsa",
+    "url": "https://www.codechef.com",
+    "level": "Beginner",
+    "estHours": 45,
+    "skills": [
+      "DSA",
+      "Data structures",
+      "Arrays",
+      "Stacks",
+      "Queues",
+      "Sorting"
+    ],
+    "verified": true,
+    "lastVerified": "2026-11-26T16:19:22Z"
+  },
+  {
+    "id": "youtube-takeuforward",
+    "title": "Striver (take U forward) SDE Sheet & DSA Roadmap",
+    "provider": "take U forward",
+    "category": "educators",
+    "url": "https://www.youtube.com/@takeUforward",
+    "level": "Intermediate",
+    "estHours": 50,
+    "skills": [
+      "Data structures",
+      "Algorithms",
+      "Binary Search",
+      "Graphs",
+      "DP"
+    ],
+    "verified": true,
+    "lastVerified": "2026-11-26T16:19:22Z"
+  },
+  {
+    "id": "youtube-codewithharry",
+    "title": "CodeWithHarry Full Stack, Python & Web Development",
+    "provider": "CodeWithHarry",
+    "category": "educators",
+    "url": "https://www.youtube.com/@CodeWithHarry",
+    "level": "Beginner",
+    "estHours": 40,
+    "skills": [
+      "Python",
+      "JavaScript",
+      "SQL",
+      "HTML/CSS",
+      "Web Development"
+    ],
+    "verified": true,
+    "lastVerified": "2026-11-26T16:19:22Z"
+  },
+  {
+    "id": "youtube-techworld-with-nana",
+    "title": "TechWorld with Nana (DevOps, Docker & Kubernetes)",
+    "provider": "TechWorld with Nana",
+    "category": "educators",
+    "url": "https://www.youtube.com/@TechWorldwithNana",
+    "level": "Intermediate",
+    "estHours": 35,
+    "skills": [
+      "DevOps",
+      "Docker",
+      "Kubernetes",
+      "Linux",
+      "CI/CD"
+    ],
+    "verified": true,
+    "lastVerified": "2026-11-26T16:19:22Z"
+  },
+  {
+    "id": "google-ai-developers",
+    "title": "Google AI for Developers (Gemini API & ML)",
+    "provider": "Google AI",
+    "category": "aiml",
+    "url": "https://ai.google.dev",
+    "level": "Intermediate",
+    "estHours": 20,
+    "skills": [
+      "Machine learning",
+      "Gemini API",
+      "LLMs",
+      "Generative AI",
+      "Vector search"
+    ],
+    "verified": true,
+    "lastVerified": "2026-11-26T16:19:22Z"
+  },
+  {
+    "id": "kaggle-learn-micro-courses",
+    "title": "Kaggle Learn Hands-on Micro-Courses",
+    "provider": "Kaggle",
+    "category": "aiml",
+    "url": "https://www.kaggle.com/learn",
+    "level": "Beginner",
+    "estHours": 25,
+    "skills": [
+      "Python",
+      "Machine learning",
+      "Data Visualization",
+      "Pandas",
+      "Feature Engineering"
+    ],
+    "verified": false,
+    "lastVerified": "2026-11-26T16:19:22Z"
+  },
+  {
+    "id": "huggingface-learn",
+    "title": "Hugging Face Deep Learning & NLP Course",
+    "provider": "Hugging Face",
+    "category": "aiml",
+    "url": "https://huggingface.co/learn",
+    "level": "Advanced",
+    "estHours": 35,
+    "skills": [
+      "NLP",
+      "Transformers",
+      "PyTorch",
+      "Model Evaluation",
+      "ML Evaluation"
+    ],
+    "verified": true,
+    "lastVerified": "2026-11-26T16:19:22Z"
+  },
+  {
+    "id": "fast-ai-practical-deep-learning",
+    "title": "Practical Deep Learning for Coders",
+    "provider": "fast.ai",
+    "category": "aiml",
+    "url": "https://www.fast.ai",
+    "level": "Intermediate",
+    "estHours": 40,
+    "skills": [
+      "Deep Learning",
+      "Computer Vision",
+      "PyTorch",
+      "Neural Networks",
+      "Overfitting"
+    ],
+    "verified": true,
+    "lastVerified": "2026-11-26T16:19:22Z"
+  }
+]

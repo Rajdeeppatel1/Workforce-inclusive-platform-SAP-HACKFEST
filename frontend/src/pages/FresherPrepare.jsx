@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useProfile } from '../context/ProfileContext';
+import fallbackCatalog from '../data/fresher_catalog.json';
+import fallbackResources from '../data/resources.json';
+import fallbackQuizBank from '../data/quiz_bank.json';
 import {
   BookOpen,
   Code2,
@@ -72,36 +75,62 @@ export default function FresherPrepare() {
           axios.get('/api/resources'),
         ]);
 
-        if (isMounted && catRes.status === 'fulfilled' && catRes.value.data) {
+        const isJsonObj = (d) => d && typeof d === 'object' && !Array.isArray(d);
+
+        if (isMounted && catRes.status === 'fulfilled' && isJsonObj(catRes.value.data)) {
           const data = catRes.value.data;
-          setOfficialPortals(data.official_portals || []);
-          setDsaPlatforms(data.dsa_platforms || []);
-          setYoutubeCreators(data.youtube_creators || []);
-          setAimlPlatforms(data.aiml_platforms || []);
-          setPracticePlatforms(data.practice_platforms || []);
-          setLearningResources(data.learning_resources || []);
-          if (data.skill_quizzes_20 && data.skill_quizzes_20.length > 0) {
+          setOfficialPortals(data.official_portals || fallbackCatalog.official_portals || []);
+          setDsaPlatforms(data.dsa_platforms || fallbackCatalog.dsa_platforms || []);
+          setYoutubeCreators(data.youtube_creators || fallbackCatalog.youtube_creators || []);
+          setAimlPlatforms(data.aiml_platforms || fallbackCatalog.aiml_platforms || []);
+          setPracticePlatforms(data.practice_platforms || fallbackCatalog.practice_platforms || []);
+          setLearningResources(data.learning_resources || fallbackCatalog.learning_resources || []);
+          if (Array.isArray(data.skill_quizzes_20) && data.skill_quizzes_20.length > 0) {
             setSkillQuizzes(data.skill_quizzes_20);
-          } else if (data.skill_quizzes && data.skill_quizzes.length > 0) {
+          } else if (Array.isArray(data.skill_quizzes) && data.skill_quizzes.length > 0) {
             setSkillQuizzes(data.skill_quizzes);
+          } else {
+            setSkillQuizzes(fallbackCatalog.skill_quizzes_20 || fallbackQuizBank.quizzes.slice(0, 20));
           }
-          if (data.resources && data.resources.length > 0) {
+          if (Array.isArray(data.resources) && data.resources.length > 0) {
             setCuratedResources(data.resources);
+          } else {
+            setCuratedResources(fallbackResources);
           }
+        } else if (isMounted) {
+          // API returned HTML (e.g. frontend-only deployment) or failed; load bundled JSON
+          setOfficialPortals(fallbackCatalog.official_portals || []);
+          setDsaPlatforms(fallbackCatalog.dsa_platforms || []);
+          setYoutubeCreators(fallbackCatalog.youtube_creators || []);
+          setAimlPlatforms(fallbackCatalog.aiml_platforms || []);
+          setPracticePlatforms(fallbackCatalog.practice_platforms || []);
+          setLearningResources(fallbackCatalog.learning_resources || []);
+          setSkillQuizzes(fallbackCatalog.skill_quizzes_20 || fallbackQuizBank.quizzes.slice(0, 20));
+          setCuratedResources(fallbackResources);
         }
 
         if (isMounted && resRes.status === 'fulfilled' && Array.isArray(resRes.value.data)) {
           setCuratedResources(resRes.value.data);
         }
 
-        if (isMounted && quizRes.status === 'fulfilled' && quizRes.value.data?.quizzes) {
+        if (isMounted && quizRes.status === 'fulfilled' && Array.isArray(quizRes.value.data?.quizzes)) {
           setSkillQuizzes((prev) => {
             if (prev && prev.length >= 20) return prev;
             return quizRes.value.data.quizzes;
           });
         }
       } catch (err) {
-        console.warn('Could not load prepare catalog from server', err);
+        console.warn('Could not load prepare catalog from server, using bundled fallback', err);
+        if (isMounted) {
+          setOfficialPortals(fallbackCatalog.official_portals || []);
+          setDsaPlatforms(fallbackCatalog.dsa_platforms || []);
+          setYoutubeCreators(fallbackCatalog.youtube_creators || []);
+          setAimlPlatforms(fallbackCatalog.aiml_platforms || []);
+          setPracticePlatforms(fallbackCatalog.practice_platforms || []);
+          setLearningResources(fallbackCatalog.learning_resources || []);
+          setSkillQuizzes(fallbackCatalog.skill_quizzes_20 || fallbackQuizBank.quizzes.slice(0, 20));
+          setCuratedResources(fallbackResources);
+        }
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -241,11 +270,16 @@ export default function FresherPrepare() {
     if (!quiz.questions || quiz.questions.length === 0) {
       try {
         const res = await axios.get(`/api/quiz/${quiz.id}`);
-        if (res.data && res.data.questions) {
+        if (res.data && typeof res.data === 'object' && Array.isArray(res.data.questions)) {
           fullQuiz = { ...quiz, ...res.data };
+        } else {
+          const fb = fallbackQuizBank.quizzes.find((q) => q.id === quiz.id || q.name === quiz.name);
+          if (fb) fullQuiz = fb;
         }
       } catch (err) {
-        console.warn('Could not fetch quiz questions', err);
+        console.warn('Could not fetch quiz questions, using bundled bank', err);
+        const fb = fallbackQuizBank.quizzes.find((q) => q.id === quiz.id || q.name === quiz.name);
+        if (fb) fullQuiz = fb;
       }
     }
     setActiveQuizSkill(fullQuiz);
@@ -283,12 +317,28 @@ export default function FresherPrepare() {
     const clientScore = calculateScore();
     const total = activeQuizSkill?.questions?.length || 20;
 
+    const buildLocalResult = () => ({
+      score: clientScore,
+      total,
+      percentage: Math.round((clientScore / total) * 100),
+      passed: clientScore >= Math.ceil(total * 0.6),
+      breakdown: activeQuizSkill.questions.map((q) => ({
+        id: q.id,
+        question: q.question,
+        options: q.options,
+        selected_index: userAnswers[String(q.id)],
+        correct_index: q.correctIndex,
+        is_correct: userAnswers[String(q.id)] === q.correctIndex,
+        explanation: q.explanation || '',
+      })),
+    });
+
     try {
       const res = await axios.post(`/api/quiz/${activeQuizSkill.id}/submit`, {
         profile_id: profile?.profile_id || 'seed_priya_sharma_01',
         answers: userAnswers,
       });
-      if (res.data) {
+      if (res.data && typeof res.data === 'object' && Array.isArray(res.data.breakdown)) {
         setSubmissionResult(res.data);
         if (res.data.quiz_scores) {
           setProfile((prev) => ({
@@ -300,24 +350,12 @@ export default function FresherPrepare() {
           }));
         }
         setSaveSuccess(Boolean(res.data.saved));
+      } else {
+        setSubmissionResult(buildLocalResult());
       }
     } catch (err) {
       console.warn('Server grading submission failed, using local result', err);
-      setSubmissionResult({
-        score: clientScore,
-        total,
-        percentage: Math.round((clientScore / total) * 100),
-        passed: clientScore >= Math.ceil(total * 0.6),
-        breakdown: activeQuizSkill.questions.map((q) => ({
-          id: q.id,
-          question: q.question,
-          options: q.options,
-          selected_index: userAnswers[String(q.id)],
-          correct_index: q.correctIndex,
-          is_correct: userAnswers[String(q.id)] === q.correctIndex,
-          explanation: q.explanation || '',
-        })),
-      });
+      setSubmissionResult(buildLocalResult());
     } finally {
       setSavingScore(false);
       window.scrollTo({ top: 180, behavior: 'smooth' });
