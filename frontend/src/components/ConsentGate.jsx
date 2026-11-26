@@ -92,7 +92,7 @@ export default function ConsentGate({ children }) {
           <button
             onClick={handleConsent}
             disabled={!agreed || submitting || loading}
-            className={`px-6 py-2.5 rounded font-medium text-sm transition-all flex items-center gap-2 ${
+            className={`min-h-[44px] px-6 py-2.5 rounded font-medium text-sm transition-all flex items-center gap-2 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
               agreed
                 ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md'
                 : 'bg-neutral-200 text-neutral-400 cursor-not-allowed'

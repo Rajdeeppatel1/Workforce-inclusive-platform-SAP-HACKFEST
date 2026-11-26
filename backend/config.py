@@ -40,9 +40,15 @@ class Settings(BaseSettings):
     # ── SAP Analytics Cloud ──
     sac_story_embed_url: Optional[str] = None
 
+    # ── LLM & AI ──
+    gemini_api_key: Optional[str] = None
+    port: int = 8000
+    host: str = "0.0.0.0"
+
     model_config = {
         "env_file": ".env",
         "case_sensitive": False,
+        "extra": "ignore",
     }
 
 

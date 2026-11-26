@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAccessibility } from '../context/AccessibilityContext';
@@ -23,11 +23,12 @@ import {
   BookOpen,
   FileQuestion,
   Users,
+  Languages,
 } from 'lucide-react';
 
 export default function Layout({ children }) {
   const { t } = useTranslation();
-  const { settings, setIsDrawerOpen } = useAccessibility();
+  const { settings, setIsDrawerOpen, toggleLanguage } = useAccessibility();
   const { profile, loginMock, loading: profileLoading } = useProfile();
   const location = useLocation();
   const navigate = useNavigate();
@@ -36,9 +37,21 @@ export default function Layout({ children }) {
   const [signingIn, setSigningIn] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
 
+  // Close modals on Escape key press for accessible keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (showStatusModal) setShowStatusModal(false);
+        if (mobileMenuOpen) setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showStatusModal, mobileMenuOpen]);
+
   const handleMockSignIn = async () => {
     setSigningIn(true);
-    await loginMock();
+    await loginMock('seed_priya_sharma_01');
     setSigningIn(false);
     // Show Fresher vs Employed choice modal right after login
     setShowStatusModal(true);
@@ -128,6 +141,13 @@ export default function Layout({ children }) {
 
   return (
     <div className="min-h-screen flex bg-surface text-on-surface">
+      {/* ── Accessible Keyboard Navigation: Skip to Main Content ── */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-primary focus:text-white focus:font-semibold focus:rounded-sm focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary min-h-[44px] flex items-center"
+      >
+        {settings.language === 'hi' ? 'मुख्य सामग्री पर जाएं (Skip to main content)' : 'Skip to main content'}
+      </a>
       {/* ═══════════════════════════════════════════════
           1. Solid #0A0A0A Left Sidebar
           ═══════════════════════════════════════════════ */}
@@ -256,33 +276,49 @@ export default function Layout({ children }) {
             </span>
           </div>
 
-          {/* Action Buttons: Sign In & Accessibility */}
-          <div className="flex items-center gap-3">
+          {/* Action Buttons: Language Switcher, Sign In & Accessibility (44px Minimum Touch Target) */}
+          <div className="flex items-center gap-2.5">
+            {/* Direct Hindi/English Switch Button */}
+            <button
+              type="button"
+              onClick={() => toggleLanguage()}
+              className="min-h-[44px] min-w-[44px] px-3.5 py-2 bg-surface hover:bg-surface-card text-on-surface border border-outline hover:border-outline-strong rounded-sm text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary shadow-xs"
+              aria-label={settings.language === 'hi' ? 'Switch to English' : 'हिंदी में बदलें (Switch to Hindi)'}
+              title={settings.language === 'hi' ? 'Switch to English' : 'हिंदी में बदलें'}
+            >
+              <Languages className="w-4 h-4 text-primary shrink-0" />
+              <span className="font-bold">{settings.language === 'hi' ? 'हिंदी (HI)' : 'English (EN)'}</span>
+            </button>
+
+            {/* Seeded Sign In Button */}
             <button
               type="button"
               onClick={handleMockSignIn}
               disabled={signingIn || profileLoading}
-              className="px-3.5 py-1.5 bg-black hover:bg-neutral-800 text-white rounded text-xs font-medium flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
-              title="Loads seeded candidate profile and prompts status selection"
+              className="min-h-[44px] min-w-[44px] px-4 py-2 bg-black hover:bg-neutral-800 text-white rounded-sm text-xs font-semibold flex items-center gap-2 shadow-sm transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              title="Loads seeded candidate profile (Priya Sharma - Tier-3 Graduate) and prompts status selection"
             >
-              <LogIn className="w-3.5 h-3.5 text-blue-400" />
-              <span>{signingIn ? 'Signing In...' : 'Sign In (Seeded Profile)'}</span>
+              <LogIn className="w-4 h-4 text-blue-400 shrink-0" />
+              <span>{signingIn ? 'Signing In...' : 'Sign In (Priya Sharma)'}</span>
             </button>
 
+            {/* Accessibility Drawer Toggle */}
             <button
               type="button"
               onClick={() => setIsDrawerOpen(true)}
-              className="sn-btn-secondary py-1.5 px-3.5 text-xs flex items-center gap-2 font-semibold border-outline shadow-sm hover:border-outline-strong"
-              aria-label="Open accessibility and language drawer"
+              className="min-h-[44px] min-w-[44px] sn-btn-secondary px-3.5 py-2 text-xs flex items-center gap-2 font-semibold border-outline shadow-sm hover:border-outline-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              aria-label="Open accessibility drawer"
             >
-              <Accessibility className="w-4 h-4 text-primary" />
-              <span className="hidden sm:inline">Accessibility (EN / हिंदी)</span>
+              <Accessibility className="w-4 h-4 text-primary shrink-0" />
+              <span className="hidden sm:inline">{settings.language === 'hi' ? 'सुगम्यता सेटिंग्स' : 'Accessibility'}</span>
             </button>
           </div>
         </header>
 
-        {/* Main Content Area */}
-        <main className="flex-1 p-6 md:p-8 bg-surface-card/40">{children}</main>
+        {/* Main Content Area with Landmark ID for Skip Link */}
+        <main id="main-content" tabIndex={-1} className="flex-1 p-6 md:p-8 bg-surface-card/40 focus:outline-none">
+          {children}
+        </main>
       </div>
 
       {/* ═══════════════════════════════════════════════

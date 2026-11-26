@@ -18,6 +18,9 @@ import re
 import json
 import logging
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 from typing import Optional, Type, TypeVar, Union, Dict, Any
 from pydantic import BaseModel, ValidationError
 

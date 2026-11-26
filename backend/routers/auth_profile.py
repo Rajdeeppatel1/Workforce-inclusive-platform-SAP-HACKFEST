@@ -131,6 +131,62 @@ SEEDED_MOCK_PROFILE: Dict[str, Any] = {
     "updated_at": datetime.utcnow().isoformat() + "Z"
 }
 
+SEEDED_PRIYA_PROFILE: Dict[str, Any] = {
+    "profile_id": "seed_priya_sharma_01",
+    "name": "Priya Sharma",
+    "email": "priya.sharma@skillnav.io",
+    "is_synthetic": True,
+    "demo_label": "Synthetic Demo Profile (Priya Sharma - Tier-3 Graduate)",
+    "consent_given": False,
+    "consent_timestamp": None,
+    "skills": ["Python", "FastAPI", "React", "SQL", "Docker", "REST APIs"],
+    "experience": [
+        {
+            "role": "Junior Python Developer",
+            "company_or_freelance": "Self-Taught & Open Source Projects",
+            "years": 1.0,
+            "description": "Built reactive web applications and backend microservices with FastAPI and React."
+        }
+    ],
+    "education": [
+        {
+            "degree": "Bachelor of Technology",
+            "field_of_study": "Computer Science",
+            "institution": "State Rural Engineering College, Bhopal",
+            "graduation_year": 2024
+        }
+    ],
+    "goals": {
+        "target_role": "Cloud Application Developer",
+        "weekly_study_hours": 12,
+        "preferred_topics": ["Docker", "AWS Basics", "Microservices"]
+    },
+    "alternative_evidence": [
+        {
+            "category": "github",
+            "title": "Fullstack Microservices Demo",
+            "description": "Production microservice with authentication and Docker orchestration",
+            "skills_demonstrated": ["Python", "FastAPI", "Docker"],
+            "verification_url": "https://github.com/priyasharma/microservices-demo",
+            "confidence": "High",
+            "weight_multiplier": 1.2,
+            "status": "Verified"
+        },
+        {
+            "category": "freelance",
+            "title": "Local Community Portal",
+            "description": "Shipped responsive React + Tailwind application for local initiatives",
+            "skills_demonstrated": ["React", "Tailwind CSS", "SQL"],
+            "verification_url": "https://bhopal-community.dev",
+            "confidence": "High",
+            "weight_multiplier": 1.1,
+            "status": "Verified"
+        }
+    ],
+    "quiz_scores": [],
+    "updated_at": datetime.utcnow().isoformat() + "Z"
+}
+
 
 def _get_profile_file_path(profile_id: str) -> str:
     # Sanitize profile_id to prevent directory traversal
@@ -141,12 +197,15 @@ def _get_profile_file_path(profile_id: str) -> str:
 
 
 @router.post("/login/mock")
-async def login_mock():
+async def login_mock(profile_id: str = Query(default="seed_priya_sharma_01")):
     """
     Simulates candidate Sign-In with a seeded synthetic profile.
-    Saves to backend/data/profiles/seed_rajdeep_patel_01.json if not present.
+    Supports both Priya Sharma (Tier-3 Candidate) and Rajdeep Patel.
     """
-    filepath = _get_profile_file_path("seed_rajdeep_patel_01")
+    target_seed = SEEDED_PRIYA_PROFILE if "priya" in profile_id.lower() else SEEDED_MOCK_PROFILE
+    target_id = target_seed["profile_id"]
+
+    filepath = _get_profile_file_path(target_id)
     if os.path.exists(filepath):
         try:
             with open(filepath, "r", encoding="utf-8") as f:
@@ -157,20 +216,20 @@ async def login_mock():
 
     # Save seeded profile
     with open(filepath, "w", encoding="utf-8") as f:
-        json.dump(SEEDED_MOCK_PROFILE, f, indent=2)
+        json.dump(target_seed, f, indent=2)
 
-    return SEEDED_MOCK_PROFILE
+    return target_seed
 
 
 @router.get("/profile")
-async def get_profile(profile_id: str = Query(default="seed_rajdeep_patel_01")):
+async def get_profile(profile_id: str = Query(default="seed_priya_sharma_01")):
     """
     Retrieves candidate profile from backend/data/profiles/<profile_id>.json.
     """
     filepath = _get_profile_file_path(profile_id)
     if not os.path.exists(filepath):
         # Fall back to seeded mock profile
-        return SEEDED_MOCK_PROFILE
+        return SEEDED_PRIYA_PROFILE if "priya" in profile_id.lower() else SEEDED_MOCK_PROFILE
 
     try:
         with open(filepath, "r", encoding="utf-8") as f:
