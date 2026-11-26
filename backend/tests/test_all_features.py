@@ -66,20 +66,20 @@ def test_2_fresher_catalog_and_profiles():
     print(f"  ✓ /api/consent OK")
 
 def test_3_fresher_quiz_and_badges():
-    print("\n--- 3. Testing Fresher 5-MCQ Quiz & Scoring ---")
-    # Save quiz score
-    score_payload = {
-        "profile_id": "seed_priya_sharma_01",
-        "category": "Python",
-        "score": 5,
-        "total": 5,
-        "passed": True
-    }
-    r = client.post("/api/profile/quiz-score", json=score_payload)
-    assert r.status_code == 200, f"Save quiz score failed: {r.text}"
-    save_res = r.json()
-    assert save_res.get("status") == "success"
-    print(f"  ✓ /api/profile/quiz-score OK: badge awarded = '{save_res.get('badge_awarded')}'")
+    print("\n--- 3. Testing Server-Graded Skill Quiz ---")
+    r = client.get("/api/quiz/python")
+    assert r.status_code == 200, f"Quiz load failed: {r.text}"
+    assert len(r.json()["questions"]) == 5
+
+    r = client.post(
+        "/api/quiz/python/submit",
+        json={"profile_id": "seed_priya_sharma_01", "answers": {}},
+    )
+    assert r.status_code == 200, f"Quiz submit failed: {r.text}"
+    result = r.json()
+    assert result["score"] == 0 and result["passed"] is False
+    assert result["saved"] is True
+    print(f"  ✓ /api/quiz/python/submit OK: {result['score']}/{result['total']} saved = {result['saved']}")
 
 def test_4_blind_matching_and_explain():
     print("\n--- 4. Testing Blind Matching & Explainability ---")

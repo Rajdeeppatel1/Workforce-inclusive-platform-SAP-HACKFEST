@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useProfile } from '../context/ProfileContext';
 import {
   User,
@@ -13,6 +14,7 @@ import {
   AlertCircle,
   Clock,
   Sparkles,
+  FileQuestion,
 } from 'lucide-react';
 
 export default function Profile() {
@@ -301,6 +303,78 @@ export default function Profile() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Skill Assessment Results (written by the server-side quiz grader) */}
+      <div className="border border-neutral-200 rounded-lg p-5 bg-white shadow-sm space-y-4">
+        <div className="flex items-center justify-between gap-3 border-b border-neutral-100 pb-3">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
+            <FileQuestion className="w-4 h-4 text-blue-600" />
+            Skill Assessment Results ({(profile.quiz_scores || []).length})
+          </h2>
+          <Link
+            to="/fresher/test"
+            className="text-xs font-semibold text-blue-700 hover:underline shrink-0"
+          >
+            Take a quiz →
+          </Link>
+        </div>
+
+        {(profile.quiz_scores || []).length === 0 ? (
+          <p className="text-xs text-neutral-500">
+            No quizzes taken yet. Results appear here automatically after you submit a quiz.
+          </p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs text-left">
+              <thead>
+                <tr className="text-[10px] uppercase tracking-wider text-neutral-500 border-b border-neutral-200">
+                  <th scope="col" className="py-2 pr-3 font-semibold">Skill</th>
+                  <th scope="col" className="py-2 pr-3 font-semibold">Latest score</th>
+                  <th scope="col" className="py-2 pr-3 font-semibold">Best</th>
+                  <th scope="col" className="py-2 pr-3 font-semibold">Attempts</th>
+                  <th scope="col" className="py-2 pr-3 font-semibold">Result</th>
+                  <th scope="col" className="py-2 font-semibold">Last taken</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...(profile.quiz_scores || [])]
+                  .sort((a, b) => String(b.completed_at || '').localeCompare(String(a.completed_at || '')))
+                  .map((q) => {
+                    const taken = q.completed_at ? new Date(q.completed_at) : null;
+                    return (
+                      <tr key={q.quiz_id || q.category} className="border-b border-neutral-100 last:border-0">
+                        <td className="py-2.5 pr-3 font-semibold text-neutral-900">
+                          {q.display_name || q.category}
+                        </td>
+                        <td className="py-2.5 pr-3 text-neutral-700">
+                          {q.score}/{q.total} ({Math.round(q.percentage)}%)
+                        </td>
+                        <td className="py-2.5 pr-3 text-neutral-700">
+                          {Math.round(q.best_percentage ?? q.percentage)}%
+                        </td>
+                        <td className="py-2.5 pr-3 text-neutral-700">{q.attempts || 1}</td>
+                        <td className="py-2.5 pr-3">
+                          <span
+                            className={`px-2 py-0.5 rounded border text-[10px] font-bold ${
+                              q.passed
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                                : 'bg-amber-50 text-amber-800 border-amber-300'
+                            }`}
+                          >
+                            {q.passed ? '✓ Passed' : 'Needs practice'}
+                          </span>
+                        </td>
+                        <td className="py-2.5 text-neutral-500">
+                          {taken && !Number.isNaN(taken.getTime()) ? taken.toLocaleDateString() : '—'}
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* 3. Experience Section */}
