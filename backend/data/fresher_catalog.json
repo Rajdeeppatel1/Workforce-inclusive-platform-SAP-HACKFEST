@@ -1,0 +1,153 @@
+{
+  "skills": [
+    "Python",
+    "React",
+    "Docker",
+    "FastAPI",
+    "SQL",
+    "Cloud Basics",
+    "Machine Learning",
+    "TypeScript"
+  ],
+  "target_companies": [
+    "Inclusive Tech Enterprises",
+    "Open Source & Developer Labs",
+    "Cloud & SaaS Startups",
+    "Data & AI Product Platforms",
+    "Modern Engineering Studios"
+  ],
+  "recommended_certificates": [
+    {
+      "id": "cert-py-01",
+      "skill": "Python",
+      "title": "Python for Backend & Data Architecture",
+      "issuer": "Coursera / DeepLearning",
+      "duration": "~4 weeks (6 hrs/wk)",
+      "skills_covered": ["Python", "Data Structures", "REST APIs"],
+      "cost_type": "Free / Financial Aid Available",
+      "verification_ready": true,
+      "relevance_score": 96
+    },
+    {
+      "id": "cert-react-02",
+      "skill": "React",
+      "title": "Modern Frontend Development with React & Tailwind",
+      "issuer": "freeCodeCamp / Open Source",
+      "duration": "~3 weeks (5 hrs/wk)",
+      "skills_covered": ["React", "JavaScript", "Tailwind CSS"],
+      "cost_type": "100% Free",
+      "verification_ready": true,
+      "relevance_score": 94
+    },
+    {
+      "id": "cert-docker-03",
+      "skill": "Docker",
+      "title": "Containerization & Cloud Native Foundations",
+      "issuer": "Linux Foundation / CNCF",
+      "duration": "~2 weeks (4 hrs/wk)",
+      "skills_covered": ["Docker", "Linux", "Containers"],
+      "cost_type": "Open Access Course",
+      "verification_ready": true,
+      "relevance_score": 91
+    },
+    {
+      "id": "cert-fastapi-04",
+      "skill": "FastAPI",
+      "title": "High-Performance REST APIs with FastAPI & Pydantic",
+      "issuer": "Modern Web Academy",
+      "duration": "~2 weeks (5 hrs/wk)",
+      "skills_covered": ["FastAPI", "Python", "API Security"],
+      "cost_type": "Free Community Edition",
+      "verification_ready": true,
+      "relevance_score": 95
+    },
+    {
+      "id": "cert-sql-05",
+      "skill": "SQL",
+      "title": "Practical Relational Database Design & Querying",
+      "issuer": "HackerRank / Stanford Online",
+      "duration": "~3 weeks (4 hrs/wk)",
+      "skills_covered": ["SQL", "Database Optimization", "Relational Modeling"],
+      "cost_type": "Free Tier Available",
+      "verification_ready": true,
+      "relevance_score": 89
+    },
+    {
+      "id": "cert-cloud-06",
+      "skill": "Cloud Basics",
+      "title": "Cloud Architecture & Zero-Downtime Deployment",
+      "issuer": "Cloud Native Computing Foundation",
+      "duration": "~4 weeks (6 hrs/wk)",
+      "skills_covered": ["Cloud Basics", "CI/CD", "Monitoring"],
+      "cost_type": "Financial Aid Eligible",
+      "verification_ready": true,
+      "relevance_score": 92
+    },
+    {
+      "id": "cert-ml-07",
+      "skill": "Machine Learning",
+      "title": "Applied Machine Learning & Semantic Vector Search",
+      "issuer": "Google Cloud Skills Boost",
+      "duration": "~5 weeks (7 hrs/wk)",
+      "skills_covered": ["Machine Learning", "Vector Embeddings", "Python"],
+      "cost_type": "Free Trial / Credits",
+      "verification_ready": true,
+      "relevance_score": 93
+    },
+    {
+      "id": "cert-ts-08",
+      "skill": "TypeScript",
+      "title": "TypeScript for Scalable Fullstack Systems",
+      "issuer": "Microsoft Learn",
+      "duration": "~3 weeks (4 hrs/wk)",
+      "skills_covered": ["TypeScript", "Type Systems", "React Integration"],
+      "cost_type": "100% Free",
+      "verification_ready": true,
+      "relevance_score": 90
+    }
+  ],
+  "trending_skills": [
+    {
+      "name": "FastAPI",
+      "growth": "+42% demand",
+      "category": "Backend",
+      "popularity": "High",
+      "reason": "Rapid adoption for modern microservices and AI agent endpoints"
+    },
+    {
+      "name": "Docker",
+      "growth": "+38% demand",
+      "category": "DevOps",
+      "popularity": "High",
+      "reason": "Universal standard for containerized enterprise software delivery"
+    },
+    {
+      "name": "React",
+      "growth": "+35% demand",
+      "category": "Frontend",
+      "popularity": "Very High",
+      "reason": "Primary UI engine across progressive web applications and SaaS"
+    },
+    {
+      "name": "Vector Search",
+      "growth": "+58% demand",
+      "category": "AI / Data",
+      "popularity": "Fastest Growing",
+      "reason": "Crucial for semantic search, recommendation systems, and RAG pipelines"
+    },
+    {
+      "name": "TypeScript",
+      "growth": "+31% demand",
+      "category": "Fullstack",
+      "popularity": "High",
+      "reason": "Essential for type safety in enterprise web and cloud codebases"
+    },
+    {
+      "name": "Cloud Security",
+      "growth": "+29% demand",
+      "category": "Cloud",
+      "popularity": "Medium",
+      "reason": "High priority across distributed systems and public API gateways"
+    }
+  ]
+}

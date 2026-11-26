@@ -217,3 +217,23 @@ async def update_consent(req: ConsentRequest):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to update consent: {str(e)}")
+
+
+@router.get("/fresher/catalog")
+async def get_fresher_catalog():
+    """
+    Returns skills, target companies, recommended certificates, and trending skills
+    loaded directly from backend/data/fresher_catalog.json.
+    """
+    catalog_path = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "data", "fresher_catalog.json")
+    )
+    if not os.path.exists(catalog_path):
+        raise HTTPException(status_code=404, detail="Fresher catalog not found")
+
+    try:
+        with open(catalog_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to read fresher catalog: {str(e)}")
