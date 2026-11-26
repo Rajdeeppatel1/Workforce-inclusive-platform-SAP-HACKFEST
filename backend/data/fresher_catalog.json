@@ -508,18 +508,34 @@
   "official_portals": [
     {
       "id": "portal-sap",
-      "name": "SAP Learning Hub & BTP Developer Portal",
+      "name": "SAP Learning Hub",
       "provider": "SAP Official",
       "category": "SAP & Enterprise",
       "badge": "Enterprise Official",
       "free_tier": "Free Learning Journeys & BTP Trial",
-      "url": "https://learning.sap.com/",
-      "description": "Direct redirect to official SAP learning journeys for SAP Business Technology Platform (BTP), ABAP Cloud, SAP HANA Cloud, and CAP microservices.",
+      "url": "https://learning.sap.com",
+      "description": "Official SAP learning hub with role-based learning journeys for SAP Business Technology Platform (BTP), ABAP Cloud, SAP HANA Cloud, and CAP microservices.",
       "recommended_for": [
         "SAP BTP",
         "HANA Cloud",
         "ABAP Cloud",
         "Enterprise Architecture"
+      ]
+    },
+    {
+      "id": "portal-sap-developers",
+      "name": "SAP Developers (Tutorials & Community)",
+      "provider": "SAP Developers",
+      "category": "SAP & Enterprise",
+      "badge": "Hands-on Tutorials",
+      "free_tier": "100% Free Developer Tutorials & Tools",
+      "url": "https://developers.sap.com",
+      "description": "Official developer portal with hands-on coding tutorials, SAP BTP trials, Cloud Application Programming (CAP), UI5, and HANA Cloud guides.",
+      "recommended_for": [
+        "SAP BTP",
+        "CAP",
+        "UI5",
+        "HANA Cloud"
       ]
     },
     {
@@ -539,13 +555,13 @@
     },
     {
       "id": "portal-azure",
-      "name": "Microsoft Learn & Azure Certification Hub",
+      "name": "Microsoft Learn (Azure)",
       "provider": "Microsoft",
       "category": "Cloud (AWS, Azure, GCP)",
       "badge": "Official Certification",
       "free_tier": "100% Free Sandbox & Learn Modules",
-      "url": "https://learn.microsoft.com/en-us/training/azure/",
-      "description": "Official Microsoft portal for Azure cloud fundamentals (AZ-900), developer associate (AZ-204), and in-browser Cloud Shell sandboxes.",
+      "url": "https://learn.microsoft.com/training",
+      "description": "Official Microsoft training portal for Azure cloud fundamentals (AZ-900), developer associate (AZ-204), and in-browser Cloud Shell sandboxes.",
       "recommended_for": [
         "Azure",
         "Cloud Infrastructure",
@@ -555,12 +571,12 @@
     },
     {
       "id": "portal-aws",
-      "name": "AWS Skill Builder Digital Training",
+      "name": "AWS Skill Builder",
       "provider": "Amazon Web Services",
       "category": "Cloud (AWS, Azure, GCP)",
       "badge": "Official AWS",
       "free_tier": "600+ Free Digital Courses",
-      "url": "https://explore.skillbuilder.aws/",
+      "url": "https://skillbuilder.aws",
       "description": "Official AWS training portal with Cloud Quest gamified learning, serverless labs, and AWS Cloud Practitioner / Solutions Architect preparation.",
       "recommended_for": [
         "AWS",
@@ -572,12 +588,12 @@
     },
     {
       "id": "portal-gcp",
-      "name": "Google Cloud Skills Boost & Cloud Shell",
+      "name": "Google Cloud Skills Boost",
       "provider": "Google Cloud",
       "category": "Cloud (AWS, Azure, GCP)",
       "badge": "Google Official",
       "free_tier": "Free Credits & Fundamental Badges",
-      "url": "https://www.cloudskillsboost.google/",
+      "url": "https://www.cloudskillsboost.google",
       "description": "Interactive Google Cloud console labs covering Compute Engine, BigQuery analytics, Vertex AI, and Google Kubernetes Engine (GKE).",
       "recommended_for": [
         "Google Cloud",
@@ -700,12 +716,12 @@
   "dsa_platforms": [
     {
       "id": "dsa-leetcode",
-      "name": "LeetCode Problem Solving Platform",
+      "name": "LeetCode",
       "provider": "LeetCode",
       "category": "DSA & Algorithms",
       "badge": "Industry Standard",
       "free_tier": "3000+ Free Coding Problems",
-      "url": "https://leetcode.com/problemset/all/",
+      "url": "https://leetcode.com",
       "description": "The premier coding interview practice platform. Filter by difficulty, company tags, and curated Blind 75 / NeetCode 150 lists.",
       "recommended_for": [
         "Arrays",
@@ -717,12 +733,12 @@
     },
     {
       "id": "dsa-codechef",
-      "name": "CodeChef Practice & Star Contests",
+      "name": "CodeChef",
       "provider": "CodeChef",
       "category": "DSA & Algorithms",
       "badge": "Rated Contests",
       "free_tier": "100% Free Practice Tracks",
-      "url": "https://www.codechef.com/practice",
+      "url": "https://www.codechef.com",
       "description": "Popular algorithmic contest platform with topic-wise problem sets from 500-level beginner puzzles up to 2500+ rated master challenges.",
       "recommended_for": [
         "Math",
@@ -732,8 +748,23 @@
       ]
     },
     {
+      "id": "dsa-gfg",
+      "name": "GeeksforGeeks",
+      "provider": "GeeksforGeeks",
+      "category": "DSA & Algorithms",
+      "badge": "Must-Do Coding Sheet",
+      "free_tier": "Free Problem of the Day & Sheets",
+      "url": "https://www.geeksforgeeks.org",
+      "description": "Extensive archive of company interview questions (Amazon, Microsoft, Google, TCS, Infosys) and DSA topic-wise sheets.",
+      "recommended_for": [
+        "Topic-wise DSA",
+        "Company Specific Sheets",
+        "POTD"
+      ]
+    },
+    {
       "id": "dsa-hackerrank",
-      "name": "HackerRank Problem Solving & Certifications",
+      "name": "HackerRank",
       "provider": "HackerRank",
       "category": "DSA & Algorithms",
       "badge": "Skill Certification",
@@ -748,23 +779,8 @@
       ]
     },
     {
-      "id": "dsa-gfg",
-      "name": "GeeksforGeeks Practice Portal (GFG)",
-      "provider": "GeeksforGeeks",
-      "category": "DSA & Algorithms",
-      "badge": "Must-Do Coding Sheet",
-      "free_tier": "Free Problem of the Day",
-      "url": "https://practice.geeksforgeeks.org/",
-      "description": "Extensive archive of company interview questions (Amazon, Microsoft, Google, TCS, Infosys) and DSA topic-wise sheets.",
-      "recommended_for": [
-        "Topic-wise DSA",
-        "Company Specific Sheets",
-        "POTD"
-      ]
-    },
-    {
       "id": "dsa-codeforces",
-      "name": "Codeforces Competitive Arena",
+      "name": "Codeforces",
       "provider": "Codeforces",
       "category": "DSA & Algorithms",
       "badge": "Global Contests",
@@ -886,7 +902,7 @@
     },
     {
       "id": "yt-nana",
-      "name": "TechWorld with Nana \u2014 DevOps, Docker & K8s",
+      "name": "Nana (freeCodeCamp / TechWorld with Nana)",
       "creator": "Nana Janashia",
       "channel_url": "https://www.youtube.com/@TechWorldwithNana",
       "playlist_url": "https://www.youtube.com/@TechWorldwithNana/playlists",
@@ -938,8 +954,24 @@
   ],
   "aiml_platforms": [
     {
+      "id": "ai-google-dev",
+      "name": "Google AI for Developers",
+      "provider": "Google",
+      "category": "AI / ML & Data Science",
+      "badge": "Gemini & Open Models",
+      "free_tier": "Free API Quota & Colab Guides",
+      "url": "https://ai.google.dev",
+      "description": "Official portal for Gemini API, Gemma open models, Vertex AI SDK, and production Generative AI quickstarts.",
+      "recommended_for": [
+        "Gemini API",
+        "Generative AI",
+        "LLMs",
+        "Embeddings"
+      ]
+    },
+    {
       "id": "ai-kaggle",
-      "name": "Kaggle Machine Learning & Data Competitions",
+      "name": "Kaggle Learn",
       "provider": "Google / Kaggle",
       "category": "AI / ML & Data Science",
       "badge": "Hands-on Datasets",
@@ -951,6 +983,38 @@
         "Machine Learning",
         "Pandas",
         "Jupyter"
+      ]
+    },
+    {
+      "id": "ai-huggingface",
+      "name": "Hugging Face Learn",
+      "provider": "Hugging Face",
+      "category": "AI / ML & Data Science",
+      "badge": "Open Source Hub",
+      "free_tier": "100% Free Open Models & Spaces",
+      "url": "https://huggingface.co/learn",
+      "description": "The GitHub of Machine Learning. Free interactive courses on Natural Language Processing (Transformers), Audio, Computer Vision, and Reinforcement Learning.",
+      "recommended_for": [
+        "Transformers",
+        "NLP",
+        "Open Source Models",
+        "PyTorch"
+      ]
+    },
+    {
+      "id": "ai-fastai",
+      "name": "fast.ai",
+      "provider": "Jeremy Howard / fast.ai",
+      "category": "AI / ML & Data Science",
+      "badge": "Top-Down Learning",
+      "free_tier": "100% Free Course",
+      "url": "https://www.fast.ai",
+      "description": "Revolutionary top-down deep learning course for practical developers. Learn computer vision, NLP, and tabular models with clean PyTorch-based fastai code.",
+      "recommended_for": [
+        "Deep Learning",
+        "PyTorch",
+        "Computer Vision",
+        "Practical AI"
       ]
     },
     {
@@ -967,38 +1031,6 @@
         "RAG",
         "Vector Search",
         "Deep Learning"
-      ]
-    },
-    {
-      "id": "ai-huggingface",
-      "name": "Hugging Face Open Source AI Community & Courses",
-      "provider": "Hugging Face",
-      "category": "AI / ML & Data Science",
-      "badge": "Open Source Hub",
-      "free_tier": "100% Free Open Models & Spaces",
-      "url": "https://huggingface.co/learn",
-      "description": "The GitHub of Machine Learning. Free interactive courses on Natural Language Processing (Transformers), Audio, Computer Vision, and Reinforcement Learning.",
-      "recommended_for": [
-        "Transformers",
-        "NLP",
-        "Open Source Models",
-        "PyTorch"
-      ]
-    },
-    {
-      "id": "ai-fastai",
-      "name": "Fast.ai \u2014 Practical Deep Learning for Coders",
-      "provider": "Jeremy Howard / Fast.ai",
-      "category": "AI / ML & Data Science",
-      "badge": "Top-Down Learning",
-      "free_tier": "100% Free Course",
-      "url": "https://course.fast.ai/",
-      "description": "Revolutionary top-down deep learning course for practical developers. Learn computer vision, NLP, and tabular models with clean PyTorch-based fastai code.",
-      "recommended_for": [
-        "Deep Learning",
-        "PyTorch",
-        "Computer Vision",
-        "Practical AI"
       ]
     }
   ]

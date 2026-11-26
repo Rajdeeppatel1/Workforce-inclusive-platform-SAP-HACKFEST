@@ -8,7 +8,7 @@
   "is_synthetic": false,
   "demo_label": "Candidate Profile (Priya Sharma - Software Developer)",
   "consent_given": true,
-  "consent_timestamp": "2026-11-26T13:29:46.083869Z",
+  "consent_timestamp": "2026-11-26T13:57:27.791886Z",
   "skills": [
     "Python",
     "FastAPI",
@@ -101,8 +101,8 @@
       "total": 5,
       "percentage": 100.0,
       "passed": true,
-      "completed_at": "2026-11-26T13:29:46.145956Z"
+      "completed_at": "2026-11-26T13:57:27.849043Z"
     }
   ],
-  "updated_at": "2026-11-26T13:29:46.145988Z"
+  "updated_at": "2026-11-26T13:57:27.849088Z"
 }

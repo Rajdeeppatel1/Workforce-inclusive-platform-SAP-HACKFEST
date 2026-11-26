@@ -201,7 +201,7 @@ export default function FresherPrepare() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search SAP Learning Hub, LeetCode, Striver A2Z Sheet, CodeWithHarry, Azure, AWS, Kaggle, Docker..."
+              placeholder="Search SAP Learning Hub, SAP Developers, Azure, AWS, Google Cloud, LeetCode, CodeChef, Striver, CodeWithHarry, Nana, Google AI, Kaggle..."
               className="w-full pl-9 pr-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-sm text-xs text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all min-h-[44px]"
             />
           </div>
