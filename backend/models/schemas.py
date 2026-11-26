@@ -35,13 +35,17 @@ class RawCandidateProfile(BaseModel):
     """
     profile_id: Optional[str] = None
 
-    # Protected & Pedigree Attributes (STRIPPED BY BLIND MATCHER)
+    # Protected & Pedigree Attributes (STRIPPED BY BLIND MATCHER BEFORE SCORING)
     name: Optional[str] = None
     gender: Optional[str] = None
     age: Optional[int] = None
     location: Optional[str] = None
+    city_tier: Optional[str] = None
+    college: Optional[str] = None
     college_name: Optional[str] = None
     college_tier: Optional[str] = None
+    career_gap: Optional[str] = None
+    career_break_duration: Optional[str] = None
 
     # Skills & Alternative Evidence (PRESERVED)
     skills: List[str] = Field(default_factory=list)

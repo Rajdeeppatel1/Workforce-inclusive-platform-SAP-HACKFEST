@@ -1,0 +1,73 @@
+{
+  "profile_id": "seed_rajdeep_patel_01",
+  "name": "Rajdeep Patel",
+  "email": "rajdeep.demo@skillnav.io",
+  "is_synthetic": true,
+  "demo_label": "Synthetic Demo Profile",
+  "consent_given": false,
+  "consent_timestamp": null,
+  "skills": [
+    "Python",
+    "FastAPI",
+    "React",
+    "SQL",
+    "Docker",
+    "REST APIs"
+  ],
+  "experience": [
+    {
+      "role": "Junior Full Stack Developer",
+      "company_or_freelance": "Freelance & Open Source Projects",
+      "years": 1.5,
+      "description": "Built reactive web applications and backend microservices with FastAPI and React."
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Technology",
+      "field_of_study": "Computer Science",
+      "institution": "State Technical Institute",
+      "graduation_year": 2024
+    }
+  ],
+  "goals": {
+    "target_role": "Full Stack Developer",
+    "weekly_study_hours": 14,
+    "preferred_topics": [
+      "Docker",
+      "AWS Basics",
+      "System Design"
+    ]
+  },
+  "alternative_evidence": [
+    {
+      "category": "github",
+      "title": "Fullstack Task Manager & REST API",
+      "description": "Production microservice with authentication and Docker orchestration",
+      "skills_demonstrated": [
+        "Python",
+        "FastAPI",
+        "Docker"
+      ],
+      "verification_url": "https://github.com/developer/task-manager-api",
+      "confidence": "High",
+      "weight_multiplier": 1.2,
+      "status": "Verified"
+    },
+    {
+      "category": "freelance",
+      "title": "Local Retail Inventory Portal",
+      "description": "Shipped responsive React + Tailwind application for local storefronts",
+      "skills_demonstrated": [
+        "React",
+        "Tailwind CSS",
+        "SQL"
+      ],
+      "verification_url": "https://retail-portal-demo.dev",
+      "confidence": "High",
+      "weight_multiplier": 1.1,
+      "status": "Verified"
+    }
+  ],
+  "updated_at": "2026-11-26T06:51:22.187161Z"
+}

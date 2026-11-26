@@ -1,14 +1,40 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 const ProfileContext = createContext(null);
 
 const STORAGE_KEY = 'skillnav_candidate_profile';
 
 const INITIAL_PROFILE = {
-  profile_id: 'anon_' + Math.random().toString(36).substring(2, 10),
-  name: 'Candidate (Blind)',
+  profile_id: 'seed_rajdeep_patel_01',
+  name: 'Rajdeep Patel',
+  email: 'rajdeep.demo@skillnav.io',
+  is_synthetic: true,
+  demo_label: 'Synthetic Demo Profile',
+  consent_given: false,
   pathway: 'First-Gen Student',
-  skills: ['Python', 'React', 'REST APIs', 'SQL'],
+  skills: ['Python', 'FastAPI', 'React', 'SQL', 'Docker', 'REST APIs'],
+  experience: [
+    {
+      role: 'Junior Full Stack Developer',
+      company_or_freelance: 'Freelance & Open Source Projects',
+      years: 1.5,
+      description: 'Built reactive web applications and backend microservices with FastAPI and React.',
+    },
+  ],
+  education: [
+    {
+      degree: 'Bachelor of Technology',
+      field_of_study: 'Computer Science',
+      institution: 'State Technical Institute',
+      graduation_year: 2024,
+    },
+  ],
+  goals: {
+    target_role: 'Full Stack Developer',
+    weekly_study_hours: 10,
+    preferred_topics: ['Docker', 'AWS Basics', 'System Design'],
+  },
   alternative_evidence: [
     {
       category: 'github',
@@ -57,6 +83,9 @@ export function ProfileProvider({ children }) {
         ...INITIAL_PROFILE,
         ...parsed,
         skills: Array.isArray(parsed.skills) && parsed.skills.length > 0 ? parsed.skills : INITIAL_PROFILE.skills,
+        experience: Array.isArray(parsed.experience) ? parsed.experience : INITIAL_PROFILE.experience,
+        education: Array.isArray(parsed.education) ? parsed.education : INITIAL_PROFILE.education,
+        goals: parsed.goals && typeof parsed.goals === 'object' ? parsed.goals : INITIAL_PROFILE.goals,
         alternative_evidence: Array.isArray(parsed.alternative_evidence)
           ? parsed.alternative_evidence
           : INITIAL_PROFILE.alternative_evidence,
@@ -69,6 +98,8 @@ export function ProfileProvider({ children }) {
     }
   });
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
@@ -76,6 +107,67 @@ export function ProfileProvider({ children }) {
       console.warn('Could not persist profile to localStorage', e);
     }
   }, [profile]);
+
+  // Mock Login - Loads Seeded Profile from Backend
+  const loginMock = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.post('/api/login/mock');
+      if (res.data) {
+        const merged = {
+          ...INITIAL_PROFILE,
+          ...res.data,
+          certificates: profile.certificates,
+        };
+        setProfile(merged);
+        return merged;
+      }
+    } catch (err) {
+      console.error('Error logging in mock profile:', err);
+      // Fallback to local INITIAL_PROFILE
+      setProfile(INITIAL_PROFILE);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Record Consent
+  const giveConsent = async (val = true) => {
+    try {
+      await axios.post('/api/consent', {
+        profile_id: profile.profile_id,
+        consent: val,
+      });
+    } catch (e) {
+      console.warn('Backend consent sync failed, updated locally', e);
+    }
+    setProfile((prev) => ({
+      ...prev,
+      consent_given: val,
+      consent_timestamp: val ? new Date().toISOString() : null,
+    }));
+  };
+
+  // Save profile to backend JSON
+  const saveProfileToServer = async (customProfile = null) => {
+    setLoading(true);
+    const target = customProfile || profile;
+    try {
+      const res = await axios.post('/api/profile', target);
+      if (res.data && res.data.profile) {
+        setProfile((prev) => ({
+          ...prev,
+          ...res.data.profile,
+        }));
+      }
+      return { success: true };
+    } catch (err) {
+      console.error('Error saving profile to server:', err);
+      return { success: false, error: err.message };
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const addSkill = (skill) => {
     const trimmed = skill.trim();
@@ -109,11 +201,17 @@ export function ProfileProvider({ children }) {
     }));
   };
 
+  const setGoals = (newGoals) => {
+    setProfile((prev) => ({
+      ...prev,
+      goals: { ...prev.goals, ...newGoals },
+    }));
+  };
+
   const addAlternativeEvidence = (evidence) => {
     setProfile((prev) => ({
       ...prev,
       alternative_evidence: [evidence, ...prev.alternative_evidence],
-      // Also add newly demonstrated skills to profile
       skills: Array.from(new Set([...prev.skills, ...(evidence.skills_demonstrated || [])])),
     }));
   };
@@ -130,10 +228,16 @@ export function ProfileProvider({ children }) {
     <ProfileContext.Provider
       value={{
         profile,
+        setProfile,
+        loading,
+        loginMock,
+        giveConsent,
+        saveProfileToServer,
         addSkill,
         removeSkill,
         setSkills,
         setPathway,
+        setGoals,
         addAlternativeEvidence,
         addCertificate,
       }}

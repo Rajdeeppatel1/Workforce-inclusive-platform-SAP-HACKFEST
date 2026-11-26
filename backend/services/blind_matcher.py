@@ -13,14 +13,24 @@ from typing import Dict, Any, Tuple
 from models.schemas import RawCandidateProfile, SanitizedBlindProfile
 
 
-# Attributes strictly banned from persistence and vector scoring
+# Attributes strictly banned from persistence, vector indexing, and AI scoring
+# (naam, gender, college, career gap, city tier, age, location)
 PROTECTED_AND_PEDIGREE_KEYS = {
     "name",
     "gender",
     "age",
-    "location",
+    "college",
     "college_name",
     "college_tier",
+    "career_gap",
+    "career_break",
+    "career_break_duration",
+    "city_tier",
+    "location",
+    "city",
+    "pincode",
+    "address",
+    "photo",
 }
 
 

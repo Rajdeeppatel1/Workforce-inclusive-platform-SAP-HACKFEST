@@ -16,6 +16,7 @@ from config import settings
 from routes.matching_routes import router as matching_router
 from routes.genai_routes import router as genai_router
 from routers.fairness import router as fairness_router
+from routers.auth_profile import router as auth_profile_router
 
 
 # ═══════════════════════════════════════════
@@ -62,6 +63,7 @@ app.add_middleware(
 app.include_router(matching_router)
 app.include_router(genai_router)
 app.include_router(fairness_router)
+app.include_router(auth_profile_router)
 
 
 # ═══════════════════════════════════════════
