@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAccessibility } from '../context/AccessibilityContext';
@@ -13,15 +13,14 @@ import {
   BarChart3,
   Accessibility,
   CheckCircle2,
-  Activity,
   Menu,
   X,
   Lock,
   User,
   LogIn,
-  ShieldCheck,
+  GraduationCap,
+  ArrowRight,
 } from 'lucide-react';
-import axios from 'axios';
 
 export default function Layout({ children }) {
   const { t } = useTranslation();
@@ -32,11 +31,19 @@ export default function Layout({ children }) {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [signingIn, setSigningIn] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
 
   const handleMockSignIn = async () => {
     setSigningIn(true);
     await loginMock();
     setSigningIn(false);
+    // Show Fresher vs Employed choice modal right after login
+    setShowStatusModal(true);
+  };
+
+  const handleSelectStatus = (path) => {
+    setShowStatusModal(false);
+    navigate(path);
   };
 
   const navLinks = [
@@ -45,6 +52,18 @@ export default function Layout({ children }) {
       labelEn: 'Onboarding',
       labelHi: 'ऑनबोर्डिंग',
       icon: Sparkles,
+    },
+    {
+      to: '/fresher',
+      labelEn: 'Fresher Track',
+      labelHi: 'फ्रेशर ट्रैक',
+      icon: GraduationCap,
+    },
+    {
+      to: '/employed',
+      labelEn: 'Employed Track',
+      labelHi: 'एम्प्लॉयड ट्रैक',
+      icon: Briefcase,
     },
     {
       to: '/profile',
@@ -150,7 +169,7 @@ export default function Layout({ children }) {
           </div>
 
           {/* Navigation Links */}
-          <nav className="p-4 space-y-1.5" aria-label="Sidebar navigation">
+          <nav className="p-4 space-y-1 overflow-y-auto max-h-[calc(100vh-270px)]" aria-label="Sidebar navigation">
             {navLinks.map((item) => {
               const Icon = item.icon;
               return (
@@ -216,17 +235,17 @@ export default function Layout({ children }) {
             </span>
           </div>
 
-          {/* Action Buttons: Sign In (Seeded Profile) & Accessibility */}
+          {/* Action Buttons: Sign In & Accessibility */}
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={handleMockSignIn}
               disabled={signingIn || profileLoading}
               className="px-3.5 py-1.5 bg-black hover:bg-neutral-800 text-white rounded text-xs font-medium flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
-              title="Loads seeded candidate profile into memory and backend/data/profiles/"
+              title="Loads seeded candidate profile and prompts status selection"
             >
               <LogIn className="w-3.5 h-3.5 text-blue-400" />
-              <span>{signingIn ? 'Loading Profile...' : 'Sign In (Seeded Profile)'}</span>
+              <span>{signingIn ? 'Signing In...' : 'Sign In (Seeded Profile)'}</span>
             </button>
 
             <button
@@ -245,7 +264,81 @@ export default function Layout({ children }) {
         <main className="flex-1 p-6 md:p-8 bg-surface-card/40">{children}</main>
       </div>
 
-      {/* 3. Slide-Over Accessibility Drawer */}
+      {/* ═══════════════════════════════════════════════
+          3. Post-Login Status Choice Modal (Fresher vs Employed)
+          ═══════════════════════════════════════════════ */}
+      {showStatusModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+          <div className="bg-white border border-black rounded-lg max-w-lg w-full p-6 shadow-2xl relative">
+            <button
+              onClick={() => setShowStatusModal(false)}
+              className="absolute top-4 right-4 text-neutral-400 hover:text-black"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="mb-5">
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded">
+                Synthetic Demo Sign-In
+              </span>
+              <h2 className="text-xl font-bold text-neutral-900 mt-2">
+                Aapka Career Status Chune
+              </h2>
+              <p className="text-xs text-neutral-500 mt-0.5">
+                Choose your track to view tailored skills-first navigation:
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Fresher Option */}
+              <button
+                onClick={() => handleSelectStatus('/fresher')}
+                className="p-4 border-2 border-neutral-200 hover:border-blue-600 rounded-lg text-left transition-all hover:bg-blue-50/50 group flex flex-col justify-between h-40 cursor-pointer"
+              >
+                <div>
+                  <div className="w-10 h-10 rounded bg-blue-100 text-blue-600 flex items-center justify-center mb-2.5">
+                    <GraduationCap className="w-6 h-6" />
+                  </div>
+                  <div className="text-sm font-bold text-neutral-900 group-hover:text-blue-600">
+                    Fresher
+                  </div>
+                  <p className="text-[11px] text-neutral-500 mt-1 leading-snug">
+                    Student, self-taught coder, ya early-career job seeker.
+                  </p>
+                </div>
+                <div className="flex items-center gap-1 text-[11px] font-bold text-blue-600">
+                  <span>Go to Fresher Track</span>
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </button>
+
+              {/* Employed Option */}
+              <button
+                onClick={() => handleSelectStatus('/employed')}
+                className="p-4 border-2 border-neutral-200 hover:border-black rounded-lg text-left transition-all hover:bg-neutral-50 group flex flex-col justify-between h-40 cursor-pointer"
+              >
+                <div>
+                  <div className="w-10 h-10 rounded bg-black text-white flex items-center justify-center mb-2.5">
+                    <Briefcase className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <div className="text-sm font-bold text-neutral-900 group-hover:text-black">
+                    Employed
+                  </div>
+                  <p className="text-[11px] text-neutral-500 mt-1 leading-snug">
+                    Working professional, reskilling, ya career transition.
+                  </p>
+                </div>
+                <div className="flex items-center gap-1 text-[11px] font-bold text-neutral-900">
+                  <span>Go to Employed Track</span>
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 4. Slide-Over Accessibility Drawer */}
       <AccessibilityDrawer />
     </div>
   );
