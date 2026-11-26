@@ -25,6 +25,7 @@ import {
   FileQuestion,
   Users,
   Languages,
+  ExternalLink,
 } from 'lucide-react';
 
 export default function Layout({ children }) {
