@@ -1,0 +1,1832 @@
+{
+  "pass_mark_percent": 60,
+  "quizzes": [
+    {
+      "id": "backend",
+      "name": "Backend",
+      "displayName": "Backend Engineering",
+      "group": "Domain Tracks",
+      "description": "REST APIs, Database design, HTTP status codes, and server-side logic.",
+      "estimated_minutes": 10,
+      "skills_awarded": [
+        "Backend"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "Which HTTP status code should be returned when a resource is successfully created via a POST request?",
+          "options": [
+            "200 OK",
+            "201 Created",
+            "204 No Content",
+            "202 Accepted"
+          ],
+          "correctIndex": 1,
+          "explanation": "201 Created is the standard HTTP response status code for successful resource creation."
+        },
+        {
+          "id": 2,
+          "question": "What is the primary advantage of database indexing on frequently queried columns?",
+          "options": [
+            "Increases disk storage speed",
+            "Automatically cleans corrupted data",
+            "Guarantees database encryption",
+            "Significantly reduces query search time from O(N) to O(log N)"
+          ],
+          "correctIndex": 3,
+          "explanation": "Indexes (like B-Trees) provide fast lookup access paths, drastically speeding up SELECT queries."
+        },
+        {
+          "id": 3,
+          "question": "In FastAPI, what library is used under the hood for schema validation and request serialization?",
+          "options": [
+            "Marshmallow",
+            "SQLAlchemy",
+            "Pydantic",
+            "Celery"
+          ],
+          "correctIndex": 2,
+          "explanation": "FastAPI is deeply integrated with Pydantic for data parsing, type validation, and documentation."
+        },
+        {
+          "id": 4,
+          "question": "What does ACID stand for in relational database management systems?",
+          "options": [
+            "Atomicity, Consistency, Isolation, Durability",
+            "Accuracy, Concurrency, Integrity, Delivery",
+            "Asynchronous, Coordinated, Indexed, Distributed",
+            "Authentication, Confidentiality, Identity, Decryption"
+          ],
+          "correctIndex": 0,
+          "explanation": "ACID properties ensure database transactions are processed reliably."
+        },
+        {
+          "id": 5,
+          "question": "Which HTTP method is idempotent according to REST conventions?",
+          "options": [
+            "POST",
+            "PATCH (with side-effects)",
+            "PUT",
+            "CONNECT"
+          ],
+          "correctIndex": 2,
+          "explanation": "PUT is idempotent: multiple identical requests have the exact same effect as a single request."
+        }
+      ]
+    },
+    {
+      "id": "cloud",
+      "name": "Cloud",
+      "displayName": "Cloud & DevOps",
+      "group": "Domain Tracks",
+      "description": "Containers, Docker, CI/CD pipelines, and cloud resilience.",
+      "estimated_minutes": 10,
+      "skills_awarded": [
+        "Cloud"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What is the primary difference between a Docker container and a Virtual Machine (VM)?",
+          "options": [
+            "Containers virtualize the hardware; VMs virtualize the OS",
+            "Containers only work on Linux servers; VMs only work on Windows",
+            "Containers share the host OS kernel and are lightweight; VMs run a full guest OS",
+            "VMs don't require hypervisors"
+          ],
+          "correctIndex": 2,
+          "explanation": "Containers share the host operating system kernel, making them lightweight and fast to start."
+        },
+        {
+          "id": 2,
+          "question": "In a Dockerfile, which instruction specifies the command executed when the container starts?",
+          "options": [
+            "CMD",
+            "RUN",
+            "FROM",
+            "EXPOSE"
+          ],
+          "correctIndex": 0,
+          "explanation": "CMD provides defaults for an executing container, whereas RUN executes during image build time."
+        },
+        {
+          "id": 3,
+          "question": "What does CI/CD stand for in modern cloud software engineering?",
+          "options": [
+            "Central Infrastructure / Central Deployment",
+            "Continuous Integration / Continuous Delivery (or Deployment)",
+            "Container Isolation / Container Distribution",
+            "Cloud Instances / Cloud Databases"
+          ],
+          "correctIndex": 1,
+          "explanation": "CI/CD automates code integration, testing, build artifacts, and deployment pipelines."
+        },
+        {
+          "id": 4,
+          "question": "What is horizontal scaling in cloud architecture?",
+          "options": [
+            "Adding more CPU and RAM to a single existing server instance",
+            "Switching from relational SQL to non-relational NoSQL",
+            "Migrating all data to cold archival storage",
+            "Adding more server instances or containers to distribute load across a pool"
+          ],
+          "correctIndex": 3,
+          "explanation": "Horizontal scaling (scale out) means adding more machine nodes or container replicas to share traffic."
+        },
+        {
+          "id": 5,
+          "question": "Which principle is a core pillar of the Twelve-Factor App methodology for cloud applications?",
+          "options": [
+            "Store configuration in environment variables",
+            "Hardcode credentials in source code",
+            "Rely on local state in persistent disk",
+            "Execute background processes synchronously in the main thread"
+          ],
+          "correctIndex": 0,
+          "explanation": "Twelve-Factor App rule III states: store configuration in the environment, never in versioned code."
+        }
+      ]
+    },
+    {
+      "id": "aiml",
+      "name": "AI/ML",
+      "displayName": "AI / Machine Learning",
+      "group": "Domain Tracks",
+      "description": "Vector embeddings, cosine similarity, data preprocessing, and model basics.",
+      "estimated_minutes": 10,
+      "skills_awarded": [
+        "AI/ML"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What does a dense vector embedding represent in modern semantic AI systems?",
+          "options": [
+            "An encrypted password hash",
+            "A binary tree structure for disk storage",
+            "A compressed zip archive of text",
+            "A numerical vector in continuous multi-dimensional space capturing semantic meaning"
+          ],
+          "correctIndex": 3,
+          "explanation": "Vector embeddings represent text or entities as coordinates in semantic embedding space where similar concepts cluster together."
+        },
+        {
+          "id": 2,
+          "question": "What metric is most commonly used to measure angular similarity between two normalized vectors?",
+          "options": [
+            "Hamming distance",
+            "Cosine similarity",
+            "Levenshtein distance",
+            "MD5 check"
+          ],
+          "correctIndex": 1,
+          "explanation": "Cosine similarity calculates the cosine of the angle between two vectors, ranging from -1 to 1."
+        },
+        {
+          "id": 3,
+          "question": "What is 'overfitting' in machine learning?",
+          "options": [
+            "When a model performs exceptionally on training data but poorly on unseen test data",
+            "When a dataset has too few rows to train an algorithm",
+            "When the model's loss function never decreases during training",
+            "When training completes faster than expected"
+          ],
+          "correctIndex": 0,
+          "explanation": "Overfitting happens when a model learns noise and specific training details rather than generalized patterns."
+        },
+        {
+          "id": 4,
+          "question": "In Retrieval-Augmented Generation (RAG), what is the primary role of the vector database?",
+          "options": [
+            "To train the foundational model from scratch",
+            "To render HTML components in the frontend",
+            "To retrieve the most relevant contextual documents based on user query similarity",
+            "To manage user passwords and JWT sessions"
+          ],
+          "correctIndex": 2,
+          "explanation": "The vector database performs fast similarity retrieval to pass relevant context chunks into the LLM prompt."
+        },
+        {
+          "id": 5,
+          "question": "Why is demographic data (such as gender, age, college tier) stripped in blind AI matching algorithms?",
+          "options": [
+            "To reduce memory usage by 90%",
+            "To prevent historical bias and ensure candidates are evaluated strictly on demonstrable skills",
+            "Because vector databases cannot store text",
+            "To make API calls run faster"
+          ],
+          "correctIndex": 1,
+          "explanation": "Stripping protected attributes prevents algorithmic bias and ensures evaluation is skills-first and fair."
+        }
+      ]
+    },
+    {
+      "id": "embedded",
+      "name": "Embedded",
+      "displayName": "Embedded Systems & IoT",
+      "group": "Domain Tracks",
+      "description": "Microcontrollers, RTOS, memory-constrained C/C++, and hardware protocols.",
+      "estimated_minutes": 10,
+      "skills_awarded": [
+        "Embedded"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "Which C keyword tells the compiler that a variable (such as a hardware register) can change outside normal program flow?",
+          "options": [
+            "static",
+            "volatile",
+            "const",
+            "register"
+          ],
+          "correctIndex": 1,
+          "explanation": "volatile stops the compiler from optimising away reads and writes, which is essential for memory-mapped registers and variables shared with interrupts."
+        },
+        {
+          "id": 2,
+          "question": "What is the main guarantee a real-time operating system (RTOS) provides?",
+          "options": [
+            "Higher average throughput than any desktop OS",
+            "Deterministic task scheduling with bounded response times",
+            "Unlimited heap memory",
+            "Automatic generation of device drivers"
+          ],
+          "correctIndex": 1,
+          "explanation": "An RTOS is about predictability: tasks are scheduled so deadlines can be met within a known, bounded time."
+        },
+        {
+          "id": 3,
+          "question": "How many signal lines does the I2C bus use?",
+          "options": [
+            "1",
+            "4",
+            "2",
+            "8"
+          ],
+          "correctIndex": 2,
+          "explanation": "I2C uses two lines: SDA (data) and SCL (clock). Many devices share them using addresses."
+        },
+        {
+          "id": 4,
+          "question": "What is the purpose of a watchdog timer?",
+          "options": [
+            "Reset the system if the firmware stops responding",
+            "Measure the CPU temperature",
+            "Increase the system clock speed",
+            "Store boot logs in flash"
+          ],
+          "correctIndex": 0,
+          "explanation": "Firmware must periodically 'kick' the watchdog. If it hangs and stops doing so, the watchdog resets the device."
+        },
+        {
+          "id": 5,
+          "question": "What is the best practice for writing an interrupt service routine (ISR)?",
+          "options": [
+            "Perform long blocking I/O inside it",
+            "Call malloc freely inside it",
+            "Print debug logs over a blocking UART",
+            "Keep it short and defer heavy work to the main loop or a task"
+          ],
+          "correctIndex": 3,
+          "explanation": "ISRs should do the minimum (set a flag, copy a byte) and return quickly so other interrupts are not delayed."
+        }
+      ]
+    },
+    {
+      "id": "python",
+      "name": "Python",
+      "displayName": "Python Programming",
+      "group": "Languages",
+      "description": "Core data types, comprehensions, functions, and everyday Python pitfalls.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "Python"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "Which of these built-in Python types is immutable?",
+          "options": [
+            "list",
+            "dict",
+            "tuple",
+            "set"
+          ],
+          "correctIndex": 2,
+          "explanation": "Tuples cannot be changed after creation. Lists, dicts and sets are all mutable."
+        },
+        {
+          "id": 2,
+          "question": "What does [x * 2 for x in range(3)] produce?",
+          "options": [
+            "[2, 4, 6]",
+            "[0, 2, 4]",
+            "[0, 1, 2, 0, 1, 2]",
+            "(0, 2, 4)"
+          ],
+          "correctIndex": 1,
+          "explanation": "range(3) yields 0, 1, 2, and each value is doubled, giving the list [0, 2, 4]."
+        },
+        {
+          "id": 3,
+          "question": "What is the problem with def add(item, items=[]): ... ?",
+          "options": [
+            "The same list object is shared across every call that uses the default",
+            "Python raises a SyntaxError",
+            "Default arguments must always be strings",
+            "The list is copied on every call, which is slow"
+          ],
+          "correctIndex": 0,
+          "explanation": "Default values are created once, when the function is defined. Use items=None and create the list inside the function."
+        },
+        {
+          "id": 4,
+          "question": "What does 'with open(path) as f:' guarantee?",
+          "options": [
+            "The file is read into memory at once",
+            "The file is opened in binary mode",
+            "The file can never raise an error",
+            "The file is closed when the block exits, even if an exception occurs"
+          ],
+          "correctIndex": 3,
+          "explanation": "The context manager closes the file automatically on exit, including when an exception is raised."
+        },
+        {
+          "id": 5,
+          "question": "What is the difference between == and is?",
+          "options": [
+            "There is no difference",
+            "is compares values, == compares identity",
+            "== compares values, is checks whether both names refer to the same object",
+            "== only works on numbers"
+          ],
+          "correctIndex": 2,
+          "explanation": "Two different lists with the same contents are == but not 'is'. Use 'is' mainly for None checks."
+        }
+      ]
+    },
+    {
+      "id": "javascript",
+      "name": "JavaScript",
+      "displayName": "JavaScript Fundamentals",
+      "group": "Languages",
+      "description": "Types, equality, scoping, promises, and array methods.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "JavaScript"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What does typeof null return?",
+          "options": [
+            "\"null\"",
+            "\"undefined\"",
+            "\"object\"",
+            "\"number\""
+          ],
+          "correctIndex": 2,
+          "explanation": "This is a long-standing quirk of the language: typeof null is \"object\"."
+        },
+        {
+          "id": 2,
+          "question": "How does === differ from ==?",
+          "options": [
+            "=== compares value and type without type coercion",
+            "=== is only for numbers",
+            "== is faster and stricter",
+            "They are identical"
+          ],
+          "correctIndex": 0,
+          "explanation": "== converts types before comparing (so 1 == '1' is true), while === does not (1 === '1' is false)."
+        },
+        {
+          "id": 3,
+          "question": "What is the key difference between let and var?",
+          "options": [
+            "var cannot be reassigned",
+            "let is block-scoped, var is function-scoped",
+            "let is global by default",
+            "var only works inside classes"
+          ],
+          "correctIndex": 1,
+          "explanation": "A let variable exists only inside the nearest block { }, which avoids many bugs caused by var's function scope and hoisting."
+        },
+        {
+          "id": 4,
+          "question": "What does a Promise represent?",
+          "options": [
+            "A function that always runs synchronously",
+            "A guaranteed successful network request",
+            "A special kind of loop",
+            "The eventual completion or failure of an asynchronous operation"
+          ],
+          "correctIndex": 3,
+          "explanation": "A Promise is a placeholder for a future result; it settles as either fulfilled or rejected."
+        },
+        {
+          "id": 5,
+          "question": "What does [1, 2, 3].map(x => x * 2) do?",
+          "options": [
+            "Changes the original array to [2, 4, 6]",
+            "Returns a new array [2, 4, 6] and leaves the original unchanged",
+            "Returns the number 12",
+            "Returns only the values greater than 2"
+          ],
+          "correctIndex": 1,
+          "explanation": "map creates a new array from the return value of the callback; it never mutates the source array."
+        }
+      ]
+    },
+    {
+      "id": "typescript",
+      "name": "TypeScript",
+      "displayName": "TypeScript Essentials",
+      "group": "Languages",
+      "description": "Static types, interfaces, unions, and how TypeScript compiles.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "TypeScript"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What is the main thing TypeScript adds to JavaScript?",
+          "options": [
+            "Static type checking before the code runs",
+            "A faster runtime engine",
+            "A built-in database",
+            "Automatic UI rendering"
+          ],
+          "correctIndex": 0,
+          "explanation": "TypeScript checks types at compile time, catching many errors before the code is executed."
+        },
+        {
+          "id": 2,
+          "question": "What is an interface typically used for?",
+          "options": [
+            "Running code in parallel",
+            "Importing CSS files",
+            "Describing the shape of an object",
+            "Declaring a loop"
+          ],
+          "correctIndex": 2,
+          "explanation": "An interface names the properties and types an object is expected to have."
+        },
+        {
+          "id": 3,
+          "question": "How is the type unknown safer than any?",
+          "options": [
+            "unknown values are always strings",
+            "You must narrow or check an unknown value before using it",
+            "unknown disables all type checking",
+            "unknown can only hold null"
+          ],
+          "correctIndex": 1,
+          "explanation": "any switches off type checking. unknown accepts any value but forces you to check its type before use."
+        },
+        {
+          "id": 4,
+          "question": "What is the type string | number called?",
+          "options": [
+            "An intersection type",
+            "A generic type",
+            "A tuple type",
+            "A union type"
+          ],
+          "correctIndex": 3,
+          "explanation": "A union type allows a value to be one of several types."
+        },
+        {
+          "id": 5,
+          "question": "Do TypeScript type annotations exist when the program runs?",
+          "options": [
+            "Yes, they are enforced by the browser",
+            "Yes, but only in Node.js",
+            "No, they are erased when compiling to JavaScript",
+            "Only for classes"
+          ],
+          "correctIndex": 2,
+          "explanation": "Types are removed during compilation, so external data (such as API responses) still needs runtime validation."
+        }
+      ]
+    },
+    {
+      "id": "sql",
+      "name": "SQL",
+      "displayName": "SQL & Relational Databases",
+      "group": "Languages",
+      "description": "Joins, aggregation, keys, and safe querying.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "SQL"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "Which clause filters groups after aggregation?",
+          "options": [
+            "WHERE",
+            "HAVING",
+            "ORDER BY",
+            "LIMIT"
+          ],
+          "correctIndex": 1,
+          "explanation": "WHERE filters rows before grouping; HAVING filters the groups produced by GROUP BY."
+        },
+        {
+          "id": 2,
+          "question": "What does an INNER JOIN return?",
+          "options": [
+            "Only rows that have a match in both tables",
+            "All rows from the left table",
+            "All rows from both tables",
+            "Only rows without a match"
+          ],
+          "correctIndex": 0,
+          "explanation": "Rows without a matching partner in the other table are left out of an INNER JOIN."
+        },
+        {
+          "id": 3,
+          "question": "What is true of a primary key?",
+          "options": [
+            "It can contain duplicate values",
+            "It must be a text column",
+            "It uniquely identifies each row and cannot be NULL",
+            "A table can have many primary keys"
+          ],
+          "correctIndex": 2,
+          "explanation": "A table has one primary key (possibly made of several columns) whose values are unique and not NULL."
+        },
+        {
+          "id": 4,
+          "question": "What does SELECT COUNT(*) FROM orders WHERE status = 'paid' return?",
+          "options": [
+            "Every column of the paid orders",
+            "The sum of all order amounts",
+            "The number of distinct statuses",
+            "The number of rows whose status is 'paid'"
+          ],
+          "correctIndex": 3,
+          "explanation": "COUNT(*) counts the rows that remain after the WHERE filter."
+        },
+        {
+          "id": 5,
+          "question": "What is the standard way to prevent SQL injection?",
+          "options": [
+            "Hiding error messages",
+            "Using parameterised queries (prepared statements)",
+            "Using longer table names",
+            "Running the database on a different port"
+          ],
+          "correctIndex": 1,
+          "explanation": "Parameterised queries send user input separately from the SQL text, so it can never be executed as SQL."
+        }
+      ]
+    },
+    {
+      "id": "react",
+      "name": "React",
+      "displayName": "React Frontend Development",
+      "group": "Frontend",
+      "description": "Components, props, state, hooks, and list rendering.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "React"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "Which hook adds local state to a function component?",
+          "options": [
+            "useState",
+            "useRef",
+            "useMemo",
+            "useContext"
+          ],
+          "correctIndex": 0,
+          "explanation": "useState returns the current value and a setter; calling the setter re-renders the component."
+        },
+        {
+          "id": 2,
+          "question": "Why does React need a key prop on list items?",
+          "options": [
+            "To style each item",
+            "To encrypt the item",
+            "To identify which items changed, were added, or were removed",
+            "To sort the list alphabetically"
+          ],
+          "correctIndex": 2,
+          "explanation": "Stable keys let React match old and new items so it updates only what changed."
+        },
+        {
+          "id": 3,
+          "question": "When does useEffect(() => { ... }, []) run?",
+          "options": [
+            "On every render",
+            "Once, after the first render",
+            "Only when the component is removed",
+            "Never"
+          ],
+          "correctIndex": 1,
+          "explanation": "An empty dependency array means the effect runs after the initial mount only (its cleanup runs on unmount)."
+        },
+        {
+          "id": 4,
+          "question": "What is the correct way to change state?",
+          "options": [
+            "Assign to the state variable directly",
+            "Edit the DOM manually",
+            "Reload the page",
+            "Call the state setter function with the new value"
+          ],
+          "correctIndex": 3,
+          "explanation": "Mutating state directly does not trigger a re-render. Always use the setter and create new objects or arrays."
+        },
+        {
+          "id": 5,
+          "question": "What are props?",
+          "options": [
+            "Read-only inputs passed from a parent component to a child",
+            "Private variables a component can change freely",
+            "Global CSS rules",
+            "Browser cookies"
+          ],
+          "correctIndex": 0,
+          "explanation": "A component must not modify its own props; data flows down from parent to child."
+        }
+      ]
+    },
+    {
+      "id": "tailwind-css",
+      "name": "Tailwind CSS",
+      "displayName": "Tailwind CSS",
+      "group": "Frontend",
+      "description": "Utility classes, responsive prefixes, and state variants.",
+      "estimated_minutes": 6,
+      "skills_awarded": [
+        "Tailwind CSS"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "How is Tailwind CSS best described?",
+          "options": [
+            "A JavaScript animation library",
+            "A utility-first CSS framework",
+            "A database for styles",
+            "A browser extension"
+          ],
+          "correctIndex": 1,
+          "explanation": "Tailwind provides small single-purpose classes that you combine directly in your markup."
+        },
+        {
+          "id": 2,
+          "question": "What does the class md:flex do?",
+          "options": [
+            "Applies display: flex only on mobile",
+            "Applies display: flex on every screen size",
+            "Applies display: flex from the md breakpoint and up",
+            "Hides the element on medium screens"
+          ],
+          "correctIndex": 2,
+          "explanation": "Tailwind is mobile-first: a breakpoint prefix applies the utility at that width and larger."
+        },
+        {
+          "id": 3,
+          "question": "What does p-4 set by default?",
+          "options": [
+            "Padding of 1rem on all sides",
+            "A 4px border",
+            "Four columns",
+            "A font size of 4px"
+          ],
+          "correctIndex": 0,
+          "explanation": "The default spacing scale uses 0.25rem per unit, so p-4 is 1rem (16px) of padding."
+        },
+        {
+          "id": 4,
+          "question": "How does Tailwind keep the production CSS file small?",
+          "options": [
+            "It compresses images",
+            "It removes all colours",
+            "It loads styles from a CDN at runtime",
+            "It only generates the classes it finds in your source files"
+          ],
+          "correctIndex": 3,
+          "explanation": "Tailwind scans the files listed in its content configuration and emits only the utilities actually used."
+        },
+        {
+          "id": 5,
+          "question": "What does hover:bg-blue-600 do?",
+          "options": [
+            "Makes the background blue permanently",
+            "Applies the blue background only while the pointer is over the element",
+            "Changes the text colour on click",
+            "Disables hover effects"
+          ],
+          "correctIndex": 1,
+          "explanation": "State variants such as hover:, focus: and disabled: apply a utility only in that state."
+        }
+      ]
+    },
+    {
+      "id": "fastapi",
+      "name": "FastAPI",
+      "displayName": "FastAPI",
+      "group": "Backend & APIs",
+      "description": "Routing, validation, async endpoints, and dependency injection.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "FastAPI"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "Which library does FastAPI use to validate request data?",
+          "options": [
+            "NumPy",
+            "Jinja2",
+            "Pydantic",
+            "SQLAlchemy"
+          ],
+          "correctIndex": 2,
+          "explanation": "Request and response models are Pydantic models, which validate and convert incoming data."
+        },
+        {
+          "id": 2,
+          "question": "Where does FastAPI serve its interactive Swagger documentation by default?",
+          "options": [
+            "/docs",
+            "/admin",
+            "/swagger.json",
+            "/help"
+          ],
+          "correctIndex": 0,
+          "explanation": "Swagger UI is at /docs and ReDoc is at /redoc, both generated from the OpenAPI schema."
+        },
+        {
+          "id": 3,
+          "question": "What is the benefit of declaring an endpoint with async def?",
+          "options": [
+            "It uses multiple CPU cores automatically",
+            "The server can handle other requests while this one awaits I/O",
+            "It disables validation",
+            "It caches the response"
+          ],
+          "correctIndex": 1,
+          "explanation": "While an async endpoint awaits a database or network call, the event loop is free to serve other requests."
+        },
+        {
+          "id": 4,
+          "question": "What is Depends() used for?",
+          "options": [
+            "Installing Python packages",
+            "Declaring a database table",
+            "Starting the server",
+            "Dependency injection, such as shared auth or database sessions"
+          ],
+          "correctIndex": 3,
+          "explanation": "Dependencies are functions FastAPI calls for you and whose results it passes into your endpoint."
+        },
+        {
+          "id": 5,
+          "question": "Which status code does FastAPI return when the request body fails validation?",
+          "options": [
+            "200 OK",
+            "404 Not Found",
+            "422 Unprocessable Entity",
+            "500 Internal Server Error"
+          ],
+          "correctIndex": 2,
+          "explanation": "Validation errors produce a 422 response describing which fields were invalid."
+        }
+      ]
+    },
+    {
+      "id": "rest-apis",
+      "name": "REST APIs",
+      "displayName": "REST API Design",
+      "group": "Backend & APIs",
+      "description": "HTTP methods, status codes, and stateless API design.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "REST APIs"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "Which HTTP method is conventionally used to replace a resource completely?",
+          "options": [
+            "GET",
+            "PUT",
+            "OPTIONS",
+            "HEAD"
+          ],
+          "correctIndex": 1,
+          "explanation": "PUT replaces the whole resource and is idempotent; PATCH applies a partial update."
+        },
+        {
+          "id": 2,
+          "question": "What does a 404 status code mean?",
+          "options": [
+            "The requested resource was not found",
+            "The server crashed",
+            "The request succeeded",
+            "The client is not logged in"
+          ],
+          "correctIndex": 0,
+          "explanation": "404 Not Found means the server has nothing at the requested URL."
+        },
+        {
+          "id": 3,
+          "question": "What does it mean for a REST API to be stateless?",
+          "options": [
+            "It has no database",
+            "It never returns errors",
+            "It only supports GET requests",
+            "Each request carries everything needed; the server keeps no client session between requests"
+          ],
+          "correctIndex": 3,
+          "explanation": "Statelessness makes APIs easier to scale because any server instance can handle any request."
+        },
+        {
+          "id": 4,
+          "question": "Which method should never change data on the server?",
+          "options": [
+            "POST",
+            "DELETE",
+            "GET",
+            "PATCH"
+          ],
+          "correctIndex": 2,
+          "explanation": "GET is a safe method: it only reads data, so it can be cached and repeated freely."
+        },
+        {
+          "id": 5,
+          "question": "What is the difference between 401 and 403?",
+          "options": [
+            "They mean the same thing",
+            "401 means not authenticated; 403 means authenticated but not allowed",
+            "401 is a server error; 403 is a success",
+            "403 means the resource was deleted"
+          ],
+          "correctIndex": 1,
+          "explanation": "401 Unauthorized asks the client to log in; 403 Forbidden means the identity is known but lacks permission."
+        }
+      ]
+    },
+    {
+      "id": "nodejs",
+      "name": "Node.js",
+      "displayName": "Node.js",
+      "group": "Backend & APIs",
+      "description": "The Node runtime, event loop, and npm basics.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "Node.js"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What is Node.js?",
+          "options": [
+            "A JavaScript runtime built on the V8 engine",
+            "A CSS framework",
+            "A relational database",
+            "A browser"
+          ],
+          "correctIndex": 0,
+          "explanation": "Node.js runs JavaScript outside the browser using Chrome's V8 engine."
+        },
+        {
+          "id": 2,
+          "question": "How does Node.js handle many concurrent connections?",
+          "options": [
+            "One operating-system thread per request",
+            "By rejecting extra requests",
+            "A single-threaded event loop with non-blocking I/O",
+            "By compiling to machine code first"
+          ],
+          "correctIndex": 2,
+          "explanation": "I/O is handed off and its callback is queued, so one thread can serve many connections."
+        },
+        {
+          "id": 3,
+          "question": "What is package.json for?",
+          "options": [
+            "Storing user passwords",
+            "Describing the project, its dependencies, and its scripts",
+            "Configuring the operating system",
+            "Holding compiled binaries"
+          ],
+          "correctIndex": 1,
+          "explanation": "package.json lists metadata, dependency versions, and commands such as npm run build."
+        },
+        {
+          "id": 4,
+          "question": "What does npm install --save-dev <package> do?",
+          "options": [
+            "Installs the package globally",
+            "Removes the package",
+            "Publishes the package",
+            "Adds the package to devDependencies"
+          ],
+          "correctIndex": 3,
+          "explanation": "devDependencies are tools needed only for development and builds, such as test runners and bundlers."
+        },
+        {
+          "id": 5,
+          "question": "What happens if a request handler runs a long CPU-heavy synchronous loop?",
+          "options": [
+            "It blocks the event loop, so all other requests wait",
+            "Node moves it to another thread automatically",
+            "Only that request slows down",
+            "Node cancels it after one second"
+          ],
+          "correctIndex": 0,
+          "explanation": "Synchronous CPU work monopolises the single thread. Move it to a worker thread or a separate service."
+        }
+      ]
+    },
+    {
+      "id": "docker",
+      "name": "Docker",
+      "displayName": "Docker & Containers",
+      "group": "DevOps & Cloud",
+      "description": "Images, containers, ports, volumes, and Dockerfiles.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "Docker"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What is the difference between an image and a container?",
+          "options": [
+            "They are the same thing",
+            "An image is a read-only template; a container is a running instance of it",
+            "A container is stored in a registry; an image is not",
+            "An image runs only on Windows"
+          ],
+          "correctIndex": 1,
+          "explanation": "You build an image once and start any number of containers from it."
+        },
+        {
+          "id": 2,
+          "question": "Which Dockerfile instruction sets the base image?",
+          "options": [
+            "FROM",
+            "RUN",
+            "CMD",
+            "COPY"
+          ],
+          "correctIndex": 0,
+          "explanation": "FROM names the image that your build starts from."
+        },
+        {
+          "id": 3,
+          "question": "What does docker run -p 8080:80 nginx do?",
+          "options": [
+            "Runs 80 copies of nginx",
+            "Maps container port 8080 to host port 80",
+            "Maps host port 8080 to container port 80",
+            "Limits memory to 8080 MB"
+          ],
+          "correctIndex": 2,
+          "explanation": "The format is host:container, so the site is reachable at localhost:8080."
+        },
+        {
+          "id": 4,
+          "question": "How do you keep data after a container is removed?",
+          "options": [
+            "Use a larger image",
+            "Add more RUN instructions",
+            "Restart the Docker daemon",
+            "Store it in a volume"
+          ],
+          "correctIndex": 3,
+          "explanation": "A container's writable layer is deleted with it; volumes live outside the container lifecycle."
+        },
+        {
+          "id": 5,
+          "question": "What is the main benefit of a multi-stage build?",
+          "options": [
+            "It runs containers faster",
+            "A smaller final image, because build tools stay in earlier stages",
+            "It allows multiple CMD instructions",
+            "It removes the need for a registry"
+          ],
+          "correctIndex": 1,
+          "explanation": "You compile in one stage and copy only the output into a slim final stage."
+        }
+      ]
+    },
+    {
+      "id": "kubernetes",
+      "name": "Kubernetes",
+      "displayName": "Kubernetes",
+      "group": "DevOps & Cloud",
+      "description": "Pods, Deployments, Services, and health probes.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "Kubernetes"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What is the smallest deployable unit in Kubernetes?",
+          "options": [
+            "Node",
+            "Cluster",
+            "Pod",
+            "Namespace"
+          ],
+          "correctIndex": 2,
+          "explanation": "A Pod wraps one or more containers that share networking and storage."
+        },
+        {
+          "id": 2,
+          "question": "What does a Deployment do?",
+          "options": [
+            "Keeps the desired number of Pod replicas running and manages rolling updates",
+            "Stores secrets",
+            "Routes external DNS",
+            "Builds container images"
+          ],
+          "correctIndex": 0,
+          "explanation": "If a Pod dies, the Deployment's ReplicaSet creates a replacement; updates roll out gradually."
+        },
+        {
+          "id": 3,
+          "question": "What does a Service provide?",
+          "options": [
+            "Persistent disk storage",
+            "A stable network endpoint for a changing set of Pods",
+            "A container registry",
+            "A CI pipeline"
+          ],
+          "correctIndex": 1,
+          "explanation": "Pods come and go with new IP addresses; a Service gives them one stable name and address."
+        },
+        {
+          "id": 4,
+          "question": "Which command-line tool is used to talk to a cluster?",
+          "options": [
+            "kubeadm-ui",
+            "dockerctl",
+            "helmfile",
+            "kubectl"
+          ],
+          "correctIndex": 3,
+          "explanation": "kubectl sends requests to the Kubernetes API server, for example kubectl get pods."
+        },
+        {
+          "id": 5,
+          "question": "What happens when a Pod's readiness probe fails?",
+          "options": [
+            "The Pod is deleted permanently",
+            "The node is shut down",
+            "The Pod stops receiving traffic from Services until it passes again",
+            "The image is rebuilt"
+          ],
+          "correctIndex": 2,
+          "explanation": "Readiness controls traffic. A failing liveness probe, by contrast, restarts the container."
+        }
+      ]
+    },
+    {
+      "id": "ci-cd",
+      "name": "CI/CD",
+      "displayName": "CI/CD Pipelines",
+      "group": "DevOps & Cloud",
+      "description": "Continuous integration, delivery, artifacts, and pipeline secrets.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "CI/CD"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What is continuous integration?",
+          "options": [
+            "Merging code frequently, with automated builds and tests on each change",
+            "Releasing once a year",
+            "Writing code without version control",
+            "Manually copying files to a server"
+          ],
+          "correctIndex": 0,
+          "explanation": "Frequent small merges verified by automation catch integration problems early."
+        },
+        {
+          "id": 2,
+          "question": "How does continuous deployment differ from continuous delivery?",
+          "options": [
+            "They are identical",
+            "Delivery has no tests",
+            "Deployment releases every passing change to production automatically, with no manual approval",
+            "Deployment is only for mobile apps"
+          ],
+          "correctIndex": 2,
+          "explanation": "Continuous delivery keeps the code always releasable but a person approves the release."
+        },
+        {
+          "id": 3,
+          "question": "What should a pipeline do when a test fails?",
+          "options": [
+            "Deploy anyway",
+            "Stop and report the failure",
+            "Delete the repository",
+            "Skip the remaining tests silently and pass"
+          ],
+          "correctIndex": 1,
+          "explanation": "A failing stage should block later stages so broken code never reaches production."
+        },
+        {
+          "id": 4,
+          "question": "Where should a pipeline's credentials be kept?",
+          "options": [
+            "In the pipeline YAML file",
+            "In the README",
+            "In commit messages",
+            "In the CI platform's encrypted secrets or a secret manager"
+          ],
+          "correctIndex": 3,
+          "explanation": "Secrets in the repository are visible to everyone with read access and stay in history forever."
+        },
+        {
+          "id": 5,
+          "question": "What is a build artifact?",
+          "options": [
+            "A bug found in testing",
+            "The packaged output of a build, such as a container image or binary, reused by later stages",
+            "A code comment",
+            "A failed pipeline run"
+          ],
+          "correctIndex": 1,
+          "explanation": "Building once and promoting the same artifact ensures what was tested is what gets deployed."
+        }
+      ]
+    },
+    {
+      "id": "linux",
+      "name": "Linux",
+      "displayName": "Linux Command Line",
+      "group": "DevOps & Cloud",
+      "description": "Permissions, processes, pipes, and everyday shell commands.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "Linux"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What permissions does chmod 755 file set?",
+          "options": [
+            "Everyone can read, write and execute",
+            "Only the owner can read",
+            "Owner: read/write/execute; group and others: read/execute",
+            "Nobody can access the file"
+          ],
+          "correctIndex": 2,
+          "explanation": "7 = rwx for the owner, 5 = r-x for the group, 5 = r-x for others."
+        },
+        {
+          "id": 2,
+          "question": "Which command lists running processes?",
+          "options": [
+            "ps aux",
+            "ls -l",
+            "pwd",
+            "touch"
+          ],
+          "correctIndex": 0,
+          "explanation": "ps aux shows every process with its owner, PID, and resource usage."
+        },
+        {
+          "id": 3,
+          "question": "What does grep -r \"error\" /var/log do?",
+          "options": [
+            "Deletes log files containing errors",
+            "Searches all files under /var/log recursively for the text \"error\"",
+            "Renames the log directory",
+            "Shows disk usage"
+          ],
+          "correctIndex": 1,
+          "explanation": "grep prints matching lines; -r makes it descend into sub-directories."
+        },
+        {
+          "id": 4,
+          "question": "What does the pipe symbol | do?",
+          "options": [
+            "Runs two commands at the same time independently",
+            "Writes output to a file",
+            "Runs the command as administrator",
+            "Sends the output of one command as the input of the next"
+          ],
+          "correctIndex": 3,
+          "explanation": "For example, ps aux | grep python filters the process list."
+        },
+        {
+          "id": 5,
+          "question": "Which signal does kill -9 send?",
+          "options": [
+            "SIGKILL, which the process cannot catch or ignore",
+            "SIGTERM, a polite request to exit",
+            "SIGHUP, to reload configuration",
+            "SIGSTOP, to pause temporarily"
+          ],
+          "correctIndex": 0,
+          "explanation": "Try plain kill (SIGTERM) first so the process can clean up; use -9 only as a last resort."
+        }
+      ]
+    },
+    {
+      "id": "git",
+      "name": "Git",
+      "displayName": "Git Version Control",
+      "group": "DevOps & Cloud",
+      "description": "Cloning, staging, branches, and undoing changes safely.",
+      "estimated_minutes": 6,
+      "skills_awarded": [
+        "Git"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What does git clone do?",
+          "options": [
+            "Deletes a branch",
+            "Copies a remote repository, including its history, to your machine",
+            "Uploads your changes",
+            "Creates an empty repository"
+          ],
+          "correctIndex": 1,
+          "explanation": "clone downloads the full repository and sets the source as the 'origin' remote."
+        },
+        {
+          "id": 2,
+          "question": "What does git add do?",
+          "options": [
+            "Stages changes for the next commit",
+            "Creates a new branch",
+            "Sends commits to the server",
+            "Shows the commit history"
+          ],
+          "correctIndex": 0,
+          "explanation": "Only staged changes are included when you run git commit."
+        },
+        {
+          "id": 3,
+          "question": "What is a branch in Git?",
+          "options": [
+            "A full copy of the repository in a new folder",
+            "A backup on the server",
+            "A movable pointer to a commit",
+            "A list of ignored files"
+          ],
+          "correctIndex": 2,
+          "explanation": "Branches are cheap because they are just named pointers that move as you commit."
+        },
+        {
+          "id": 4,
+          "question": "What does git pull do by default?",
+          "options": [
+            "Only downloads without changing your files",
+            "Deletes local changes",
+            "Pushes your branch",
+            "Fetches from the remote and merges into your current branch"
+          ],
+          "correctIndex": 3,
+          "explanation": "git pull is git fetch followed by git merge (or rebase, if configured)."
+        },
+        {
+          "id": 5,
+          "question": "What is the safe way to undo a commit that is already pushed to a shared branch?",
+          "options": [
+            "git push --force after deleting it",
+            "git revert, which adds a new commit that undoes it",
+            "Delete the repository",
+            "Edit the .git folder by hand"
+          ],
+          "correctIndex": 1,
+          "explanation": "revert keeps history intact, so teammates' copies are not broken."
+        }
+      ]
+    },
+    {
+      "id": "cloud-basics",
+      "name": "Cloud Basics",
+      "displayName": "Cloud Computing Basics",
+      "group": "DevOps & Cloud",
+      "description": "Service models, scaling, regions, and storage types.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "Cloud Basics"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "Which of these is an example of Infrastructure as a Service (IaaS)?",
+          "options": [
+            "Renting virtual machines",
+            "Using a web-based email app",
+            "Buying a laptop",
+            "Installing a mobile game"
+          ],
+          "correctIndex": 0,
+          "explanation": "IaaS gives you raw compute, storage and networking; you manage the operating system and above."
+        },
+        {
+          "id": 2,
+          "question": "What does pay-as-you-go pricing mean?",
+          "options": [
+            "You pay a fixed yearly fee",
+            "You pay before you can sign up",
+            "You pay only for the resources you actually use",
+            "Everything is free"
+          ],
+          "correctIndex": 2,
+          "explanation": "Cloud usage is metered, so costs follow consumption rather than up-front hardware purchases."
+        },
+        {
+          "id": 3,
+          "question": "What is horizontal scaling?",
+          "options": [
+            "Giving one server more CPU and memory",
+            "Adding more server instances to share the load",
+            "Reducing the number of users",
+            "Moving to a different region"
+          ],
+          "correctIndex": 1,
+          "explanation": "Scaling out adds instances; scaling up (vertical) makes a single instance bigger."
+        },
+        {
+          "id": 4,
+          "question": "How do a region and an availability zone relate?",
+          "options": [
+            "They are the same thing",
+            "A zone contains many regions",
+            "Regions exist only in one country",
+            "A region is a geographic area containing several isolated availability zones"
+          ],
+          "correctIndex": 3,
+          "explanation": "Spreading an app across zones protects it from the failure of a single data centre."
+        },
+        {
+          "id": 5,
+          "question": "What is object storage best suited for?",
+          "options": [
+            "Files such as images, backups, and logs",
+            "Running operating systems",
+            "High-speed relational transactions",
+            "Replacing CPU memory"
+          ],
+          "correctIndex": 0,
+          "explanation": "Object stores hold large amounts of unstructured data cheaply and durably."
+        }
+      ]
+    },
+    {
+      "id": "cloud-security",
+      "name": "Cloud Security",
+      "displayName": "Cloud Security",
+      "group": "DevOps & Cloud",
+      "description": "Least privilege, shared responsibility, encryption, and secrets.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "Cloud Security"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What does the principle of least privilege mean?",
+          "options": [
+            "Give every user administrator access",
+            "Grant only the permissions needed to do the job",
+            "Share one account across the team",
+            "Disable logging"
+          ],
+          "correctIndex": 1,
+          "explanation": "Limiting permissions limits the damage if an account or key is compromised."
+        },
+        {
+          "id": 2,
+          "question": "Under the shared responsibility model, who secures what?",
+          "options": [
+            "The provider secures everything",
+            "The customer secures the physical data centres",
+            "The provider secures the underlying infrastructure; the customer secures their data and configuration",
+            "Nobody is responsible"
+          ],
+          "correctIndex": 2,
+          "explanation": "Misconfigured storage or access rules are the customer's responsibility, not the provider's."
+        },
+        {
+          "id": 3,
+          "question": "What does multi-factor authentication add?",
+          "options": [
+            "A second proof of identity in addition to the password",
+            "A longer password",
+            "Faster logins",
+            "Automatic backups"
+          ],
+          "correctIndex": 0,
+          "explanation": "A stolen password alone is not enough when a second factor is required."
+        },
+        {
+          "id": 4,
+          "question": "What protects data while it travels between a browser and a server?",
+          "options": [
+            "Disk partitioning",
+            "Compression",
+            "Load balancing",
+            "TLS (HTTPS) encryption"
+          ],
+          "correctIndex": 3,
+          "explanation": "TLS provides encryption in transit; encryption at rest protects stored data."
+        },
+        {
+          "id": 5,
+          "question": "Where should API keys be kept?",
+          "options": [
+            "In the source code repository",
+            "In a secret manager or environment variables, never committed to code",
+            "In the page's HTML",
+            "In a public wiki"
+          ],
+          "correctIndex": 1,
+          "explanation": "Keys committed to a repository are easily leaked and remain in the history."
+        }
+      ]
+    },
+    {
+      "id": "machine-learning",
+      "name": "Machine Learning",
+      "displayName": "Machine Learning Basics",
+      "group": "AI & Data",
+      "description": "Supervised learning, overfitting, evaluation, and metrics.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "Machine Learning"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What kind of data does supervised learning need?",
+          "options": [
+            "Labelled examples with known answers",
+            "Only unlabelled data",
+            "No data at all",
+            "Only images"
+          ],
+          "correctIndex": 0,
+          "explanation": "The model learns a mapping from inputs to the provided labels."
+        },
+        {
+          "id": 2,
+          "question": "What is overfitting?",
+          "options": [
+            "The model is too small to learn anything",
+            "Training takes too long",
+            "The model does well on training data but poorly on new data",
+            "The dataset has too many rows"
+          ],
+          "correctIndex": 2,
+          "explanation": "An overfitted model has memorised noise in the training set instead of general patterns."
+        },
+        {
+          "id": 3,
+          "question": "Why is data split into training and test sets?",
+          "options": [
+            "To make training faster",
+            "To estimate how the model performs on data it has not seen",
+            "To double the dataset",
+            "To remove duplicate rows"
+          ],
+          "correctIndex": 1,
+          "explanation": "Evaluating on the training data gives an over-optimistic picture."
+        },
+        {
+          "id": 4,
+          "question": "Predicting whether an email is spam or not spam is an example of:",
+          "options": [
+            "Regression",
+            "Clustering",
+            "Dimensionality reduction",
+            "Classification"
+          ],
+          "correctIndex": 3,
+          "explanation": "Classification predicts a category; regression predicts a continuous number."
+        },
+        {
+          "id": 5,
+          "question": "What does precision measure?",
+          "options": [
+            "Of the items predicted positive, the share that really are positive",
+            "Of all real positives, the share that were found",
+            "The training speed",
+            "The number of features"
+          ],
+          "correctIndex": 0,
+          "explanation": "The second option describes recall. Precision is about how trustworthy the positive predictions are."
+        }
+      ]
+    },
+    {
+      "id": "vector-search",
+      "name": "Vector Search",
+      "displayName": "Vector Search & Embeddings",
+      "group": "AI & Data",
+      "description": "Embeddings, similarity measures, ANN indexes, and RAG.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "Vector Search",
+        "Vector Embeddings"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What is an embedding?",
+          "options": [
+            "A compressed image file",
+            "A list of numbers that captures the meaning of a piece of content",
+            "A database backup",
+            "A type of SQL join"
+          ],
+          "correctIndex": 1,
+          "explanation": "Content with similar meaning is mapped to vectors that are close together."
+        },
+        {
+          "id": 2,
+          "question": "What is the cosine similarity of two vectors pointing in exactly the same direction?",
+          "options": [
+            "1",
+            "0",
+            "-1",
+            "It depends on their length"
+          ],
+          "correctIndex": 0,
+          "explanation": "Cosine similarity measures the angle only: 1 for the same direction, 0 for perpendicular, -1 for opposite."
+        },
+        {
+          "id": 3,
+          "question": "Why use an approximate nearest neighbour (ANN) index such as HNSW?",
+          "options": [
+            "To make results exact",
+            "To encrypt the vectors",
+            "To search much faster by accepting a small loss of accuracy",
+            "To reduce the number of dimensions to one"
+          ],
+          "correctIndex": 2,
+          "explanation": "Comparing a query with every stored vector is too slow at scale; ANN indexes avoid that."
+        },
+        {
+          "id": 4,
+          "question": "What does retrieval-augmented generation (RAG) do?",
+          "options": [
+            "Trains a new model from scratch for each question",
+            "Removes the need for a language model",
+            "Stores answers in a spreadsheet",
+            "Retrieves relevant documents and gives them to the language model as context"
+          ],
+          "correctIndex": 3,
+          "explanation": "Grounding the model in retrieved documents improves accuracy and lets it use private or recent data."
+        },
+        {
+          "id": 5,
+          "question": "Why must queries and documents be embedded with the same model?",
+          "options": [
+            "It is cheaper",
+            "Vectors from different models live in different spaces and cannot be compared meaningfully",
+            "Models are all identical anyway",
+            "It is a legal requirement"
+          ],
+          "correctIndex": 1,
+          "explanation": "Each model defines its own vector space and dimensions; distances across models are meaningless."
+        }
+      ]
+    },
+    {
+      "id": "sap-btp",
+      "name": "SAP BTP",
+      "displayName": "SAP Business Technology Platform",
+      "group": "SAP & Enterprise",
+      "description": "BTP, the CAP model, CDS, and SAP's AI and automation services.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "SAP BTP"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What does BTP stand for?",
+          "options": [
+            "Business Technology Platform",
+            "Basic Transaction Processor",
+            "Backend Transfer Protocol",
+            "Business Table Package"
+          ],
+          "correctIndex": 0,
+          "explanation": "SAP BTP brings together application development, data, analytics, integration and AI services."
+        },
+        {
+          "id": 2,
+          "question": "What is CAP in the SAP ecosystem?",
+          "options": [
+            "A hardware appliance",
+            "A licence type",
+            "The Cloud Application Programming Model, a framework for services in Node.js or Java",
+            "A reporting tool for spreadsheets"
+          ],
+          "correctIndex": 2,
+          "explanation": "CAP provides languages, libraries and tools for building enterprise services and applications."
+        },
+        {
+          "id": 3,
+          "question": "In CAP, what is CDS mainly used for?",
+          "options": [
+            "Styling user interfaces",
+            "Defining data models and services",
+            "Managing container images",
+            "Sending emails"
+          ],
+          "correctIndex": 1,
+          "explanation": "Core Data Services (CDS) is the modelling language for entities and the services that expose them."
+        },
+        {
+          "id": 4,
+          "question": "What does the Generative AI Hub in SAP AI Core provide?",
+          "options": [
+            "A code editor",
+            "Physical GPU hardware shipped to customers",
+            "A spreadsheet add-in only",
+            "Managed access to large language models and other foundation models"
+          ],
+          "correctIndex": 3,
+          "explanation": "It gives applications governed access to models from several providers through one service."
+        },
+        {
+          "id": 5,
+          "question": "What is SAP Build Process Automation used for?",
+          "options": [
+            "Building workflows and automating tasks with low-code tools",
+            "Compiling C++ programs",
+            "Hosting static websites only",
+            "Designing database hardware"
+          ],
+          "correctIndex": 0,
+          "explanation": "It combines workflow management and robotic process automation, such as approval flows."
+        }
+      ]
+    },
+    {
+      "id": "sap-hana",
+      "name": "SAP HANA",
+      "displayName": "SAP HANA Cloud",
+      "group": "SAP & Enterprise",
+      "description": "In-memory columnar storage and the HANA Cloud vector engine.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "SAP HANA"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What kind of database is SAP HANA primarily?",
+          "options": [
+            "A file-based spreadsheet store",
+            "An in-memory, column-oriented database",
+            "A tape archive system",
+            "A browser cache"
+          ],
+          "correctIndex": 1,
+          "explanation": "HANA keeps data in memory and stores it by column, which makes analytical queries very fast."
+        },
+        {
+          "id": 2,
+          "question": "Why is column-oriented storage good for analytics?",
+          "options": [
+            "Queries read only the columns they need, and columns compress well",
+            "It makes single-row inserts the fastest possible",
+            "It removes the need for SQL",
+            "It stores data as images"
+          ],
+          "correctIndex": 0,
+          "explanation": "Aggregating one column over millions of rows touches far less data than reading whole rows."
+        },
+        {
+          "id": 3,
+          "question": "What does the SAP HANA Cloud vector engine let you do?",
+          "options": [
+            "Draw vector graphics",
+            "Replace the operating system",
+            "Store embeddings in a vector column and run similarity searches in SQL",
+            "Compile ABAP code"
+          ],
+          "correctIndex": 2,
+          "explanation": "Embeddings are stored in REAL_VECTOR columns next to business data and queried with SQL."
+        },
+        {
+          "id": 4,
+          "question": "Which SQL function compares two vectors by angle in SAP HANA Cloud?",
+          "options": [
+            "VECTOR_SUM",
+            "STRING_AGG",
+            "ROW_NUMBER",
+            "COSINE_SIMILARITY"
+          ],
+          "correctIndex": 3,
+          "explanation": "COSINE_SIMILARITY returns how closely two vectors point in the same direction; L2DISTANCE is also available."
+        },
+        {
+          "id": 5,
+          "question": "What is DUMMY in SELECT 1 FROM DUMMY?",
+          "options": [
+            "A user-created test table",
+            "A built-in one-row table used for simple expressions and connectivity checks",
+            "A reserved word that deletes data",
+            "A column alias"
+          ],
+          "correctIndex": 1,
+          "explanation": "DUMMY always exists with exactly one row, so it is handy for evaluating expressions."
+        }
+      ]
+    },
+    {
+      "id": "dsa",
+      "name": "Problem Solving",
+      "displayName": "Data Structures & Algorithms",
+      "group": "Computer Science",
+      "description": "Complexity, stacks, queues, hashing, searching, and sorting.",
+      "estimated_minutes": 8,
+      "skills_awarded": [
+        "Problem Solving",
+        "Data Structures & Algorithms"
+      ],
+      "questions": [
+        {
+          "id": 1,
+          "question": "What is the time complexity of binary search on a sorted array?",
+          "options": [
+            "O(n)",
+            "O(n log n)",
+            "O(log n)",
+            "O(1)"
+          ],
+          "correctIndex": 2,
+          "explanation": "Each comparison halves the remaining search range."
+        },
+        {
+          "id": 2,
+          "question": "In what order does a stack remove items?",
+          "options": [
+            "Last in, first out",
+            "First in, first out",
+            "Random order",
+            "Sorted order"
+          ],
+          "correctIndex": 0,
+          "explanation": "A stack is LIFO, like a pile of plates. A queue is FIFO."
+        },
+        {
+          "id": 3,
+          "question": "What is the average time to look up a key in a hash map?",
+          "options": [
+            "O(n)",
+            "O(1)",
+            "O(log n)",
+            "O(n²)"
+          ],
+          "correctIndex": 1,
+          "explanation": "The hash of the key points directly to its bucket, so lookups are constant time on average."
+        },
+        {
+          "id": 4,
+          "question": "Which data structure does breadth-first search use?",
+          "options": [
+            "Stack",
+            "Heap",
+            "Hash set only",
+            "Queue"
+          ],
+          "correctIndex": 3,
+          "explanation": "A queue processes nodes level by level; depth-first search uses a stack or recursion."
+        },
+        {
+          "id": 5,
+          "question": "Which of these sorting algorithms guarantees O(n log n) in the worst case?",
+          "options": [
+            "Merge sort",
+            "Quick sort",
+            "Bubble sort",
+            "Insertion sort"
+          ],
+          "correctIndex": 0,
+          "explanation": "Quick sort is O(n log n) on average but O(n²) in the worst case; bubble and insertion sort are O(n²)."
+        }
+      ]
+    }
+  ]
+}

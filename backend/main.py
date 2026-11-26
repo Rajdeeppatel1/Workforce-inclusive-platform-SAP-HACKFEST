@@ -12,12 +12,20 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import os
+import sys
 from config import settings
+
+# The startup banner uses emoji. On Windows, when output is piped or redirected
+# the console encoding is cp1252 and print() would crash the server at startup.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(errors="replace")
 from routes.matching_routes import router as matching_router
 from routes.genai_routes import router as genai_router
 from routers.fairness import router as fairness_router
 from routers.auth_profile import router as auth_profile_router
 from routers.voice_router import router as voice_router
+from routers.quiz import router as quiz_router
 
 
 # ═══════════════════════════════════════════
@@ -66,6 +74,7 @@ app.include_router(genai_router)
 app.include_router(fairness_router)
 app.include_router(auth_profile_router)
 app.include_router(voice_router)
+app.include_router(quiz_router)
 
 
 # ═══════════════════════════════════════════

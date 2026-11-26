@@ -6,8 +6,11 @@ Endpoints:
 - GET  /api/profile     → retrieves candidate profile from backend/data/profiles/
 - POST /api/profile     → saves/updates candidate profile into backend/data/profiles/<profile_id>.json
 - POST /api/consent     → records candidate data-use consent
+
+Skill quizzes are graded and recorded by routers/quiz.py.
 """
 
+import copy
 import os
 import json
 from datetime import datetime
@@ -18,8 +21,10 @@ from pydantic import BaseModel, Field
 router = APIRouter(prefix="/api", tags=["auth-and-profile"])
 
 # Profile storage path
+# SKILLNAV_PROFILES_DIR lets tests (and deployments) point at a different directory.
 PROFILES_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "data", "profiles")
+    os.environ.get("SKILLNAV_PROFILES_DIR")
+    or os.path.join(os.path.dirname(__file__), "..", "data", "profiles")
 )
 os.makedirs(PROFILES_DIR, exist_ok=True)
 
@@ -52,6 +57,11 @@ class QuizScore(BaseModel):
     percentage: float
     passed: bool
     completed_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat() + "Z")
+    quiz_id: Optional[str] = None
+    display_name: Optional[str] = None
+    attempts: int = 1
+    best_percentage: Optional[float] = None
+    last_attempt_passed: Optional[bool] = None
 
 
 class UserProfile(BaseModel):
@@ -196,6 +206,32 @@ def _get_profile_file_path(profile_id: str) -> str:
     return os.path.join(PROFILES_DIR, f"{safe_id}.json")
 
 
+def load_profile_record(profile_id: str) -> Optional[Dict[str, Any]]:
+    """
+    Returns the stored profile for this ID, the matching seed profile if it has
+    not been stored yet, or None when the ID is unknown.
+    """
+    filepath = _get_profile_file_path(profile_id)
+    if os.path.exists(filepath):
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, dict):
+                return data
+        except (OSError, ValueError):
+            pass
+    for seed in (SEEDED_PRIYA_PROFILE, SEEDED_MOCK_PROFILE):
+        if seed["profile_id"] == profile_id:
+            return copy.deepcopy(seed)
+    return None
+
+
+def write_profile_record(profile_id: str, data: Dict[str, Any]) -> None:
+    """Writes the profile JSON. Raises OSError if the storage is not writable."""
+    with open(_get_profile_file_path(profile_id), "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+
 @router.post("/login/mock")
 async def login_mock(profile_id: str = Query(default="seed_priya_sharma_01")):
     """
@@ -246,6 +282,11 @@ async def save_profile(profile: UserProfile):
     """
     profile.updated_at = datetime.utcnow().isoformat() + "Z"
     profile_dict = profile.model_dump()
+
+    # Quiz results are written only by the server-side grader (routers/quiz.py).
+    # Whatever the client sends here is ignored so scores cannot be edited or forged.
+    existing = load_profile_record(profile.profile_id)
+    profile_dict["quiz_scores"] = (existing or {}).get("quiz_scores") or []
 
     filepath = _get_profile_file_path(profile.profile_id)
     try:
@@ -303,75 +344,13 @@ async def get_fresher_catalog():
     try:
         with open(catalog_path, "r", encoding="utf-8") as f:
             data = json.load(f)
-            return data
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to read fresher catalog: {str(e)}")
 
-
-class SaveQuizScoreRequest(BaseModel):
-    profile_id: str
-    category: str
-    score: int
-    total: int = 5
-    passed: bool
-
-
-@router.post("/profile/quiz-score")
-async def save_quiz_score(req: SaveQuizScoreRequest):
-    """
-    Saves candidate MCQ quiz score into backend/data/profiles/<profile_id>.json.
-    Also adds verified skill tag if score >= 60%.
-    """
-    filepath = _get_profile_file_path(req.profile_id)
-    profile_data = dict(SEEDED_MOCK_PROFILE)
-
-    if os.path.exists(filepath):
-        try:
-            with open(filepath, "r", encoding="utf-8") as f:
-                profile_data = json.load(f)
-        except Exception:
-            pass
-
-    if "quiz_scores" not in profile_data:
-        profile_data["quiz_scores"] = []
-
-    percentage = round((req.score / req.total) * 100, 1)
-    new_entry = {
-        "category": req.category,
-        "score": req.score,
-        "total": req.total,
-        "percentage": percentage,
-        "passed": req.passed,
-        "completed_at": datetime.utcnow().isoformat() + "Z"
-    }
-
-    # Update or append category score
-    existing_idx = next((i for i, q in enumerate(profile_data["quiz_scores"]) if q.get("category") == req.category), -1)
-    if existing_idx >= 0:
-        profile_data["quiz_scores"][existing_idx] = new_entry
-    else:
-        profile_data["quiz_scores"].append(new_entry)
-
-    # If passed (>= 60%), add skill tag if not present
-    if req.passed:
-        current_skills = profile_data.get("skills", [])
-        if req.category not in current_skills:
-            current_skills.append(req.category)
-            profile_data["skills"] = current_skills
-
-    profile_data["updated_at"] = datetime.utcnow().isoformat() + "Z"
-
-    try:
-        with open(filepath, "w", encoding="utf-8") as f:
-            json.dump(profile_data, f, indent=2)
-        return {
-            "status": "success",
-            "message": f"Quiz score ({req.score}/{req.total}) saved to profile.",
-            "quiz_scores": profile_data["quiz_scores"],
-            "profile": profile_data
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to save quiz score: {str(e)}")
+    # Quiz metadata only: questions and answers are served by /api/quiz.
+    from routers.quiz import list_quiz_metadata
+    data["test_categories"] = list_quiz_metadata()
+    return data
 
 
 # ═════════════════════════════════════════════════════════════
