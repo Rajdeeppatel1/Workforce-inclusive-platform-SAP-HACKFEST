@@ -26,6 +26,7 @@ from routers.fairness import router as fairness_router
 from routers.auth_profile import router as auth_profile_router
 from routers.voice_router import router as voice_router
 from routers.quiz import router as quiz_router
+from routers.resources import router as resources_router
 
 
 # ═══════════════════════════════════════════
@@ -75,6 +76,7 @@ app.include_router(fairness_router)
 app.include_router(auth_profile_router)
 app.include_router(voice_router)
 app.include_router(quiz_router)
+app.include_router(resources_router)
 
 
 # ═══════════════════════════════════════════

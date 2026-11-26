@@ -350,6 +350,17 @@ async def get_fresher_catalog():
     # Quiz metadata only: questions and answers are served by /api/quiz.
     from routers.quiz import list_quiz_metadata
     data["test_categories"] = list_quiz_metadata()
+
+    # Learning resources from backend/data/resources.json
+    resources_path = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "data", "resources.json")
+    )
+    if os.path.exists(resources_path):
+        try:
+            with open(resources_path, "r", encoding="utf-8") as rf:
+                data["resources"] = json.load(rf)
+        except Exception:
+            data["resources"] = []
     return data
 
 

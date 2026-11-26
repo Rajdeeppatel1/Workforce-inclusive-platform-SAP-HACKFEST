@@ -89,6 +89,12 @@ export default function Layout({ children }) {
       icon: BookOpen,
     },
     {
+      to: '/learning-hub',
+      labelEn: 'Learning Hub',
+      labelHi: 'लर्निंग हब',
+      icon: ExternalLink,
+    },
+    {
       to: '/employed',
       labelEn: 'Employed Track',
       labelHi: 'एम्प्लॉयड ट्रैक',

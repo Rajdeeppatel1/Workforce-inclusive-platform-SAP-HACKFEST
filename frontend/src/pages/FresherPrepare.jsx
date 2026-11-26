@@ -45,6 +45,7 @@ export default function FresherPrepare() {
   const [aimlPlatforms, setAimlPlatforms] = useState([]);
   const [practicePlatforms, setPracticePlatforms] = useState([]);
   const [learningResources, setLearningResources] = useState([]);
+  const [curatedResources, setCuratedResources] = useState([]);
   const [skillQuizzes, setSkillQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,14 +61,15 @@ export default function FresherPrepare() {
   const [savingScore, setSavingScore] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Fetch from backend/data/fresher_catalog.json and /api/quiz/categories
+  // Fetch from backend/data/fresher_catalog.json, /api/quiz/categories, and /api/resources
   useEffect(() => {
     let isMounted = true;
     const fetchCatalog = async () => {
       try {
-        const [catRes, quizRes] = await Promise.allSettled([
+        const [catRes, quizRes, resRes] = await Promise.allSettled([
           axios.get('/api/fresher/catalog'),
           axios.get('/api/quiz/categories'),
+          axios.get('/api/resources'),
         ]);
 
         if (isMounted && catRes.status === 'fulfilled' && catRes.value.data) {
@@ -83,6 +85,13 @@ export default function FresherPrepare() {
           } else if (data.skill_quizzes && data.skill_quizzes.length > 0) {
             setSkillQuizzes(data.skill_quizzes);
           }
+          if (data.resources && data.resources.length > 0) {
+            setCuratedResources(data.resources);
+          }
+        }
+
+        if (isMounted && resRes.status === 'fulfilled' && Array.isArray(resRes.value.data)) {
+          setCuratedResources(resRes.value.data);
         }
 
         if (isMounted && quizRes.status === 'fulfilled' && quizRes.value.data?.quizzes) {
@@ -115,6 +124,7 @@ export default function FresherPrepare() {
 
   const sectionTabs = [
     { id: 'All', label: 'All Resources' },
+    { id: 'Gaps', label: '💡 Skill Gap Recommendations' },
     { id: 'Quizzes', label: '🎯 Skill Quizzes (20 Skills × 20 Questions)' },
     { id: 'Portals', label: '🏛️ Official Portals (SAP, Azure, AWS, GCP)' },
     { id: 'DSA', label: '💻 DSA Practice (LeetCode, CodeChef, GFG)' },
@@ -122,6 +132,25 @@ export default function FresherPrepare() {
     { id: 'AIML', label: '🤖 AI / ML & Data Science Hubs' },
     { id: 'Sandboxes', label: '🛠️ Interactive Sandboxes & Standards' },
   ];
+
+  // Candidate known skills from profile
+  const userKnownSet = new Set(
+    (profile?.skills || ['Python', 'FastAPI', 'SQL', 'REST APIs']).map((s) => s.toLowerCase())
+  );
+
+  // Recommendations mapped to candidate's missing skills
+  const skillGapRecommendations = curatedResources
+    .map((res) => {
+      const missing = (res.skills || []).filter(
+        (s) => !userKnownSet.has(s.toLowerCase())
+      );
+      return {
+        ...res,
+        matchingGaps: missing,
+        primaryGap: missing[0] || (res.skills && res.skills[0]) || 'General Tech',
+      };
+    })
+    .filter((res) => res.matchingGaps && res.matchingGaps.length > 0);
 
   const matchesSearch = (item, fields) => {
     if (!searchQuery.trim()) return true;
@@ -318,6 +347,13 @@ export default function FresherPrepare() {
 
         <div className="flex items-center gap-2.5">
           <Link
+            to="/learning-hub"
+            className="min-h-[44px] text-xs text-blue-700 bg-blue-50 hover:bg-blue-100 font-semibold border border-blue-200 px-3.5 py-2 rounded-sm transition-colors flex items-center gap-1.5"
+          >
+            <span>Learning Hub</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </Link>
+          <Link
             to="/fresher"
             className="min-h-[44px] text-xs text-neutral-600 hover:text-black font-semibold border border-neutral-300 px-3.5 py-2 rounded-sm transition-colors flex items-center gap-1"
           >
@@ -403,6 +439,129 @@ export default function FresherPrepare() {
           ))}
         </div>
       </div>
+
+      {/* ═════════════════════════════════════════════════════════════
+          SECTION: Personalized Skill Gap Recommendations (aapki gap: X)
+          ═════════════════════════════════════════════════════════════ */}
+      {(sectionFilter === 'All' || sectionFilter === 'Gaps') && !activeQuizSkill && skillGapRecommendations.length > 0 && (
+        <div className="space-y-4 pt-1">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 border border-blue-200 rounded-lg">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="p-1.5 bg-blue-600 text-white rounded">
+                  <Sparkles className="w-4 h-4" />
+                </span>
+                <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900">
+                  Targeted Skill Gap Recommendations ({skillGapRecommendations.length})
+                </h2>
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-blue-100 text-blue-900 rounded border border-blue-200">
+                  Profile Matched
+                </span>
+              </div>
+              <p className="text-xs text-neutral-600 mt-1">
+                Learning pathways specifically chosen to close gaps identified in your candidate profile and target job roles.
+              </p>
+            </div>
+            <Link
+              to="/learning-hub"
+              className="min-h-[44px] px-3.5 py-1.5 bg-neutral-900 hover:bg-black text-white text-xs font-semibold rounded flex items-center gap-1.5 transition-colors shrink-0 shadow-xs"
+            >
+              <span>View All on Learning Hub</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {skillGapRecommendations.slice(0, 6).map((item) => {
+              const isVerified = item.verified === true;
+              return (
+                <div
+                  key={item.id}
+                  className="p-5 border-2 border-blue-200 hover:border-blue-600 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-4 group hover:shadow-md"
+                >
+                  <div className="space-y-2.5">
+                    {/* Reason Badge */}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-bold text-blue-900 bg-blue-100 px-2.5 py-0.5 rounded border border-blue-300 flex items-center gap-1">
+                        <Target className="w-3 h-3 text-blue-700" />
+                        aapki gap: {item.primaryGap}
+                      </span>
+
+                      {/* Verification Status */}
+                      {isVerified ? (
+                        <span
+                          className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-300 rounded flex items-center gap-1 shrink-0"
+                          title="Verified link"
+                        >
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                          <span>Verified</span>
+                        </span>
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold tracking-wider px-2 py-0.5 bg-amber-50 text-amber-900 border border-amber-300 rounded flex items-center gap-1 shrink-0"
+                          title="Link not yet verified"
+                        >
+                          <AlertCircle className="w-3 h-3 text-amber-600" />
+                          <span>Link not yet verified</span>
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="text-[10px] text-neutral-500 font-semibold uppercase tracking-wider">
+                      {item.provider} • {item.level} • ~{item.estHours}h
+                    </div>
+
+                    <h3 className="text-sm font-bold text-neutral-900 group-hover:text-blue-600 transition-colors leading-snug">
+                      {item.title}
+                    </h3>
+
+                    <div className="text-[11px] text-neutral-700 bg-blue-50/50 p-2.5 rounded border border-blue-100">
+                      <span className="font-bold text-blue-950">Reason: </span>
+                      Recommended for your skill gap in <strong>{item.primaryGap}</strong>.
+                    </div>
+
+                    {item.skills && (
+                      <div className="flex flex-wrap gap-1.5 pt-0.5">
+                        {item.skills.map((skill) => {
+                          const isGap = !userKnownSet.has(skill.toLowerCase());
+                          return (
+                            <span
+                              key={skill}
+                              className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                                isGap
+                                  ? 'bg-blue-50 text-blue-800 border border-blue-300 font-semibold'
+                                  : 'bg-neutral-50 text-neutral-600 border border-neutral-200'
+                              }`}
+                            >
+                              {skill} {isGap && '★ Gap'}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-semibold text-neutral-500 truncate max-w-[140px]">
+                      Direct Redirect
+                    </span>
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="min-h-[44px] px-4 text-xs font-bold bg-neutral-900 hover:bg-black text-white rounded transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 shadow-xs"
+                      aria-label={`Open ${item.title}`}
+                    >
+                      <span>Open</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* ═════════════════════════════════════════════════════════════
           SECTION 0: 20 Skill Quizzes (20 Skills × 20 Questions = 400 MCQs)

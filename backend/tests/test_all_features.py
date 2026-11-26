@@ -260,6 +260,38 @@ def test_8_ask_gemini_llm():
     assert len(res.summary) > 0
     print(f"  ✓ ask_gemini OK: {res.summary[:80]}... (Confidence: {res.confidence})")
 
+def test_9_learning_resources():
+    print("\n--- 9. Testing Learning Resources API (/api/resources) ---")
+    r = client.get("/api/resources")
+    assert r.status_code == 200, f"Resources endpoint failed: {r.text}"
+    resources = r.json()
+    assert len(resources) == 14, f"Expected 14 resources, got {len(resources)}"
+
+    required_keys = {"id", "title", "provider", "category", "url", "level", "estHours", "skills", "verified", "lastVerified"}
+    for item in resources:
+        assert required_keys.issubset(item.keys()), f"Missing keys in {item}"
+        assert isinstance(item["skills"], list)
+        assert isinstance(item["verified"], bool)
+        assert item["category"] in ("vendor", "dsa", "educators", "aiml")
+
+    # Test category filters
+    r_vendor = client.get("/api/resources?category=vendor")
+    assert r_vendor.status_code == 200
+    assert len(r_vendor.json()) == 5
+
+    r_dsa = client.get("/api/resources?category=dsa")
+    assert r_dsa.status_code == 200
+    assert len(r_dsa.json()) == 2
+
+    r_educators = client.get("/api/resources?category=educators")
+    assert r_educators.status_code == 200
+    assert len(r_educators.json()) == 3
+
+    r_aiml = client.get("/api/resources?category=aiml")
+    assert r_aiml.status_code == 200
+    assert len(r_aiml.json()) == 4
+    print("  ✓ /api/resources OK: 14 resources across 4 categories verified with all schema keys")
+
 if __name__ == "__main__":
     print("=" * 60)
     print("RUNNING COMPLETE SKILLNAV AUTOMATED TEST SUITE")
@@ -273,8 +305,9 @@ if __name__ == "__main__":
         test_6_evidence_and_mentors()
         test_7_voice_assistant_and_actions()
         test_8_ask_gemini_llm()
+        test_9_learning_resources()
         print("\n" + "=" * 60)
-        print("🎉 ALL 8 TEST SUITES COMPLETED SUCCESSFULLY WITH ZERO ERRORS!")
+        print("🎉 ALL 9 TEST SUITES COMPLETED SUCCESSFULLY WITH ZERO ERRORS!")
         print("=" * 60)
     except Exception as e:
         import traceback
