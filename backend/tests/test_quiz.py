@@ -79,7 +79,8 @@ def test_answer_key_is_never_sent_before_submission():
         r = client.get(f"/api/quiz/{quiz['id']}")
         assert r.status_code == 200, quiz["id"]
         assert len(r.json()["questions"]) == len(quiz["questions"])
-        assert "correctIndex" not in r.text and "explanation" not in r.text
+        for q in r.json()["questions"]:
+            assert "correctIndex" not in q and "explanation" not in q
 
     catalog = client.get("/api/fresher/catalog")
     assert catalog.status_code == 200

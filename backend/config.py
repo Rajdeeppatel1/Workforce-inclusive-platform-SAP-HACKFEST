@@ -42,6 +42,8 @@ class Settings(BaseSettings):
 
     # ── LLM & AI ──
     gemini_api_key: Optional[str] = None
+    gemini_model: str = "gemini-2.5-flash"
+    suitability_threshold: float = 0.7
     port: int = 8000
     host: str = "0.0.0.0"
 
@@ -50,6 +52,16 @@ class Settings(BaseSettings):
         "case_sensitive": False,
         "extra": "ignore",
     }
+
+    def require_gemini_key(self) -> str:
+        """Returns GEMINI_API_KEY or raises a clear error if missing."""
+        import os
+        key = (self.gemini_api_key or os.getenv("GEMINI_API_KEY") or "").strip()
+        if not key:
+            raise ValueError(
+                "GEMINI_API_KEY is missing. Set GEMINI_API_KEY in backend/.env or environment variables before calling Gemini features."
+            )
+        return key
 
 
 settings = Settings()

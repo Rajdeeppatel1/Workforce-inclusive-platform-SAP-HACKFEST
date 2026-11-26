@@ -27,6 +27,8 @@ from routers.auth_profile import router as auth_profile_router
 from routers.voice_router import router as voice_router
 from routers.quiz import router as quiz_router
 from routers.resources import router as resources_router
+from routers.onboarding_pipeline import router as onboarding_pipeline_router
+from db.migrate import run_migration
 
 
 # ═══════════════════════════════════════════
@@ -35,6 +37,7 @@ from routers.resources import router as resources_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    run_migration()
     print("🚀 SkillNav Backend starting...")
     print(f"   SAP HANA:   {'configured ✓' if settings.hana_host else 'local fallback'}")
     print(f"   AI Core:    {'configured ✓' if settings.aicore_base_url else 'local fallback'}")
@@ -77,6 +80,7 @@ app.include_router(auth_profile_router)
 app.include_router(voice_router)
 app.include_router(quiz_router)
 app.include_router(resources_router)
+app.include_router(onboarding_pipeline_router)
 
 
 # ═══════════════════════════════════════════

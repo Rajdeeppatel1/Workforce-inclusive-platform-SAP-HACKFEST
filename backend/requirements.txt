@@ -10,6 +10,13 @@ python-dotenv>=1.0.0
 requests>=2.31.0
 numpy>=1.24.0
 
+# --- Document, PDF & Gemini AI ---
+google-genai>=1.0.0
+pypdf>=4.0.0
+python-docx>=1.1.0
+reportlab>=4.1.0
+pytest>=8.0.0
+
 # --- SAP SDKs (Live BTP) ---
 hdbcli>=2.18.0
 generative-ai-hub-sdk>=4.0.0

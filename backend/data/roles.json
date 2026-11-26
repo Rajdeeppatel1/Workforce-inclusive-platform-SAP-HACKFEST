@@ -1,11 +1,14 @@
 {
+  "_source": "sample",
   "roles": [
     {
       "role_id": "role-fsd-01",
       "title": "Junior Full Stack Developer",
       "company": "Inclusive Tech Enterprises",
       "department": "Engineering",
-      "required_skills": ["Python", "React", "REST APIs", "SQL"],
+      "required_skills": ["Python", "React", "REST APIs", "JavaScript"],
+      "nice_to_have_skills": ["HTML & CSS", "Git", "SQL"],
+      "min_level": 1,
       "min_matching_skills": 3,
       "experience_level": "Entry / Fresher",
       "description": "Build accessible user interfaces and microservices. Evaluates demonstrable portfolio projects over college pedigree."
@@ -15,7 +18,9 @@
       "title": "Cloud & DevOps Associate",
       "company": "Cloud & SaaS Startups",
       "department": "Infrastructure",
-      "required_skills": ["Docker", "Linux", "CI/CD", "Python"],
+      "required_skills": ["Docker", "Linux", "CI/CD", "Cloud Basics"],
+      "nice_to_have_skills": ["Kubernetes", "Git", "Python"],
+      "min_level": 1,
       "min_matching_skills": 3,
       "experience_level": "Entry / Fresher",
       "description": "Deploy containerized services and maintain automated CI/CD deployment pipelines."
@@ -25,17 +30,33 @@
       "title": "Backend API Engineer",
       "company": "Open Source & Developer Labs",
       "department": "Platform Services",
-      "required_skills": ["FastAPI", "Python", "SQL", "Docker"],
+      "required_skills": ["FastAPI", "Python", "SQL", "Database Design"],
+      "nice_to_have_skills": ["Docker", "REST APIs", "Git"],
+      "min_level": 2,
       "min_matching_skills": 3,
       "experience_level": "Entry to Mid",
       "description": "Develop high-throughput REST APIs and asynchronous database integrations with FastAPI."
     },
     {
-      "role_id": "role-ai-04",
+      "role_id": "role-data-04",
+      "title": "Data & Business Operations Analyst",
+      "company": "Enterprise Analytics Group",
+      "department": "Data & Operations",
+      "required_skills": ["SQL", "Excel & spreadsheet analytics", "Data visualisation basics", "Business communication (email, reports)"],
+      "nice_to_have_skills": ["Basic accounting (debit/credit, GST basics)", "Project management basics (Agile, Scrum)", "Python"],
+      "min_level": 1,
+      "min_matching_skills": 3,
+      "experience_level": "Entry / Fresher",
+      "description": "Analyze operational datasets, build executive visual reports, and reconcile business metrics."
+    },
+    {
+      "role_id": "role-ai-05",
       "title": "AI & Vector Search Specialist",
       "company": "Data & AI Product Platforms",
       "department": "AI Labs",
-      "required_skills": ["Machine Learning", "Python", "Vector Embeddings", "SQL"],
+      "required_skills": ["Machine Learning", "Python", "Vector Embeddings", "Model Validation"],
+      "nice_to_have_skills": ["Data Science", "SQL", "REST APIs"],
+      "min_level": 2,
       "min_matching_skills": 3,
       "experience_level": "Entry / Junior",
       "description": "Implement semantic search, embedding clustering, and fairness-verified scoring pipelines."

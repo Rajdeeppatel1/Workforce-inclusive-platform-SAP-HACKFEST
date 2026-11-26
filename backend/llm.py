@@ -1,43 +1,36 @@
 """
-SkillNav LLM Module — Gemini API Client
-══════════════════════════════════════
+SkillNav LLM Module — Google GenAI Client (google-genai)
+════════════════════════════════════════════════════════
 Core function:
-    ask_gemini(prompt: str, schema: Optional[Type[BaseModel]] = None)
+    ask_gemini(prompt: str, schema: Optional[Type[T]] = None, client=None, strict: bool = False)
 
 Features:
-1. Strict Sanitization: Protected attributes (naam, gender, college, career gap, city tier, age)
-   are STRIPPED before the prompt can ever leave the application or be sent to Gemini.
-2. Secure Key: Reads GEMINI_API_KEY strictly from environment variable. Key is never hardcoded.
-3. Structured Output: Validates JSON response against the provided Pydantic schema.
-4. Resilient Fallback: If GEMINI_API_KEY is missing or the API is unreachable, provides
-   intelligent fallback data that safely validates against the Pydantic schema.
+1. Uses official `google-genai` SDK (`from google import genai`).
+2. Reads GEMINI_API_KEY and GEMINI_MODEL (default: gemini-2.5-flash) from environment.
+3. Missing GEMINI_API_KEY raises a clear ValueError immediately.
+4. 30s timeout and 1 automatic retry on transient failure.
+5. Strict Pydantic schema validation on JSON responses.
+6. Scrubs protected demographic/pedigree attributes before any prompt leaves the app.
 """
 
 import os
 import re
 import json
 import logging
-import requests
+from typing import Optional, Type, TypeVar, Union, Dict, Any
 from dotenv import load_dotenv
+from pydantic import BaseModel
 
 load_dotenv()
-from typing import Optional, Type, TypeVar, Union, Dict, Any
-from pydantic import BaseModel, ValidationError
 
 logger = logging.getLogger("skillnav.llm")
 
 T = TypeVar("T", bound=BaseModel)
 
-GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
-
-# ═════════════════════════════════════════════════════════════
-# Protected Attributes Scrubbing Rules
-# (naam, gender, college, career gap, city tier, age, location)
-# MUST NEVER enter the prompt sent to scoring or LLMs.
-# ═════════════════════════════════════════════════════════════
+DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
+REQUEST_TIMEOUT_SECONDS = 30
 
 PROTECTED_SCRUB_PATTERNS = [
-    # Explicit key-value pairs (case-insensitive)
     (r"(?i)\b(name|candidate_name|naam|applicant_name)\s*[:=]\s*['\"]?[^,\n\r]+['\"]?", "[STRIPPED_NAME]"),
     (r"(?i)\b(gender|sex)\s*[:=]\s*['\"]?(male|female|non-binary|other|transgender)['\"]?", "[STRIPPED_GENDER]"),
     (r"(?i)\b(college|college_name|university|institute)\s*[:=]\s*['\"]?[^,\n\r]+['\"]?", "[STRIPPED_INSTITUTION]"),
@@ -45,8 +38,6 @@ PROTECTED_SCRUB_PATTERNS = [
     (r"(?i)\b(career_gap|career_break|gap_duration)\s*[:=]\s*['\"]?[^,\n\r]+['\"]?", "[STRIPPED_CAREER_GAP]"),
     (r"(?i)\b(city_tier|location|city|address|pincode)\s*[:=]\s*['\"]?[^,\n\r]+['\"]?", "[STRIPPED_LOCATION]"),
     (r"(?i)\b(age|birth_year)\s*[:=]\s*['\"]?\d{1,3}['\"]?", "[STRIPPED_AGE]"),
-
-    # Common phrasing patterns in resumes or text prompts
     (r"(?i)\b(tier[- ]?1|tier[- ]?2|tier[- ]?3)\b", "[STRIPPED_TIER]"),
     (r"(?i)\b(iit|nit|bits pilani|ivy league)\b", "[STRIPPED_INSTITUTION]"),
     (r"(?i)\b(\d+[- ](?:year|yr|month|mth)[- ](?:career break|gap|break))\b", "[STRIPPED_CAREER_GAP]"),
@@ -56,11 +47,7 @@ PROTECTED_SCRUB_PATTERNS = [
 
 
 def sanitize_prompt(prompt: str) -> str:
-    """
-    Guarantees that protected demographic and pedigree attributes
-    (naam, gender, college, career gap, city tier, age, location)
-    are strictly scrubbed and never sent to LLMs or match scorers.
-    """
+    """Strips protected demographic/pedigree attributes before sending to any LLM."""
     sanitized = prompt
     for pattern, replacement in PROTECTED_SCRUB_PATTERNS:
         sanitized = re.sub(pattern, replacement, sanitized)
@@ -68,27 +55,19 @@ def sanitize_prompt(prompt: str) -> str:
 
 
 def _generate_fallback_for_schema(schema: Type[BaseModel]) -> BaseModel:
-    """
-    Constructs a valid Pydantic model instance using schema default values
-    or intelligent synthetic mock values when GEMINI_API_KEY is not configured.
-    """
+    """Constructs a valid Pydantic model instance for offline sandbox fallback."""
     from pydantic_core import PydanticUndefined
-    from typing import get_origin, get_args
+    from typing import get_origin
 
     fields_data: Dict[str, Any] = {}
-    schema_fields = schema.model_fields
-
-    for field_name, field_info in schema_fields.items():
-        # Check if default is provided
+    for field_name, field_info in schema.model_fields.items():
         if field_info.default is not PydanticUndefined and field_info.default is not None:
             fields_data[field_name] = field_info.default
             continue
-
         if field_info.default_factory is not None:
             fields_data[field_name] = field_info.default_factory()
             continue
 
-        # Inspect field annotation type
         annotation = field_info.annotation
         origin = get_origin(annotation)
         ann_str = str(annotation).lower()
@@ -104,129 +83,121 @@ def _generate_fallback_for_schema(schema: Type[BaseModel]) -> BaseModel:
         elif annotation is bool or "bool" in ann_str:
             fields_data[field_name] = True
         elif annotation is str or "str" in ann_str:
-            if "status" in field_name:
-                fields_data[field_name] = "Verified"
-            elif "message" in field_name or "draft" in field_name:
-                fields_data[field_name] = "Automated skills-first briefing (Local Resilient Engine)."
-            elif "summary" in field_name:
+            if "summary" in field_name:
                 fields_data[field_name] = "Skills-first verified evaluation summary."
             else:
-                fields_data[field_name] = f"Synthetic {field_name.replace('_', ' ').title()}"
+                fields_data[field_name] = "Skills-first automated output."
         else:
-            fields_data[field_name] = f"Synthetic {field_name}"
+            fields_data[field_name] = "Skills-first automated output."
 
     try:
         return schema.model_validate(fields_data)
-    except Exception as e:
-        logger.warning(f"Fallback validation warning for {schema.__name__}: {e}")
+    except Exception:
         return schema.model_construct(**fields_data)
+
+
+def _extract_text_from_response(response: Any) -> str:
+    text = getattr(response, "text", None)
+    if isinstance(text, str) and text.strip():
+        return text.strip()
+    candidates = getattr(response, "candidates", None)
+    if candidates:
+        parts = getattr(getattr(candidates[0], "content", None), "parts", None)
+        if parts and getattr(parts[0], "text", None):
+            return parts[0].text.strip()
+    raise ValueError("Empty response received from Gemini model.")
+
+
+def _strip_json_fences(raw: str) -> str:
+    cleaned = raw.strip()
+    if cleaned.startswith("```"):
+        cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned)
+        cleaned = re.sub(r"\s*```$", "", cleaned)
+    return cleaned.strip()
 
 
 def ask_gemini(
     prompt: str,
-    schema: Optional[Type[T]] = None
+    schema: Optional[Type[T]] = None,
+    client: Any = None,
+    strict: bool = False,
 ) -> Union[T, Dict[str, Any], str]:
     """
-    Queries Google Gemini API using the GEMINI_API_KEY environment variable.
-    Outputs JSON validated against the supplied Pydantic schema.
-
-    Guarantees:
-    1. Protected attributes (naam, gender, college, career gap, city tier)
-       are strictly scrubbed from the prompt before sending.
-    2. GEMINI_API_KEY is read strictly from env var (never hardcoded in code).
-    3. If key is missing or network fails, returns schema-validated fallback text/data.
+    Calls Gemini via `google-genai` SDK with:
+    - GEMINI_API_KEY & GEMINI_MODEL from environment (default: gemini-2.5-flash)
+    - Clear ValueError if GEMINI_API_KEY is missing (when client is not mocked)
+    - 30s timeout and 1 retry on transient failure
+    - Pydantic schema validation if `schema` is provided
     """
-    # ── Step 1: Strip protected attributes from prompt ──
     clean_prompt = sanitize_prompt(prompt)
+    model_name = (os.environ.get("GEMINI_MODEL") or DEFAULT_GEMINI_MODEL).strip()
 
-    # ── Step 2: Read GEMINI_API_KEY from environment ──
-    api_key = os.environ.get("GEMINI_API_KEY", "").strip()
-
-    # If no key is set in environment, use schema-validated fallback text/JSON
-    if not api_key:
-        if schema is not None:
-            return _generate_fallback_for_schema(schema)
-        return (
-            "Gemini API key is not configured in GEMINI_API_KEY env var. "
-            "Running in local resilient skills-first fallback mode."
+    if client is None:
+        api_key = (os.environ.get("GEMINI_API_KEY") or "").strip()
+        if not api_key:
+            raise ValueError(
+                "GEMINI_API_KEY is missing. Please set GEMINI_API_KEY in backend/.env or environment variables."
+            )
+        from google import genai
+        client = genai.Client(
+            api_key=api_key,
+            http_options={
+                "api_version": "v1beta",
+                "timeout": REQUEST_TIMEOUT_SECONDS * 1000,
+            },
         )
+        using_mock = False
+    else:
+        using_mock = True
 
-    # ── Step 3: Prepare Request for Gemini API ──
     system_instruction = (
         "You are an inclusive, skills-first AI assistant for SkillNav. "
         "Protected attributes (candidate name, gender, college pedigree, career break duration, city tier) "
-        "must NEVER be evaluated or used in scoring. Focus purely on demonstrable competencies, code proofs, and skills."
+        "must NEVER be evaluated or used in scoring."
     )
 
     if schema is not None:
-        try:
-            json_schema_dict = schema.model_json_schema()
-            format_instruction = (
-                f"\n\nIMPORTANT: Return ONLY a valid JSON object matching this JSON Schema (no markdown code fences):\n"
-                f"{json.dumps(json_schema_dict, indent=2)}"
-            )
-            full_prompt = f"{system_instruction}\n\nTask:\n{clean_prompt}\n{format_instruction}"
-        except Exception:
-            full_prompt = f"{system_instruction}\n\nTask:\n{clean_prompt}\n\nReturn ONLY a valid JSON object."
+        json_schema_dict = schema.model_json_schema()
+        full_prompt = (
+            f"{system_instruction}\n\nTask:\n{clean_prompt}\n\n"
+            f"Return ONLY valid JSON matching this schema:\n{json.dumps(json_schema_dict, indent=2)}"
+        )
     else:
         full_prompt = f"{system_instruction}\n\nTask:\n{clean_prompt}"
 
-    payload = {
-        "contents": [
-            {
-                "parts": [
-                    {"text": full_prompt}
-                ]
-            }
-        ],
-        "generationConfig": {
-            "temperature": 0.2,
-            "topK": 40,
-            "topP": 0.95,
-            "maxOutputTokens": 1024,
-            "responseMimeType": "application/json" if schema is not None else "text/plain",
-        }
-    }
+    last_error: Optional[Exception] = None
+    # Initial attempt + 1 retry = 2 attempts total
+    for attempt in range(2):
+        try:
+            config_kwargs: Dict[str, Any] = {"temperature": 0.2}
+            if schema is not None:
+                config_kwargs["response_mime_type"] = "application/json"
 
-    # ── Step 4: Execute HTTP Request to Gemini ──
-    try:
-        response = requests.post(
-            f"{GEMINI_API_URL}?key={api_key}",
-            json=payload,
-            headers={"Content-Type": "application/json"},
-            timeout=12
-        )
+            try:
+                from google.genai import types
+                gen_config = types.GenerateContentConfig(**config_kwargs)
+            except Exception:
+                gen_config = config_kwargs
 
-        if response.status_code == 200:
-            res_data = response.json()
-            candidates = res_data.get("candidates", [])
-            if candidates:
-                raw_output = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
+            response = client.models.generate_content(
+                model=model_name,
+                contents=full_prompt,
+                config=gen_config,
+            )
+            raw_text = _extract_text_from_response(response)
+            if schema is not None:
+                cleaned_json = _strip_json_fences(raw_text)
+                return schema.model_validate_json(cleaned_json)
+            return raw_text
+        except Exception as exc:
+            last_error = exc
+            logger.warning(f"Gemini call attempt {attempt + 1}/2 failed: {exc}")
 
-                # Clean possible markdown fences if returned
-                if raw_output.startswith("```"):
-                    raw_output = re.sub(r"^```(?:json)?\n?", "", raw_output)
-                    raw_output = re.sub(r"\n?```$", "", raw_output)
+    # If a mock client was passed or strict=True, propagate the error cleanly
+    if using_mock or strict:
+        raise RuntimeError(f"Gemini request failed after retry: {last_error}") from last_error
 
-                if schema is not None:
-                    parsed_json = json.loads(raw_output.strip())
-                    # Validate output using Pydantic model
-                    return schema.model_validate(parsed_json)
-                else:
-                    try:
-                        return json.loads(raw_output.strip())
-                    except json.JSONDecodeError:
-                        return raw_output
-        else:
-            logger.warning(f"Gemini API returned status {response.status_code}: {response.text[:120]}")
-    except Exception as e:
-        logger.warning(f"Gemini API call failed, falling back safely: {e}")
-
-    # ── Step 5: Graceful Fallback if API fails or parsing errors ──
+    # Offline fallback only for non-strict legacy callers when remote network is unreachable
     if schema is not None:
         return _generate_fallback_for_schema(schema)
-
-    return (
-        "Gemini response could not be generated from remote endpoint. "
-        "Fallback skills-first evaluation text provided."
-    )
+    return "Skills-first automated response (remote Gemini unreachable)."

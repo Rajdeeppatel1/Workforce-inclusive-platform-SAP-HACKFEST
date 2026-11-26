@@ -181,3 +181,25 @@ Application will be live at: [http://localhost:5173](http://localhost:5173)
 ## 📄 License
 This project is open-source and distributed under the **Apache 2.0 License**.
 Designed for the **Inclusive Workforce Theme**.
+
+---
+
+## Onboarding Pipeline Endpoints & Environment Variables
+
+### Environment Variables (`backend/.env.example`)
+- `GEMINI_API_KEY` — Required for Gemini AI skill extraction and match explanations (`google-genai` SDK). Raises a clear configuration error when missing.
+- `GEMINI_MODEL` — Gemini model identifier (default: `gemini-2.5-flash`).
+- `SUITABILITY_THRESHOLD` — Score threshold above which `"You are suitable"` is included in explanations (default: `0.7`).
+
+### Onboarding & Analysis API Endpoints (`X-User-Id` Auth Header Required)
+- `POST /api/resume/upload` — Upload PDF/DOCX resume (max 5 MB, MIME + extension validated), extract text, redact PII, and persist only redacted text in SQLite.
+- `DELETE /api/resume/{id}` — Delete uploaded resume file from disk and database row.
+- `POST /api/voice/intro` — Redact and store voice intro transcript (max 3000 chars).
+- `POST /api/onboarding/extract` — Extract taxonomy-grounded skills via Gemini with verbatim evidence quote checks and low-confidence flags (`< 0.5`).
+- `GET /api/onboarding/candidates` — List proposed/confirmed/edited/rejected skill candidates.
+- `PATCH /api/onboarding/candidates/{id}` — Confirm, edit, or reject a skill candidate.
+- `POST /api/onboarding/confirm` — Commit confirmed/edited candidates to `user_skills`.
+- `POST /api/analysis/run` — Deterministic weighted match (`0.8` required + `0.2` nice-to-have + level cap); strictly rejects protected fields.
+- `POST /api/analysis/explain` — Generate 3–4 sentence skills-only explanation with number hallucination guard.
+- `GET /api/resume/generate/{run_id}` — Generate downloadable `reportlab` PDF with candidate name, confirmed skills, experience, role suggestion, skill gaps, and SkillNav disclaimer footer.
+- `DELETE /api/user/data` — Remove user uploads, voice intros, and skill candidates.

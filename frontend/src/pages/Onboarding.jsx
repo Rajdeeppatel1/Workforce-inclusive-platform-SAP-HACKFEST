@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAccessibility } from '../context/AccessibilityContext';
 import { useProfile } from '../context/ProfileContext';
+import OnboardingPipelinePanel from '../components/OnboardingPipelinePanel';
 import {
   Mic,
   MicOff,
@@ -430,6 +431,15 @@ export default function Onboarding() {
             </div>
           </div>
         </section>
+
+        {/* Verified Onboarding Pipeline (Resume Upload, Redaction, AI Extract, Match & PDF) */}
+        <OnboardingPipelinePanel
+          profile={profile}
+          transcript={transcript}
+          onSkillsConfirmed={(skillsList) => {
+            skillsList.forEach((sk) => addSkill(sk));
+          }}
+        />
 
         {/* Bottom Continue CTA */}
         <footer className="flex flex-wrap items-center justify-between gap-4 pt-2">
