@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { useProfile } from '../context/ProfileContext';
 import {
   BookOpen,
   Code2,
@@ -22,10 +23,21 @@ import {
   Cpu,
   Cloud,
   Compass,
+  Target,
+  HelpCircle,
+  Check,
+  X,
+  RotateCcw,
+  Save,
+  AlertCircle,
+  ChevronLeft,
+  ChevronRight,
+  ShieldCheck,
 } from 'lucide-react';
 
 export default function FresherPrepare() {
   const navigate = useNavigate();
+  const { profile, setProfile } = useProfile();
 
   const [officialPortals, setOfficialPortals] = useState([]);
   const [dsaPlatforms, setDsaPlatforms] = useState([]);
@@ -33,10 +45,19 @@ export default function FresherPrepare() {
   const [aimlPlatforms, setAimlPlatforms] = useState([]);
   const [practicePlatforms, setPracticePlatforms] = useState([]);
   const [learningResources, setLearningResources] = useState([]);
+  const [skillQuizzes, setSkillQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [domainFilter, setDomainFilter] = useState('All');
   const [sectionFilter, setSectionFilter] = useState('All');
+
+  // Interactive Quiz state inside Prepare & Practice module
+  const [activeQuizSkill, setActiveQuizSkill] = useState(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [userAnswers, setUserAnswers] = useState({});
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [savingScore, setSavingScore] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Fetch from backend/data/fresher_catalog.json
   useEffect(() => {
@@ -51,6 +72,7 @@ export default function FresherPrepare() {
           setAimlPlatforms(res.data.aiml_platforms || []);
           setPracticePlatforms(res.data.practice_platforms || []);
           setLearningResources(res.data.learning_resources || []);
+          setSkillQuizzes(res.data.skill_quizzes || res.data.test_categories || []);
         }
       } catch (err) {
         console.warn('Could not load prepare catalog from server', err);
@@ -71,10 +93,12 @@ export default function FresherPrepare() {
     'DSA & Algorithms',
     'Fullstack & Backend',
     'AI / ML & Data Science',
+    'Business & Project Management',
   ];
 
   const sectionTabs = [
     { id: 'All', label: 'All Resources' },
+    { id: 'Quizzes', label: '🎯 Skill Quizzes (20 Skills × 20 Questions)' },
     { id: 'Portals', label: '🏛️ Official Portals (SAP, Azure, AWS, GCP)' },
     { id: 'DSA', label: '💻 DSA Practice (LeetCode, CodeChef, GFG)' },
     { id: 'YouTube', label: '📺 Top YouTube Educators (Striver, Harry, Nana)' },
@@ -96,19 +120,29 @@ export default function FresherPrepare() {
       return val.includes('sap') || val.includes('enterprise');
     }
     if (filter === 'cloud & devops') {
-      return val.includes('cloud') || val.includes('devops') || val.includes('docker');
+      return val.includes('cloud') || val.includes('devops') || val.includes('docker') || val.includes('linux') || val.includes('git');
     }
     if (filter === 'dsa & algorithms') {
-      return val.includes('dsa') || val.includes('algorithm') || val.includes('problem');
+      return val.includes('dsa') || val.includes('algorithm') || val.includes('problem') || val.includes('structure');
     }
     if (filter === 'fullstack & backend') {
-      return val.includes('backend') || val.includes('fullstack') || val.includes('web');
+      return val.includes('backend') || val.includes('fullstack') || val.includes('web') || val.includes('sql') || val.includes('python') || val.includes('javascript') || val.includes('database');
     }
     if (filter === 'ai / ml & data science') {
-      return val.includes('ai') || val.includes('ml') || val.includes('data');
+      return val.includes('ai') || val.includes('ml') || val.includes('data') || val.includes('learning') || val.includes('analytics');
+    }
+    if (filter === 'business & project management') {
+      return val.includes('business') || val.includes('project') || val.includes('agile') || val.includes('scrum') || val.includes('accounting') || val.includes('communication');
     }
     return val.includes(filter);
   };
+
+  const filteredQuizzes = skillQuizzes.filter((quiz) => {
+    return (
+      matchesDomain(quiz.category || quiz.name) &&
+      matchesSearch(quiz, [quiz.name, quiz.displayName, quiz.category, quiz.description])
+    );
+  });
 
   const filteredPortals = officialPortals.filter(
     (p) =>
@@ -147,12 +181,76 @@ export default function FresherPrepare() {
   );
 
   const totalResults =
+    filteredQuizzes.length +
     filteredPortals.length +
     filteredDsa.length +
     filteredCreators.length +
     filteredAiml.length +
     filteredSandboxes.length +
     filteredDocs.length;
+
+  // Quiz Handling
+  const handleStartSkillQuiz = (quiz) => {
+    setActiveQuizSkill(quiz);
+    setCurrentQuestionIndex(0);
+    setUserAnswers({});
+    setQuizSubmitted(false);
+    setSaveSuccess(false);
+    setSectionFilter('Quizzes');
+    window.scrollTo({ top: 120, behavior: 'smooth' });
+  };
+
+  const handleSelectOption = (questionId, optionIndex) => {
+    if (quizSubmitted) return;
+    setUserAnswers((prev) => ({
+      ...prev,
+      [questionId]: optionIndex,
+    }));
+  };
+
+  const calculateScore = () => {
+    if (!activeQuizSkill || !activeQuizSkill.questions) return 0;
+    let correct = 0;
+    activeQuizSkill.questions.forEach((q) => {
+      if (userAnswers[q.id] === q.correctIndex) {
+        correct += 1;
+      }
+    });
+    return correct;
+  };
+
+  const handleSubmitQuiz = () => {
+    setQuizSubmitted(true);
+    window.scrollTo({ top: 180, behavior: 'smooth' });
+  };
+
+  const handleSaveScoreToProfile = async () => {
+    if (!activeQuizSkill) return;
+    setSavingScore(true);
+    const score = calculateScore();
+    const total = activeQuizSkill.questions.length;
+    const passed = score >= Math.ceil(total * 0.6); // 12/20 = 60%
+    try {
+      const res = await axios.post('/api/profile/quiz-score', {
+        profile_id: profile?.profile_id || 'guest',
+        category: activeQuizSkill.name,
+        score,
+        total,
+        passed,
+      });
+      if (res.data?.profile) {
+        setProfile((prev) => ({
+          ...prev,
+          ...res.data.profile,
+        }));
+      }
+      setSaveSuccess(true);
+    } catch (err) {
+      console.error('Failed to save score to profile', err);
+    } finally {
+      setSavingScore(false);
+    }
+  };
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-16">
@@ -164,14 +262,14 @@ export default function FresherPrepare() {
               <BookOpen className="w-5 h-5" />
             </span>
             <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
-              Practice Platforms &amp; Learning Hub
+              Practice Platforms, 20-Skill Quizzes &amp; Learning Hub
             </h1>
             <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded">
-              Verified Direct Links
+              Verified Quizzes &amp; Links
             </span>
           </div>
           <p className="text-xs text-neutral-500">
-            One-click direct redirects to official vendor portals (SAP, Azure, AWS, GCP), DSA coding platforms (LeetCode, CodeChef), famous educator playlists (Striver, CodeWithHarry, Nana), and AI/ML learning hubs.
+            Interactive 20-question quizzes across 20 essential technical &amp; business skills, plus direct redirects to official vendor portals (SAP, Azure, AWS, GCP), DSA coding arenas (LeetCode, CodeChef), and educator channels (Striver, CodeWithHarry, Nana).
           </p>
         </div>
 
@@ -182,13 +280,17 @@ export default function FresherPrepare() {
           >
             ← Fresher Overview
           </Link>
-          <Link
-            to="/fresher/test"
-            className="min-h-[44px] text-xs bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-sm transition-colors flex items-center gap-1.5 shadow-sm"
+          <button
+            onClick={() => {
+              setActiveQuizSkill(null);
+              setSectionFilter('Quizzes');
+              window.scrollTo({ top: 150, behavior: 'smooth' });
+            }}
+            className="min-h-[44px] text-xs bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-sm transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer"
           >
-            <FileQuestion className="w-4 h-4" />
-            <span>Take 5-MCQ Quiz</span>
-          </Link>
+            <Target className="w-4 h-4" />
+            <span>20 Skill Quizzes</span>
+          </button>
         </div>
       </div>
 
@@ -201,7 +303,7 @@ export default function FresherPrepare() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search SAP Learning Hub, SAP Developers, Azure, AWS, Google Cloud, LeetCode, CodeChef, Striver, CodeWithHarry, Nana, Google AI, Kaggle..."
+              placeholder="Search SQL, HTTP, Cloud, Linux, Git, Python, JS, DSA, Big-O, ML, Excel, Agile, SAP Learning Hub, LeetCode, Striver..."
               className="w-full pl-9 pr-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-sm text-xs text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all min-h-[44px]"
             />
           </div>
@@ -223,7 +325,12 @@ export default function FresherPrepare() {
           {sectionTabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setSectionFilter(tab.id)}
+              onClick={() => {
+                setSectionFilter(tab.id);
+                if (tab.id !== 'Quizzes') {
+                  setActiveQuizSkill(null);
+                }
+              }}
               className={`min-h-[38px] px-3 py-1.5 rounded-sm text-xs font-semibold transition-all cursor-pointer ${
                 sectionFilter === tab.id
                   ? 'bg-neutral-900 text-white shadow-xs'
@@ -255,10 +362,446 @@ export default function FresherPrepare() {
       </div>
 
       {/* ═════════════════════════════════════════════════════════════
+          SECTION 0: 20 Skill Quizzes (20 Skills × 20 Questions = 400 MCQs)
+          ═════════════════════════════════════════════════════════════ */}
+      {(sectionFilter === 'All' || sectionFilter === 'Quizzes') && (
+        <div className="space-y-6 pt-1">
+          {/* Active Quiz Runner */}
+          {activeQuizSkill ? (
+            <div className="bg-white border-2 border-blue-600 rounded-lg p-6 shadow-md space-y-6 animate-fadeIn">
+              {/* Quiz Header Bar */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-200 pb-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-bold uppercase rounded">
+                      {activeQuizSkill.category || 'Skill Assessment'}
+                    </span>
+                    <span className="text-xs font-bold text-neutral-500">
+                      20 Questions • 20 Minutes
+                    </span>
+                  </div>
+                  <h2 className="text-xl font-bold text-neutral-900 mt-1">
+                    {activeQuizSkill.displayName || activeQuizSkill.name}
+                  </h2>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      if (window.confirm('Are you sure you want to exit this quiz? Unsaved answers will be lost.')) {
+                        setActiveQuizSkill(null);
+                        setQuizSubmitted(false);
+                      }
+                    }}
+                    className="min-h-[44px] px-3.5 py-1.5 text-xs font-semibold text-neutral-600 hover:text-black border border-neutral-300 rounded cursor-pointer transition-colors"
+                  >
+                    ← All 20 Skills
+                  </button>
+                  {!quizSubmitted && (
+                    <button
+                      onClick={handleSubmitQuiz}
+                      className="min-h-[44px] px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-bold transition-colors cursor-pointer shadow-sm"
+                    >
+                      Submit Quiz
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Quiz Results Screen */}
+              {quizSubmitted ? (
+                <div className="space-y-6">
+                  {(() => {
+                    const score = calculateScore();
+                    const total = activeQuizSkill.questions.length;
+                    const pct = Math.round((score / total) * 100);
+                    const passed = score >= Math.ceil(total * 0.6); // 12 / 20 = 60%
+
+                    return (
+                      <div className="space-y-6">
+                        {/* Result Score Card */}
+                        <div
+                          className={`p-6 rounded-lg border flex flex-col md:flex-row items-center justify-between gap-6 ${
+                            passed
+                              ? 'bg-emerald-50/70 border-emerald-300 text-emerald-950'
+                              : 'bg-amber-50/70 border-amber-300 text-amber-950'
+                          }`}
+                        >
+                          <div className="flex items-center gap-4">
+                            <div
+                              className={`w-14 h-14 rounded-full flex items-center justify-center font-black text-xl border-2 ${
+                                passed
+                                  ? 'bg-emerald-600 text-white border-emerald-700'
+                                  : 'bg-amber-600 text-white border-amber-700'
+                              }`}
+                            >
+                              {pct}%
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h3 className="text-lg font-bold">
+                                  {passed ? 'Assessment Passed!' : 'Practice Recommended'}
+                                </h3>
+                                <span
+                                  className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
+                                    passed
+                                      ? 'bg-emerald-200 text-emerald-900'
+                                      : 'bg-amber-200 text-amber-900'
+                                  }`}
+                                >
+                                  {passed ? 'Verified Competency' : 'Needs Practice (60% required)'}
+                                </span>
+                              </div>
+                              <p className="text-xs text-neutral-600 mt-1">
+                                You scored <strong>{score}</strong> out of <strong>{total}</strong> questions correctly ({pct}%).
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-2.5">
+                            <button
+                              onClick={handleSaveScoreToProfile}
+                              disabled={savingScore || saveSuccess}
+                              className={`min-h-[44px] px-4 py-2 rounded text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
+                                saveSuccess
+                                  ? 'bg-emerald-700 text-white'
+                                  : 'bg-neutral-900 hover:bg-black text-white'
+                              }`}
+                            >
+                              {saveSuccess ? (
+                                <>
+                                  <ShieldCheck className="w-4 h-4 text-emerald-300" />
+                                  <span>Saved to Profile!</span>
+                                </>
+                              ) : savingScore ? (
+                                <span>Saving...</span>
+                              ) : (
+                                <>
+                                  <Save className="w-4 h-4" />
+                                  <span>Save Verified Score to Profile</span>
+                                </>
+                              )}
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                setUserAnswers({});
+                                setQuizSubmitted(false);
+                                setCurrentQuestionIndex(0);
+                                setSaveSuccess(false);
+                              }}
+                              className="min-h-[44px] px-4 py-2 border border-neutral-300 hover:border-black rounded text-xs font-semibold text-neutral-700 hover:text-black flex items-center gap-1.5 transition-colors cursor-pointer bg-white"
+                            >
+                              <RotateCcw className="w-3.5 h-3.5" />
+                              <span>Retake Quiz</span>
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                setActiveQuizSkill(null);
+                                setQuizSubmitted(false);
+                              }}
+                              className="min-h-[44px] px-4 py-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded text-xs font-semibold transition-colors cursor-pointer"
+                            >
+                              Choose Another Skill
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Detailed Question Review */}
+                        <div className="space-y-4">
+                          <h4 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
+                            <FileQuestion className="w-4 h-4 text-blue-600" />
+                            Question-by-Question Review &amp; Explanations
+                          </h4>
+
+                          <div className="space-y-3">
+                            {activeQuizSkill.questions.map((q, idx) => {
+                              const chosen = userAnswers[q.id];
+                              const isCorrect = chosen === q.correctIndex;
+                              const isUnanswered = chosen === undefined;
+
+                              return (
+                                <div
+                                  key={q.id}
+                                  className={`p-4 rounded-lg border transition-all ${
+                                    isCorrect
+                                      ? 'border-emerald-200 bg-emerald-50/30'
+                                      : 'border-red-200 bg-red-50/20'
+                                  }`}
+                                >
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div className="flex items-start gap-2.5">
+                                      <span
+                                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
+                                          isCorrect
+                                            ? 'bg-emerald-600 text-white'
+                                            : 'bg-red-600 text-white'
+                                        }`}
+                                      >
+                                        {idx + 1}
+                                      </span>
+                                      <div>
+                                        <p className="text-xs font-bold text-neutral-900">
+                                          {q.question}
+                                        </p>
+                                        <div className="mt-2 space-y-1">
+                                          {q.options.map((opt, optIdx) => {
+                                            const wasChosen = chosen === optIdx;
+                                            const isThisCorrect = optIdx === q.correctIndex;
+
+                                            let badgeClass = 'text-neutral-600 border-neutral-200 bg-white';
+                                            if (isThisCorrect) {
+                                              badgeClass = 'font-bold text-emerald-800 border-emerald-400 bg-emerald-100/70';
+                                            } else if (wasChosen && !isThisCorrect) {
+                                              badgeClass = 'font-bold text-red-800 border-red-400 bg-red-100/70 line-through';
+                                            }
+
+                                            return (
+                                              <div
+                                                key={optIdx}
+                                                className={`text-[11px] p-2 rounded border flex items-center justify-between ${badgeClass}`}
+                                              >
+                                                <span>
+                                                  <strong>{String.fromCharCode(65 + optIdx)}.</strong> {opt}
+                                                </span>
+                                                {isThisCorrect && (
+                                                  <span className="text-[10px] font-bold text-emerald-700 flex items-center gap-1">
+                                                    <Check className="w-3 h-3" /> Correct Answer
+                                                  </span>
+                                                )}
+                                                {wasChosen && !isThisCorrect && (
+                                                  <span className="text-[10px] font-bold text-red-700 flex items-center gap-1">
+                                                    <X className="w-3 h-3" /> Your Choice
+                                                  </span>
+                                                )}
+                                              </div>
+                                            );
+                                          })}
+                                        </div>
+
+                                        <div className="mt-2.5 p-2.5 bg-neutral-100 rounded text-[11px] text-neutral-700 leading-relaxed">
+                                          <span className="font-bold text-neutral-900">Explanation: </span>
+                                          {q.explanation}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              ) : (
+                /* Active Question Step */
+                <div className="space-y-6">
+                  {/* Progress Indicators */}
+                  <div>
+                    <div className="flex items-center justify-between text-xs font-semibold text-neutral-600 mb-2">
+                      <span>
+                        Question {currentQuestionIndex + 1} of {activeQuizSkill.questions.length}
+                      </span>
+                      <span>
+                        Answered: {Object.keys(userAnswers).length} / {activeQuizSkill.questions.length}
+                      </span>
+                    </div>
+
+                    <div className="w-full bg-neutral-200 rounded-full h-2 overflow-hidden">
+                      <div
+                        className="bg-blue-600 h-2 transition-all duration-300"
+                        style={{
+                          width: `${((currentQuestionIndex + 1) / activeQuizSkill.questions.length) * 100}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Question Grid Pills for Quick Navigation */}
+                  <div className="flex flex-wrap gap-1.5 p-3 bg-neutral-50 border border-neutral-200 rounded-lg">
+                    {activeQuizSkill.questions.map((q, idx) => {
+                      const isAnswered = userAnswers[q.id] !== undefined;
+                      const isCurrent = idx === currentQuestionIndex;
+
+                      let pillClass = 'bg-white text-neutral-700 border-neutral-300 hover:border-blue-500';
+                      if (isCurrent) {
+                        pillClass = 'bg-blue-600 text-white border-blue-600 font-bold';
+                      } else if (isAnswered) {
+                        pillClass = 'bg-emerald-50 text-emerald-800 border-emerald-400 font-semibold';
+                      }
+
+                      return (
+                        <button
+                          key={q.id}
+                          onClick={() => setCurrentQuestionIndex(idx)}
+                          className={`w-7 h-7 rounded text-xs border flex items-center justify-center transition-all cursor-pointer ${pillClass}`}
+                          title={`Question ${idx + 1}`}
+                        >
+                          {idx + 1}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Current Question Body */}
+                  {(() => {
+                    const currentQ = activeQuizSkill.questions[currentQuestionIndex];
+                    if (!currentQ) return null;
+
+                    return (
+                      <div className="space-y-4">
+                        <div className="p-4 bg-neutral-50 border border-neutral-200 rounded-lg">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                            Question #{currentQuestionIndex + 1}
+                          </span>
+                          <h3 className="text-base font-bold text-neutral-900 mt-2 leading-relaxed">
+                            {currentQ.question}
+                          </h3>
+                        </div>
+
+                        {/* Options List */}
+                        <div className="space-y-2.5">
+                          {currentQ.options.map((option, optIdx) => {
+                            const isSelected = userAnswers[currentQ.id] === optIdx;
+
+                            return (
+                              <button
+                                key={optIdx}
+                                onClick={() => handleSelectOption(currentQ.id, optIdx)}
+                                className={`w-full text-left p-3.5 rounded-lg border transition-all flex items-center justify-between cursor-pointer min-h-[48px] ${
+                                  isSelected
+                                    ? 'border-blue-600 bg-blue-50 text-blue-950 font-bold shadow-xs'
+                                    : 'border-neutral-200 hover:border-neutral-400 bg-white text-neutral-800'
+                                }`}
+                              >
+                                <div className="flex items-center gap-3">
+                                  <span
+                                    className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border ${
+                                      isSelected
+                                        ? 'bg-blue-600 text-white border-blue-600'
+                                        : 'bg-neutral-100 text-neutral-600 border-neutral-300'
+                                    }`}
+                                  >
+                                    {String.fromCharCode(65 + optIdx)}
+                                  </span>
+                                  <span className="text-xs">{option}</span>
+                                </div>
+                                {isSelected && <Check className="w-4 h-4 text-blue-600 shrink-0" />}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Navigation controls */}
+                        <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
+                          <button
+                            onClick={() => setCurrentQuestionIndex((prev) => Math.max(0, prev - 1))}
+                            disabled={currentQuestionIndex === 0}
+                            className={`min-h-[44px] px-4 py-2 rounded text-xs font-semibold flex items-center gap-1.5 transition-colors ${
+                              currentQuestionIndex === 0
+                                ? 'opacity-40 cursor-not-allowed bg-neutral-100 text-neutral-400'
+                                : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-800 cursor-pointer'
+                            }`}
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                            <span>Previous</span>
+                          </button>
+
+                          {currentQuestionIndex < activeQuizSkill.questions.length - 1 ? (
+                            <button
+                              onClick={() => setCurrentQuestionIndex((prev) => prev + 1)}
+                              className="min-h-[44px] px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm"
+                            >
+                              <span>Next Question</span>
+                              <ChevronRight className="w-4 h-4" />
+                            </button>
+                          ) : (
+                            <button
+                              onClick={handleSubmitQuiz}
+                              className="min-h-[44px] px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm"
+                            >
+                              <CheckCircle2 className="w-4 h-4" />
+                              <span>Submit 20-Question Quiz</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+            </div>
+          ) : (
+            /* 20 Skills Selection Grid */
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
+                    <Target className="w-4 h-4 text-blue-600" />
+                    Interactive Skill Quizzes ({filteredQuizzes.length} of 20 Skills Available)
+                  </h2>
+                  <p className="text-xs text-neutral-500 mt-0.5">
+                    Each skill has 20 curated multiple-choice questions with answers, explanations, and instant verification for candidate profiles.
+                  </p>
+                </div>
+                <span className="text-xs font-bold text-neutral-600 bg-neutral-100 px-2.5 py-1 rounded">
+                  400 Total Questions
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredQuizzes.map((quiz, idx) => (
+                  <div
+                    key={quiz.id || idx}
+                    className="p-5 border border-neutral-200 hover:border-blue-600 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-4 group hover:shadow-md"
+                  >
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[11px] font-bold text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded truncate max-w-[180px]">
+                          {quiz.category || 'Core Skill'}
+                        </span>
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded shrink-0">
+                          {quiz.questions?.length || 20} MCQs
+                        </span>
+                      </div>
+
+                      <h3 className="text-sm font-bold text-neutral-900 group-hover:text-blue-600 transition-colors leading-snug">
+                        {quiz.displayName || quiz.name}
+                      </h3>
+
+                      <p className="text-xs text-neutral-600 leading-relaxed line-clamp-3">
+                        {quiz.description}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-medium text-neutral-500">
+                        ⏱️ ~20 mins
+                      </span>
+                      <button
+                        onClick={() => handleStartSkillQuiz(quiz)}
+                        className="min-h-[44px] px-3.5 py-1.5 bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white rounded text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
+                      >
+                        <PlayCircle className="w-3.5 h-3.5" />
+                        <span>Take Quiz</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ═════════════════════════════════════════════════════════════
           SECTION 1: Official Enterprise & Cloud Portals (SAP, Azure, AWS, GCP, Trailhead)
           ═════════════════════════════════════════════════════════════ */}
-      {(sectionFilter === 'All' || sectionFilter === 'Portals') && (
-        <div className="space-y-4">
+      {(sectionFilter === 'All' || sectionFilter === 'Portals') && !activeQuizSkill && (
+        <div className="space-y-4 pt-2">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
               <Building2 className="w-4 h-4 text-blue-600" />
@@ -328,7 +871,7 @@ export default function FresherPrepare() {
       {/* ═════════════════════════════════════════════════════════════
           SECTION 2: DSA & Problem-Solving Coding Arenas (LeetCode, CodeChef, HackerRank, GFG, Codeforces)
           ═════════════════════════════════════════════════════════════ */}
-      {(sectionFilter === 'All' || sectionFilter === 'DSA') && (
+      {(sectionFilter === 'All' || sectionFilter === 'DSA') && !activeQuizSkill && (
         <div className="space-y-4 pt-2">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
@@ -377,14 +920,14 @@ export default function FresherPrepare() {
                 </div>
 
                 <div className="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2">
-                  <span className="text-[11px] font-semibold text-neutral-600 truncate max-w-[150px]">
-                    {item.free_tier}
+                  <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded truncate max-w-[160px]">
+                    ✓ {item.free_tier}
                   </span>
                   <a
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="min-h-[44px] px-3.5 text-xs font-bold bg-emerald-50 hover:bg-emerald-600 text-emerald-800 hover:text-white rounded transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
+                    className="min-h-[44px] px-3 text-xs font-bold bg-emerald-50 hover:bg-emerald-600 text-emerald-800 hover:text-white rounded transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
                   >
                     <span>Practice DSA</span>
                     <ExternalLink className="w-3.5 h-3.5" />
@@ -397,16 +940,16 @@ export default function FresherPrepare() {
       )}
 
       {/* ═════════════════════════════════════════════════════════════
-          SECTION 3: Famous YouTube Educators & Curated Playlists (Striver, CodeWithHarry, freeCodeCamp, Love Babbar, NeetCode, etc.)
+          SECTION 3: Famous YouTube Educators & Playlists (Striver, Harry, Nana, freeCodeCamp, etc.)
           ═════════════════════════════════════════════════════════════ */}
-      {(sectionFilter === 'All' || sectionFilter === 'YouTube') && (
+      {(sectionFilter === 'All' || sectionFilter === 'YouTube') && !activeQuizSkill && (
         <div className="space-y-4 pt-2">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
               <Youtube className="w-4 h-4 text-red-600" />
-              Famous YouTube Educators &amp; Curated Free Playlists ({filteredCreators.length})
+              Famous YouTube Educators &amp; Structured Playlists ({filteredCreators.length})
             </h2>
-            <span className="text-xs text-neutral-400 font-medium">Free High-Quality Video Series</span>
+            <span className="text-xs text-neutral-400 font-medium">Free High-Quality Video Courses</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -417,12 +960,12 @@ export default function FresherPrepare() {
               >
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded flex items-center gap-1">
-                      <PlayCircle className="w-3 h-3" />
+                    <span className="text-[11px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded border border-red-200 flex items-center gap-1">
+                      <PlayCircle className="w-3 h-3 text-red-600" />
                       {creator.creator}
                     </span>
-                    <span className="text-[10px] font-medium text-neutral-500">
-                      {creator.subscribers}
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-neutral-100 text-neutral-700 rounded">
+                      {creator.badge}
                     </span>
                   </div>
 
@@ -446,33 +989,19 @@ export default function FresherPrepare() {
                       ))}
                     </div>
                   )}
-
-                  <div className="text-[11px] text-neutral-500 font-medium flex items-center gap-2 pt-1">
-                    <span className="bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded">
-                      Category: {creator.category}
-                    </span>
-                    <span className="text-neutral-400">•</span>
-                    <span className="text-red-700 font-semibold">{creator.badge}</span>
-                  </div>
                 </div>
 
                 <div className="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2">
+                  <span className="text-[11px] font-semibold text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded truncate max-w-[160px]">
+                    {creator.subscribers}
+                  </span>
                   <a
-                    href={creator.channel_url}
+                    href={creator.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="min-h-[44px] text-xs font-semibold text-neutral-600 hover:text-neutral-900 flex items-center gap-1 hover:underline cursor-pointer"
+                    className="min-h-[44px] px-3 text-xs font-bold bg-red-50 hover:bg-red-600 text-red-700 hover:text-white rounded transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
                   >
-                    <span>Channel</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                  <a
-                    href={creator.playlist_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="min-h-[44px] px-3.5 text-xs font-bold bg-red-50 hover:bg-red-600 text-red-700 hover:text-white rounded transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
-                  >
-                    <span>Watch Series / Sheet</span>
+                    <span>Watch Playlist</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -483,45 +1012,45 @@ export default function FresherPrepare() {
       )}
 
       {/* ═════════════════════════════════════════════════════════════
-          SECTION 4: AI / ML & Data Science Platforms (Kaggle, DeepLearning.AI, Hugging Face, Fast.ai)
+          SECTION 4: AI / ML & Data Science Learning Hubs (Google AI, Kaggle, Hugging Face, fast.ai)
           ═════════════════════════════════════════════════════════════ */}
-      {(sectionFilter === 'All' || sectionFilter === 'AIML') && (
+      {(sectionFilter === 'All' || sectionFilter === 'AIML') && !activeQuizSkill && (
         <div className="space-y-4 pt-2">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-purple-600" />
-              AI / Machine Learning &amp; Data Science Hubs ({filteredAiml.length})
+              <Sparkles className="w-4 h-4 text-purple-600" />
+              AI / ML, LLMs &amp; Data Science Learning Hubs ({filteredAiml.length})
             </h2>
-            <span className="text-xs text-neutral-400 font-medium">Free Notebooks, RAG Guides &amp; Open Models</span>
+            <span className="text-xs text-neutral-400 font-medium">Model Sandboxes &amp; Hands-on Datasets</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {filteredAiml.map((ai) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredAiml.map((item) => (
               <div
-                key={ai.id}
+                key={item.id}
                 className="p-5 border border-neutral-200 hover:border-purple-600 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-4 group hover:shadow-md"
               >
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[11px] font-bold text-purple-800 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
-                      {ai.provider}
+                      {item.provider}
                     </span>
                     <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-neutral-100 text-neutral-700 rounded">
-                      {ai.badge}
+                      {item.badge}
                     </span>
                   </div>
 
                   <h3 className="text-sm font-bold text-neutral-900 group-hover:text-purple-700 transition-colors leading-snug">
-                    {ai.name}
+                    {item.name}
                   </h3>
 
                   <p className="text-xs text-neutral-600 leading-relaxed">
-                    {ai.description}
+                    {item.description}
                   </p>
 
-                  {ai.recommended_for && (
+                  {item.recommended_for && (
                     <div className="flex flex-wrap gap-1.5 pt-1">
-                      {ai.recommended_for.map((skill) => (
+                      {item.recommended_for.map((skill) => (
                         <span
                           key={skill}
                           className="text-[10px] bg-neutral-50 text-neutral-700 border border-neutral-200 px-2 py-0.5 rounded-full font-medium"
@@ -534,16 +1063,16 @@ export default function FresherPrepare() {
                 </div>
 
                 <div className="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2">
-                  <span className="text-[10px] font-semibold text-neutral-500 truncate max-w-[130px]">
-                    {ai.free_tier}
+                  <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded truncate max-w-[160px]">
+                    ✓ {item.free_tier}
                   </span>
                   <a
-                    href={ai.url}
+                    href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="min-h-[44px] px-3 text-xs font-bold bg-purple-50 hover:bg-purple-600 text-purple-800 hover:text-white rounded transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
+                    className="min-h-[44px] px-3 text-xs font-bold bg-purple-50 hover:bg-purple-600 text-purple-700 hover:text-white rounded transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
                   >
-                    <span>Learn AI</span>
+                    <span>Explore Hub</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -554,60 +1083,56 @@ export default function FresherPrepare() {
       )}
 
       {/* ═════════════════════════════════════════════════════════════
-          SECTION 5: Interactive Practice Sandboxes & Architecture Standards
+          SECTION 5: Interactive Sandboxes & Official Documentation
           ═════════════════════════════════════════════════════════════ */}
-      {(sectionFilter === 'All' || sectionFilter === 'Sandboxes') && (
+      {(sectionFilter === 'All' || sectionFilter === 'Sandboxes') && !activeQuizSkill && (
         <div className="space-y-6 pt-2">
           {/* Sandboxes */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
-                <Laptop className="w-4 h-4 text-blue-600" />
-                In-Browser Interactive Sandboxes ({filteredSandboxes.length})
+                <Laptop className="w-4 h-4 text-neutral-700" />
+                Browser Sandboxes &amp; Playgrounds ({filteredSandboxes.length})
               </h2>
-              <span className="text-xs text-neutral-400 font-medium">Zero-Setup Browser Terminal &amp; Code Execution</span>
+              <span className="text-xs text-neutral-400 font-medium">In-Browser REPLs &amp; Containers</span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {filteredSandboxes.map((plat) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredSandboxes.map((item) => (
                 <div
-                  key={plat.id}
-                  className="p-4 border border-neutral-200 hover:border-neutral-900 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-3 group"
+                  key={item.id}
+                  className="p-5 border border-neutral-200 hover:border-black rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-4 group hover:shadow-md"
                 >
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-[10px] font-bold text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded truncate">
-                        {plat.category}
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded">
+                        {item.category}
                       </span>
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded">
-                        {plat.badge}
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-neutral-100 text-neutral-700 rounded">
+                        {item.badge}
                       </span>
                     </div>
 
-                    <h3 className="text-xs font-bold text-neutral-900 group-hover:text-blue-600 transition-colors">
-                      {plat.name}
+                    <h3 className="text-sm font-bold text-neutral-900 group-hover:text-blue-600 transition-colors leading-snug">
+                      {item.name}
                     </h3>
 
-                    <p className="text-xs text-neutral-600 line-clamp-3 leading-relaxed">
-                      {plat.description}
+                    <p className="text-xs text-neutral-600 leading-relaxed">
+                      {item.description}
                     </p>
-
-                    <div className="text-[11px] text-neutral-500 font-medium">
-                      Level: <span className="text-neutral-800">{plat.difficulty}</span>
-                    </div>
                   </div>
 
-                  <div className="pt-2.5 border-t border-neutral-100 flex items-center justify-between">
-                    <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
-                      ✓ Open Access
+                  <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
+                    <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                      ✓ Free Online
                     </span>
                     <a
-                      href={plat.url}
+                      href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="min-h-[44px] text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 group-hover:underline cursor-pointer"
+                      className="min-h-[44px] px-3 text-xs font-bold bg-neutral-100 hover:bg-neutral-900 text-neutral-800 hover:text-white rounded transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
                     >
-                      <span>Launch Sandbox</span>
+                      <span>Open Sandbox</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
@@ -616,26 +1141,26 @@ export default function FresherPrepare() {
             </div>
           </div>
 
-          {/* Architecture Guides */}
+          {/* Standards & Guides */}
           {filteredDocs.length > 0 && (
             <div className="space-y-4 pt-2">
               <div className="flex items-center justify-between">
                 <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
-                  <Bookmark className="w-4 h-4 text-blue-600" />
-                  Engineering Standards &amp; Architecture Guides ({filteredDocs.length})
+                  <Bookmark className="w-4 h-4 text-neutral-700" />
+                  Standards &amp; Production Documentation ({filteredDocs.length})
                 </h2>
-                <span className="text-xs text-neutral-400 font-medium">Production Architecture References</span>
+                <span className="text-xs text-neutral-400 font-medium">Curated Reference Material</span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredDocs.map((res) => (
                   <div
                     key={res.id}
-                    className="p-5 border border-neutral-200 hover:border-neutral-900 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-3 group"
+                    className="p-5 border border-neutral-200 hover:border-black rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-4 group hover:shadow-md"
                   >
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-neutral-900 bg-blue-50 text-blue-800 px-2 py-0.5 rounded">
+                        <span className="text-[11px] font-bold text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded">
                           {res.topic}
                         </span>
                         <span className="text-[11px] text-neutral-500 font-medium">
@@ -643,7 +1168,7 @@ export default function FresherPrepare() {
                         </span>
                       </div>
 
-                      <h3 className="text-sm font-bold text-neutral-900 group-hover:text-blue-600 transition-colors">
+                      <h3 className="text-sm font-bold text-neutral-900 group-hover:text-blue-600 transition-colors leading-snug">
                         {res.title}
                       </h3>
 
@@ -705,14 +1230,18 @@ export default function FresherPrepare() {
             Ready to Validate Your Learned Skills?
           </h3>
           <p className="text-xs text-neutral-400 mt-1">
-            Take a 5-MCQ category test to save a verified competency badge directly onto your candidate profile.
+            Take a 20-question skill assessment across 20 domains to save a verified competency badge directly onto your candidate profile.
           </p>
         </div>
         <button
-          onClick={() => navigate('/fresher/test')}
+          onClick={() => {
+            setActiveQuizSkill(null);
+            setSectionFilter('Quizzes');
+            window.scrollTo({ top: 150, behavior: 'smooth' });
+          }}
           className="min-h-[44px] px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer shrink-0"
         >
-          <span>Start Assessment</span>
+          <span>Choose a Skill Quiz (20 Skills)</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>

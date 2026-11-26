@@ -141,7 +141,7 @@ export default function FresherTest() {
             </h1>
           </div>
           <p className="text-xs text-neutral-500">
-            Take 5-minute foundational skill quizzes. Scores are verified and saved directly into your profile.
+            Take foundational skill quizzes across 20 technical &amp; professional skills. Scores are verified and saved directly into your profile.
           </p>
         </div>
 
@@ -199,7 +199,7 @@ export default function FresherTest() {
                       {isLive ? (
                         <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-300 rounded flex items-center gap-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
-                          Live (5 MCQs)
+                          Live ({cat.questions?.length || 20} MCQs)
                         </span>
                       ) : (
                         <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-neutral-200 text-neutral-600 rounded">
@@ -222,7 +222,7 @@ export default function FresherTest() {
                     </span>
                     {isLive ? (
                       <span className="text-blue-600 font-semibold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                        Start Quiz (5 Questions) <ChevronRight className="w-4 h-4" />
+                        Start Quiz ({cat.questions?.length || 20} Questions) <ChevronRight className="w-4 h-4" />
                       </span>
                     ) : (
                       <span className="text-neutral-400 font-medium">In Development</span>
@@ -243,7 +243,7 @@ export default function FresherTest() {
             <div>
               <div className="text-xs text-neutral-500 font-medium">Active Assessment</div>
               <div className="text-base font-bold text-neutral-900">
-                {activeCategory.displayName} (5 MCQ Quiz)
+                {activeCategory.displayName} ({activeCategory.questions?.length || 20} MCQs)
               </div>
             </div>
             <button
