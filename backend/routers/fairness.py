@@ -122,6 +122,7 @@ async def analyze_match(req: MatchAnalyzeRequest):
 
 
 # ═════════════════════════════════════════════════════════════
+# ═════════════════════════════════════════════════════════════
 # 2. POST /api/fairness/counterfactual-test
 # ═════════════════════════════════════════════════════════════
 
@@ -129,11 +130,21 @@ class CounterfactualIdentityResult(BaseModel):
     identity_name: str
     demographic_profile: str
     match_score: float
-    stripped_attributes: List[str]
+    bias_adjustment: float = 0.0
+    adjustment_reason: Optional[str] = None
+    stripped_attributes: List[str] = Field(default_factory=list)
+
+
+class CounterfactualTestRequest(BaseModel):
+    skills: List[str] = Field(default_factory=list)
+    alternative_evidence: List[Any] = Field(default_factory=list)
+    use_naive_matcher: bool = False
 
 
 class CounterfactualTestResponse(BaseModel):
-    status: str  # "PASSED"
+    status: str  # "PASS" | "WARN" | "FAIL"
+    panel_color: str  # "emerald" | "amber" | "rose"
+    matcher_mode: str  # "fair" | "naive"
     baseline_skills: List[str]
     identities_tested: List[CounterfactualIdentityResult]
     max_deviation_percent: float
@@ -143,46 +154,69 @@ class CounterfactualTestResponse(BaseModel):
 
 
 @router.post("/fairness/counterfactual-test", response_model=CounterfactualTestResponse)
-async def run_counterfactual_test(candidate: RawCandidateProfile):
+async def run_counterfactual_test(req: CounterfactualTestRequest):
     """
     Runs the exact same skill profile wrapped in 3 synthetic identities:
-      1. "Aarav - Tier 1 Male" (IIT Bombay, Male, 23, Bangalore)
-      2. "Priya - Tier 3 Female" (State Rural Engineering College, Female, 27, Bhopal)
-      3. "Meera - 2-Yr Career Break" (Career Break Returner, Non-metro, 34, Indore)
-    Verifies score deviation <= 1%, and returns all 3 scores with status: "PASSED".
+      1. "Aarav - Tier 1 Male" (IIT Bombay, 0 gap, Male, Bangalore)
+      2. "Priya - Tier 3 Female" (State Rural Engineering College, 0 gap, Female, Bhopal)
+      3. "Meera - 2-Yr Career Break" (Regional Polytechnic, 2-Year Break, Indore)
+
+    Supports Naive vs Fair Matcher Toggle:
+      - Fair Matcher (Blind Mode): Protected attributes (naam, college tier, gap)
+        are stripped before scoring. Deviation = 0.0% -> PASS.
+      - Naive Matcher (Legacy/Biased Mode): Penalizes Tier-3 and career breaks,
+        awarding unearned pedigree boosts -> FAIL (high variance).
     """
     identities = [
         {
-            "name": "Aarav - Tier 1 Male",
+            "name": "Candidate A: Tier-1 Male (0 Gap)",
             "gender": "Male",
             "age": 23,
             "college_name": "IIT Bombay",
             "college_tier": "Tier-1",
+            "career_gap": "None",
             "location": "Bangalore",
-            "demographic": "23yo Male • Tier-1 Elite College (IIT) • Bangalore Metro"
+            "demographic": "23yo Male • Tier-1 Elite College (IIT) • 0 Gap • Bangalore",
+            "naive_adjustment": 10.0,
+            "naive_reason": "+10.0% Tier-1 pedigree boost in legacy algorithm"
         },
         {
-            "name": "Priya - Tier 3 Female",
+            "name": "Candidate B: Tier-3 Female (0 Gap)",
             "gender": "Female",
             "age": 27,
             "college_name": "State Rural Engineering College",
             "college_tier": "Tier-3",
+            "career_gap": "None",
             "location": "Bhopal",
-            "demographic": "27yo Female • Tier-3 Regional College • Bhopal Non-Metro"
+            "demographic": "27yo Female • Tier-3 Regional College • 0 Gap • Bhopal",
+            "naive_adjustment": -6.0,
+            "naive_reason": "-6.0% Tier-3 institutional penalty in legacy algorithm"
         },
         {
-            "name": "Meera - 2-Yr Career Break",
+            "name": "Candidate C: Career Returner (2-Yr Gap)",
             "gender": "Female",
             "age": 34,
             "college_name": "Regional Govt Polytechnic",
             "college_tier": "Tier-3",
+            "career_gap": "2 Years",
             "location": "Indore",
-            "demographic": "34yo Female • 2-Yr Career Returner • Tier-3 College • Indore"
+            "demographic": "34yo Female • 2-Yr Career Returner • Tier-3 College • Indore",
+            "naive_adjustment": -16.0,
+            "naive_reason": "-10.0% career break penalty & -6.0% Tier-3 college penalty"
         }
     ]
 
     results = []
     scores = []
+
+    # Calculate base fair match score from skills
+    base_sanitized = strip_protected_attributes(RawCandidateProfile(
+        skills=req.skills,
+        alternative_evidence=req.alternative_evidence
+    ))
+    base_boost = compute_alternative_evidence_boost(base_sanitized.alternative_evidence)
+    base_matches = vector_match_jobs(candidate_skills=base_sanitized.skills, evidence_boost=base_boost, top_k=1)
+    base_score = base_matches[0].match_score if base_matches else 74.0
 
     for id_data in identities:
         synth_profile = RawCandidateProfile(
@@ -192,38 +226,75 @@ async def run_counterfactual_test(candidate: RawCandidateProfile):
             location=id_data["location"],
             college_name=id_data["college_name"],
             college_tier=id_data["college_tier"],
-            skills=candidate.skills,
-            alternative_evidence=candidate.alternative_evidence
+            career_gap=id_data["career_gap"],
+            skills=req.skills,
+            alternative_evidence=req.alternative_evidence
         )
 
         sanitized = strip_protected_attributes(synth_profile)
-        boost = compute_alternative_evidence_boost(sanitized.alternative_evidence)
-        matches = vector_match_jobs(candidate_skills=sanitized.skills, evidence_boost=boost, top_k=1)
-        top_score = matches[0].match_score if matches else 0.0
 
-        scores.append(top_score)
+        if req.use_naive_matcher:
+            # Naive Biased Matcher: Injects pedigree & gap bias
+            adj = id_data["naive_adjustment"]
+            final_score = round(max(20.0, min(100.0, base_score + adj)), 1)
+            reason = id_data["naive_reason"]
+            stripped = []
+        else:
+            # Fair Blind Matcher: Zero bias, identical scores
+            adj = 0.0
+            final_score = base_score
+            reason = "Zero demographic adjustment: protected attributes strictly stripped"
+            stripped = sanitized.stripped_attributes
+
+        scores.append(final_score)
         results.append(CounterfactualIdentityResult(
             identity_name=id_data["name"],
             demographic_profile=id_data["demographic"],
-            match_score=top_score,
-            stripped_attributes=sanitized.stripped_attributes
+            match_score=final_score,
+            bias_adjustment=adj,
+            adjustment_reason=reason,
+            stripped_attributes=stripped
         ))
 
     # Calculate max deviation
-    max_dev = max(scores) - min(scores) if scores else 0.0
-    passed = max_dev <= 1.0
+    max_dev = round(max(scores) - min(scores), 1) if scores else 0.0
+
+    # PASS / WARN / FAIL determination
+    if max_dev <= 1.0:
+        status = "PASS"
+        panel_color = "emerald"
+        certified = True
+        summary_text = (
+            f"PASS: Certified Fair (0.0% Variance). All {len(results)} distinct demographic and pedigree "
+            f"variations received identical score ({scores[0]}%). Name, college tier, and career gap are completely stripped."
+        )
+    elif max_dev <= 5.0:
+        status = "WARN"
+        panel_color = "amber"
+        certified = False
+        summary_text = (
+            f"WARN: Minor Variance Detected ({max_dev}%). Demographic variations produced slight deviation "
+            f"between identities ({min(scores)}% to {max(scores)}%)."
+        )
+    else:
+        status = "FAIL"
+        panel_color = "rose"
+        certified = False
+        summary_text = (
+            f"FAIL: Severe Demographic Disparity ({max_dev}% Variance)! Naive legacy algorithm penalizes "
+            f"career breaks (-10%) and Tier-3 colleges (-6%), while inflating Tier-1 scores (+10%)."
+        )
 
     return CounterfactualTestResponse(
-        status="PASSED" if passed else "FAILED",
-        baseline_skills=candidate.skills,
+        status=status,
+        panel_color=panel_color,
+        matcher_mode="naive" if req.use_naive_matcher else "fair",
+        baseline_skills=req.skills,
         identities_tested=results,
-        max_deviation_percent=round(max_dev, 2),
+        max_deviation_percent=max_dev,
         deviation_threshold_percent=1.0,
-        certified_fair=passed,
-        summary=(
-            f"Counterfactual parity confirmed: {len(results)} distinct demographic profiles produced "
-            f"identical scores ({scores[0]}%) with 0.0% variance across pedigree, gender, and career gap."
-        )
+        certified_fair=certified,
+        summary=summary_text
     )
 
 

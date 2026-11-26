@@ -8,6 +8,9 @@ import {
   Sparkles,
   CheckCircle2,
   AlertCircle,
+  AlertTriangle,
+  XCircle,
+  Scale,
   HelpCircle,
   Sliders,
   Send,
@@ -58,31 +61,40 @@ export default function FairJobMatch() {
   const [simulatedSkills, setSimulatedSkills] = useState({});
 
   // Counterfactual Proof state
+  const [useNaiveMatcher, setUseNaiveMatcher] = useState(false);
   const [testingFairness, setTestingFairness] = useState(false);
   const [counterfactualResult, setCounterfactualResult] = useState({
-    status: 'PASSED',
+    status: 'PASS',
+    panel_color: 'emerald',
+    matcher_mode: 'fair',
     certified_fair: true,
     max_deviation_percent: 0.0,
     summary:
       'Counterfactual parity confirmed: 3 distinct demographic profiles produced identical scores (74.0%) with 0.0% variance across pedigree, gender, and career gap.',
     identities_tested: [
       {
-        identity_name: 'Candidate A: Tier-1 Male',
-        demographic_profile: '23yo Male • Tier-1 Elite College (IIT) • Bangalore Metro',
+        identity_name: 'Candidate A: Tier-1 Male (0 Gap)',
+        demographic_profile: '23yo Male • Tier-1 Elite College (IIT) • 0 Gap • Bangalore',
         match_score: 74.0,
-        stripped_attributes: ['name', 'gender', 'age', 'college_name', 'college_tier', 'location'],
+        bias_adjustment: 0.0,
+        adjustment_reason: 'Attributes stripped: 0% variance',
+        stripped_attributes: ['name', 'gender', 'age', 'college_name', 'college_tier', 'career_gap', 'location'],
       },
       {
-        identity_name: 'Candidate B: Tier-3 Female',
-        demographic_profile: '27yo Female • Tier-3 Regional College • Bhopal Non-Metro',
+        identity_name: 'Candidate B: Tier-3 Female (0 Gap)',
+        demographic_profile: '27yo Female • Tier-3 Regional College • 0 Gap • Bhopal',
         match_score: 74.0,
-        stripped_attributes: ['name', 'gender', 'age', 'college_name', 'college_tier', 'location'],
+        bias_adjustment: 0.0,
+        adjustment_reason: 'Attributes stripped: 0% variance',
+        stripped_attributes: ['name', 'gender', 'age', 'college_name', 'college_tier', 'career_gap', 'location'],
       },
       {
-        identity_name: 'Candidate C: Career Break',
+        identity_name: 'Candidate C: Career Returner (2-Yr Gap)',
         demographic_profile: '34yo Female • 2-Yr Career Returner • Tier-3 College • Indore',
         match_score: 74.0,
-        stripped_attributes: ['name', 'gender', 'age', 'college_name', 'college_tier', 'location'],
+        bias_adjustment: 0.0,
+        adjustment_reason: 'Attributes stripped: 0% variance',
+        stripped_attributes: ['name', 'gender', 'age', 'college_name', 'college_tier', 'career_gap', 'location'],
       },
     ],
   });
@@ -138,12 +150,14 @@ export default function FairJobMatch() {
   );
 
   // 3. Counterfactual Fairness Test (calls POST /api/fairness/counterfactual-test)
-  const handleRunCounterfactualTest = async () => {
+  const handleRunCounterfactualTest = async (overrideNaive) => {
+    const isNaive = overrideNaive !== undefined ? overrideNaive : useNaiveMatcher;
     setTestingFairness(true);
     try {
       const payload = {
-        skills: profile.skills,
-        alternative_evidence: profile.alternative_evidence,
+        skills: profile.skills && profile.skills.length > 0 ? profile.skills : ['Python', 'FastAPI', 'REST APIs', 'SQL'],
+        alternative_evidence: profile.alternative_evidence || [],
+        use_naive_matcher: isNaive,
       };
       const res = await axios.post('/api/fairness/counterfactual-test', payload);
       setCounterfactualResult(res.data);
@@ -152,6 +166,11 @@ export default function FairJobMatch() {
     } finally {
       setTestingFairness(false);
     }
+  };
+
+  const handleToggleMatcher = (newVal) => {
+    setUseNaiveMatcher(newVal);
+    handleRunCounterfactualTest(newVal);
   };
 
   // 4. SAP Build Challenge Appeal (calls POST /api/fairness/challenge)
@@ -452,21 +471,26 @@ export default function FairJobMatch() {
         </div>
 
         {/* Bottom Right (6 cols) — Counterfactual Fairness Proof */}
-        <div className="lg:col-span-6 sn-card space-y-5">
+        <div className="lg:col-span-6 sn-card space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="font-title text-title-md text-on-surface flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-primary" />
-                <span>Counterfactual Fairness Proof</span>
-              </h2>
+              <div className="flex items-center gap-2">
+                <h2 className="font-title text-title-md text-on-surface flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-primary" />
+                  <span>Counterfactual Fairness Audit</span>
+                </h2>
+                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                  Synthetic Test Data
+                </span>
+              </div>
               <p className="font-body text-body-sm text-on-surface-muted">
-                Proof of fairness: scores must stay 100% identical regardless of identity
+                Stress-test algorithm against protected attributes (naam, college tier, career gap)
               </p>
             </div>
 
             <button
               type="button"
-              onClick={handleRunCounterfactualTest}
+              onClick={() => handleRunCounterfactualTest()}
               disabled={testingFairness}
               className="sn-btn-primary py-1.5 px-3 text-xs flex items-center gap-1.5"
             >
@@ -479,25 +503,160 @@ export default function FairJobMatch() {
             </button>
           </div>
 
-          {/* 3 Candidate Cards with Identical Scores */}
-          <div className="space-y-2.5">
+          {/* Naive vs Fair Matcher Toggle */}
+          <div className="p-3 bg-surface border border-outline rounded-sm space-y-2">
+            <div className="flex items-center justify-between text-xs font-label">
+              <span className="text-on-surface font-semibold flex items-center gap-1.5">
+                <Scale className="w-4 h-4 text-primary" />
+                Algorithm Scoring Engine:
+              </span>
+              <span className="text-[11px] text-on-surface-muted">
+                Toggle to compare fair vs biased legacy matcher
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => handleToggleMatcher(false)}
+                className={`py-2 px-3 rounded text-xs font-semibold flex items-center justify-center gap-1.5 transition-all border ${
+                  !useNaiveMatcher
+                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                    : 'bg-surface text-on-surface border-outline hover:border-sidebar'
+                }`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Fair Matcher (Blind Mode)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleToggleMatcher(true)}
+                className={`py-2 px-3 rounded text-xs font-semibold flex items-center justify-center gap-1.5 transition-all border ${
+                  useNaiveMatcher
+                    ? 'bg-rose-600 text-white border-rose-600 shadow-sm'
+                    : 'bg-surface text-on-surface border-outline hover:border-sidebar'
+                }`}
+              >
+                <AlertTriangle className="w-3.5 h-3.5" />
+                <span>Naive Matcher (Legacy/Biased)</span>
+              </button>
+            </div>
+
+            <div className="text-[11px] text-on-surface-muted pt-1">
+              {!useNaiveMatcher ? (
+                <span className="text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 inline shrink-0" />
+                  Fair Blind Mode active: Name, gender, college tier, and career gap strictly stripped before scoring.
+                </span>
+              ) : (
+                <span className="text-rose-600 dark:text-rose-400 font-medium flex items-center gap-1">
+                  <AlertTriangle className="w-3.5 h-3.5 inline shrink-0" />
+                  Legacy Naive Mode: Includes Tier-1 pedigree bonus (+10%) and penalizes Tier-3 (-6%) and career breaks (-10%).
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* PASS / WARN / FAIL Panel */}
+          <div
+            className={`p-3.5 rounded-sm border transition-all ${
+              counterfactualResult.status === 'PASS'
+                ? 'bg-emerald-500/10 border-emerald-500/30'
+                : counterfactualResult.status === 'WARN'
+                ? 'bg-amber-500/10 border-amber-500/30'
+                : 'bg-rose-500/10 border-rose-500/30'
+            }`}
+          >
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                {counterfactualResult.status === 'PASS' ? (
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                ) : counterfactualResult.status === 'WARN' ? (
+                  <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
+                ) : (
+                  <XCircle className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0" />
+                )}
+                <div>
+                  <span
+                    className={`text-xs uppercase font-extrabold tracking-wider px-2 py-0.5 rounded ${
+                      counterfactualResult.status === 'PASS'
+                        ? 'bg-emerald-600 text-white'
+                        : counterfactualResult.status === 'WARN'
+                        ? 'bg-amber-600 text-white'
+                        : 'bg-rose-600 text-white'
+                    }`}
+                  >
+                    {counterfactualResult.status}
+                  </span>
+                  <span className="ml-2 text-xs font-bold text-on-surface">
+                    {counterfactualResult.status === 'PASS'
+                      ? 'Certified Bias-Free Parity'
+                      : counterfactualResult.status === 'WARN'
+                      ? 'Minor Variance Detected'
+                      : 'High Disparity / Bias Alert'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="text-right">
+                <span className="text-[11px] text-on-surface-muted block">Max Deviation:</span>
+                <span
+                  className={`text-sm font-bold ${
+                    counterfactualResult.status === 'PASS'
+                      ? 'text-emerald-600 dark:text-emerald-400'
+                      : counterfactualResult.status === 'WARN'
+                      ? 'text-amber-600 dark:text-amber-400'
+                      : 'text-rose-600 dark:text-rose-400'
+                  }`}
+                >
+                  {counterfactualResult.max_deviation_percent?.toFixed(1) || '0.0'}%
+                </span>
+              </div>
+            </div>
+
+            <p className="text-xs text-on-surface-muted mt-2 leading-relaxed">
+              {counterfactualResult.summary}
+            </p>
+          </div>
+
+          {/* 3 Candidate Identity Cards */}
+          <div className="space-y-2">
+            <span className="text-[11px] font-label font-semibold text-on-surface-muted block">
+              Tested Synthetic Identity Variations (Identical Raw Technical Skills):
+            </span>
             {counterfactualResult.identities_tested.map((cand, idx) => (
               <div
                 key={idx}
-                className="p-3 bg-surface border border-outline rounded-sm flex items-center justify-between gap-3 text-xs"
+                className="p-3 bg-surface border border-outline rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs"
               >
                 <div className="space-y-0.5">
                   <div className="font-semibold text-on-surface">{cand.identity_name}</div>
                   <div className="text-[11px] text-on-surface-muted">{cand.demographic_profile}</div>
+                  {cand.adjustment_reason && (
+                    <div className="text-[10px] text-on-surface-muted italic">
+                      {cand.adjustment_reason}
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
                   <span className="font-display font-bold text-sm text-primary">
-                    {cand.match_score}%
+                    {cand.match_score?.toFixed(1) || cand.match_score}%
                   </span>
-                  <span className="px-2 py-0.5 bg-primary-tint text-primary border border-blue-200 rounded text-[11px] font-bold">
-                    Passed: 0% Bias
-                  </span>
+                  {cand.bias_adjustment === 0 || !cand.bias_adjustment ? (
+                    <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded text-[11px] font-bold">
+                      0.0% Variance
+                    </span>
+                  ) : cand.bias_adjustment > 0 ? (
+                    <span className="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded text-[11px] font-bold">
+                      +{cand.bias_adjustment.toFixed(1)}% Pedigree Boost
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 rounded text-[11px] font-bold">
+                      {cand.bias_adjustment.toFixed(1)}% Penalty
+                    </span>
+                  )}
                 </div>
               </div>
             ))}
@@ -505,9 +664,9 @@ export default function FairJobMatch() {
 
           {/* Summary & Challenge CTA */}
           <div className="pt-2 border-t border-outline flex flex-wrap items-center justify-between gap-3 text-xs">
-            <span className="text-success font-semibold flex items-center gap-1">
-              <CheckCircle2 className="w-4 h-4" />
-              <span>Certified Bias-Free: Max Disparity 0.0%</span>
+            <span className="text-on-surface-muted text-[11px] flex items-center gap-1">
+              <span>Protected Attributes Banned:</span>
+              <span className="font-mono text-primary font-medium">naam, gender, college tier, gap, city</span>
             </span>
 
             <button
@@ -520,7 +679,7 @@ export default function FairJobMatch() {
               className="text-primary hover:text-primary-deep font-semibold underline underline-offset-2 flex items-center gap-1"
             >
               <HelpCircle className="w-3.5 h-3.5" />
-              <span>Challenge Score via SAP Build Appeal</span>
+              <span>Challenge Score Appeal</span>
             </button>
           </div>
         </div>
