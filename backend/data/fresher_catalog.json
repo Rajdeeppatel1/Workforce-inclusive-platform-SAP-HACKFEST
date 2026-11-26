@@ -23,7 +23,11 @@
       "title": "Python for Backend & Data Architecture",
       "issuer": "Coursera / DeepLearning",
       "duration": "~4 weeks (6 hrs/wk)",
-      "skills_covered": ["Python", "Data Structures", "REST APIs"],
+      "skills_covered": [
+        "Python",
+        "Data Structures",
+        "REST APIs"
+      ],
       "cost_type": "Free / Financial Aid Available",
       "verification_ready": true,
       "relevance_score": 96
@@ -34,7 +38,11 @@
       "title": "Modern Frontend Development with React & Tailwind",
       "issuer": "freeCodeCamp / Open Source",
       "duration": "~3 weeks (5 hrs/wk)",
-      "skills_covered": ["React", "JavaScript", "Tailwind CSS"],
+      "skills_covered": [
+        "React",
+        "JavaScript",
+        "Tailwind CSS"
+      ],
       "cost_type": "100% Free",
       "verification_ready": true,
       "relevance_score": 94
@@ -45,7 +53,11 @@
       "title": "Containerization & Cloud Native Foundations",
       "issuer": "Linux Foundation / CNCF",
       "duration": "~2 weeks (4 hrs/wk)",
-      "skills_covered": ["Docker", "Linux", "Containers"],
+      "skills_covered": [
+        "Docker",
+        "Linux",
+        "Containers"
+      ],
       "cost_type": "Open Access Course",
       "verification_ready": true,
       "relevance_score": 91
@@ -56,7 +68,11 @@
       "title": "High-Performance REST APIs with FastAPI & Pydantic",
       "issuer": "Modern Web Academy",
       "duration": "~2 weeks (5 hrs/wk)",
-      "skills_covered": ["FastAPI", "Python", "API Security"],
+      "skills_covered": [
+        "FastAPI",
+        "Python",
+        "API Security"
+      ],
       "cost_type": "Free Community Edition",
       "verification_ready": true,
       "relevance_score": 95
@@ -67,7 +83,11 @@
       "title": "Practical Relational Database Design & Querying",
       "issuer": "HackerRank / Stanford Online",
       "duration": "~3 weeks (4 hrs/wk)",
-      "skills_covered": ["SQL", "Database Optimization", "Relational Modeling"],
+      "skills_covered": [
+        "SQL",
+        "Database Optimization",
+        "Relational Modeling"
+      ],
       "cost_type": "Free Tier Available",
       "verification_ready": true,
       "relevance_score": 89
@@ -78,7 +98,11 @@
       "title": "Cloud Architecture & Zero-Downtime Deployment",
       "issuer": "Cloud Native Computing Foundation",
       "duration": "~4 weeks (6 hrs/wk)",
-      "skills_covered": ["Cloud Basics", "CI/CD", "Monitoring"],
+      "skills_covered": [
+        "Cloud Basics",
+        "CI/CD",
+        "Monitoring"
+      ],
       "cost_type": "Financial Aid Eligible",
       "verification_ready": true,
       "relevance_score": 92
@@ -89,7 +113,11 @@
       "title": "Applied Machine Learning & Semantic Vector Search",
       "issuer": "Google Cloud Skills Boost",
       "duration": "~5 weeks (7 hrs/wk)",
-      "skills_covered": ["Machine Learning", "Vector Embeddings", "Python"],
+      "skills_covered": [
+        "Machine Learning",
+        "Vector Embeddings",
+        "Python"
+      ],
       "cost_type": "Free Trial / Credits",
       "verification_ready": true,
       "relevance_score": 93
@@ -100,7 +128,11 @@
       "title": "TypeScript for Scalable Fullstack Systems",
       "issuer": "Microsoft Learn",
       "duration": "~3 weeks (4 hrs/wk)",
-      "skills_covered": ["TypeScript", "Type Systems", "React Integration"],
+      "skills_covered": [
+        "TypeScript",
+        "Type Systems",
+        "React Integration"
+      ],
       "cost_type": "100% Free",
       "verification_ready": true,
       "relevance_score": 90
@@ -163,7 +195,12 @@
         {
           "id": 1,
           "question": "Which HTTP status code should be returned when a resource is successfully created via a POST request?",
-          "options": ["200 OK", "201 Created", "204 No Content", "202 Accepted"],
+          "options": [
+            "200 OK",
+            "201 Created",
+            "204 No Content",
+            "202 Accepted"
+          ],
           "correctIndex": 1,
           "explanation": "201 Created is the standard HTTP response status code for successful resource creation."
         },
@@ -182,7 +219,12 @@
         {
           "id": 3,
           "question": "In FastAPI, what library is used under the hood for schema validation and request serialization?",
-          "options": ["Marshmallow", "Pydantic", "SQLAlchemy", "Celery"],
+          "options": [
+            "Marshmallow",
+            "Pydantic",
+            "SQLAlchemy",
+            "Celery"
+          ],
           "correctIndex": 1,
           "explanation": "FastAPI is deeply integrated with Pydantic for data parsing, type validation, and documentation."
         },
@@ -201,7 +243,12 @@
         {
           "id": 5,
           "question": "Which HTTP method is idempotent according to REST conventions?",
-          "options": ["POST", "PUT", "PATCH (with side-effects)", "CONNECT"],
+          "options": [
+            "POST",
+            "PUT",
+            "PATCH (with side-effects)",
+            "CONNECT"
+          ],
           "correctIndex": 1,
           "explanation": "PUT is idempotent: multiple identical requests have the exact same effect as a single request."
         }
@@ -231,7 +278,12 @@
         {
           "id": 2,
           "question": "In a Dockerfile, which instruction specifies the command executed when the container starts?",
-          "options": ["RUN", "CMD", "FROM", "EXPOSE"],
+          "options": [
+            "RUN",
+            "CMD",
+            "FROM",
+            "EXPOSE"
+          ],
           "correctIndex": 1,
           "explanation": "CMD provides defaults for an executing container, whereas RUN executes during image build time."
         },
@@ -297,7 +349,12 @@
         {
           "id": 2,
           "question": "What metric is most commonly used to measure angular similarity between two normalized vectors?",
-          "options": ["Hamming distance", "Cosine similarity", "Levenshtein distance", "MD5 check"],
+          "options": [
+            "Hamming distance",
+            "Cosine similarity",
+            "Levenshtein distance",
+            "MD5 check"
+          ],
           "correctIndex": 1,
           "explanation": "Cosine similarity calculates the cosine of the angle between two vectors, ranging from -1 to 1."
         },
@@ -353,9 +410,9 @@
   "practice_platforms": [
     {
       "id": "plat-01",
-      "name": "LeetCode Curated Starter",
+      "name": "LeetCode Curated Starter (Blind 75)",
       "category": "Algorithms & Problem Solving",
-      "badge": "Hands-on Practice",
+      "badge": "Top Practice",
       "difficulty": "Easy to Medium",
       "free_access": true,
       "url": "https://leetcode.com/problemset/all/",
@@ -363,7 +420,17 @@
     },
     {
       "id": "plat-02",
-      "name": "freeCodeCamp Coding Challenges",
+      "name": "Salesforce Trailhead Playground Org",
+      "category": "Fullstack & CRM",
+      "badge": "Free Live Cloud Org",
+      "difficulty": "Beginner to Advanced",
+      "free_access": true,
+      "url": "https://trailhead.salesforce.com/",
+      "description": "Spin up free cloud developer sandboxes to write real Apex code, test automation triggers, and configure CRM schema."
+    },
+    {
+      "id": "plat-03",
+      "name": "freeCodeCamp Interactive Coding Curriculum",
       "category": "Fullstack & Backend",
       "badge": "100% Free",
       "difficulty": "Beginner Friendly",
@@ -372,8 +439,38 @@
       "description": "Interactive in-browser coding environment with immediate test case execution and certificate projects."
     },
     {
-      "id": "plat-03",
-      "name": "Exercism Code Mentorship",
+      "id": "plat-04",
+      "name": "HackerRank Skill Certification Playground",
+      "category": "Algorithms & Problem Solving",
+      "badge": "Verified Skill Badge",
+      "difficulty": "Intermediate",
+      "free_access": true,
+      "url": "https://www.hackerrank.com/skills-verification",
+      "description": "Take verified assessment tests in Python, SQL, REST APIs, and React to earn shareable capability badges."
+    },
+    {
+      "id": "plat-05",
+      "name": "Play with Docker Classroom Sandbox",
+      "category": "DevOps & Cloud",
+      "badge": "In-Browser Terminal",
+      "difficulty": "Beginner to Intermediate",
+      "free_access": true,
+      "url": "https://labs.play-with-docker.com/",
+      "description": "Free in-browser Docker terminal instances to practice multi-container networking without installing software."
+    },
+    {
+      "id": "plat-06",
+      "name": "SQLZoo Interactive SQL Runner",
+      "category": "Backend",
+      "badge": "Database Playground",
+      "difficulty": "Beginner to Advanced",
+      "free_access": true,
+      "url": "https://sqlzoo.net/",
+      "description": "Interactive web SQL queries covering SELECT, JOIN, GROUP BY, Window Functions, and subqueries on real datasets."
+    },
+    {
+      "id": "plat-07",
+      "name": "Exercism Code Mentorship & TDD",
       "category": "Python & Systems",
       "badge": "Open Source",
       "difficulty": "All Levels",
@@ -382,14 +479,14 @@
       "description": "Free fluency tracks with automated tests and friendly volunteer code feedback."
     },
     {
-      "id": "plat-04",
-      "name": "Play with Docker Classroom",
+      "id": "plat-08",
+      "name": "Play with Kubernetes Multi-Node Cluster",
       "category": "DevOps & Cloud",
-      "badge": "Interactive Labs",
-      "difficulty": "Beginner to Intermediate",
+      "badge": "Live K8s Sandbox",
+      "difficulty": "Intermediate to Advanced",
       "free_access": true,
-      "url": "https://labs.play-with-docker.com/",
-      "description": "Free in-browser Docker terminal instances to practice multi-container networking without installing software."
+      "url": "https://labs.play-with-k8s.com/",
+      "description": "Build multi-node Kubernetes clusters in browser sessions; deploy real Pods, Services, and Ingress controllers."
     }
   ],
   "learning_resources": [
@@ -405,15 +502,15 @@
     {
       "id": "res-02",
       "title": "FullStackOpen: Modern Web Development",
-      "topic": "Frontend & Fullstack",
-      "type": "Comprehensive Course",
+      "topic": "Fullstack & Backend",
+      "type": "Comprehensive University Course",
       "provider": "University of Helsinki",
       "url": "https://fullstackopen.com/en/",
       "summary": "Deep dive into React, Redux, Node.js, REST APIs, GraphQL, TypeScript, and CI/CD."
     },
     {
       "id": "res-03",
-      "title": "Roadmap.sh Backend Developer Guide",
+      "title": "Roadmap.sh Backend Developer Visual Guide",
       "topic": "Architecture",
       "type": "Visual Learning Map",
       "provider": "Roadmap.sh",
@@ -422,12 +519,201 @@
     },
     {
       "id": "res-04",
-      "title": "Google Cloud Skills Boost: ML Foundations",
+      "title": "The Twelve-Factor App Methodology",
+      "topic": "Cloud & Enterprise",
+      "type": "Engineering Standard",
+      "provider": "12factor.net",
+      "url": "https://12factor.net/",
+      "summary": "The industry blueprint for building scalable, cloud-native applications with declarative setups and continuous deployment."
+    },
+    {
+      "id": "res-05",
+      "title": "Refactoring.Guru: Software Architecture & Patterns",
+      "topic": "Architecture",
+      "type": "Visual Reference Guide",
+      "provider": "Refactoring.Guru",
+      "url": "https://refactoring.guru/design-patterns",
+      "summary": "Clear visual explanations of Creational, Structural, and Behavioral design patterns used in enterprise software."
+    },
+    {
+      "id": "res-06",
+      "title": "Google Cloud Responsible AI & ML Foundations",
       "topic": "AI / ML",
-      "type": "Self-Paced Labs",
+      "type": "Self-Paced Exploration",
       "provider": "Google Cloud",
       "url": "https://www.cloudskillsboost.google/",
       "summary": "Practical hands-on exploration of embeddings, machine learning pipelines, and Responsible AI principles."
+    }
+  ],
+  "official_portals": [
+    {
+      "id": "portal-sap",
+      "name": "SAP Learning Hub & BTP Developer Portal",
+      "provider": "SAP Official",
+      "badge": "Enterprise Hub",
+      "category": "Cloud & Enterprise",
+      "free_tier": "Free Learning Journeys & BTP Trial",
+      "url": "https://learning.sap.com/",
+      "description": "Official hands-on learning journeys for SAP Business Technology Platform (BTP), ABAP Cloud, SAP HANA Cloud, and CAP microservices.",
+      "recommended_for": [
+        "SAP BTP",
+        "HANA Cloud",
+        "Enterprise Architecture"
+      ]
+    },
+    {
+      "id": "portal-azure",
+      "name": "Microsoft Learn & Azure Certification Portal",
+      "provider": "Microsoft",
+      "badge": "Official Certification",
+      "category": "DevOps & Cloud",
+      "free_tier": "100% Free Sandbox & Learn Modules",
+      "url": "https://learn.microsoft.com/en-us/credentials/",
+      "description": "Role-based credentials (AZ-900 Cloud Fundamentals, AZ-204 Azure Developer) with free in-browser Cloud Shell sandboxes.",
+      "recommended_for": [
+        "Azure",
+        "Cloud Infrastructure",
+        "DevOps"
+      ]
+    },
+    {
+      "id": "portal-salesforce",
+      "name": "Salesforce Trailhead Learning Community",
+      "provider": "Salesforce",
+      "badge": "Gamified & Certified",
+      "category": "Fullstack & CRM",
+      "free_tier": "Free Hands-on Developer Orgs",
+      "url": "https://trailhead.salesforce.com/",
+      "description": "Gamified developer trails covering Apex, Lightning Web Components (LWC), database automation, and Salesforce ecosystem certifications.",
+      "recommended_for": [
+        "Salesforce",
+        "Apex",
+        "Enterprise CRM"
+      ]
+    },
+    {
+      "id": "portal-aws",
+      "name": "AWS Skill Builder Digital Training",
+      "provider": "Amazon Web Services",
+      "badge": "Official AWS",
+      "category": "DevOps & Cloud",
+      "free_tier": "600+ Free Digital Courses",
+      "url": "https://explore.skillbuilder.aws/",
+      "description": "Interactive AWS digital training, Cloud Quest role-playing gamified learning, and official AWS Cloud Practitioner prep.",
+      "recommended_for": [
+        "AWS",
+        "Serverless",
+        "Cloud Architectures"
+      ]
+    },
+    {
+      "id": "portal-gcp",
+      "name": "Google Cloud Skills Boost & Vertex AI",
+      "provider": "Google Cloud",
+      "badge": "Google Official",
+      "category": "AI / ML",
+      "free_tier": "Free Credits & Fundamental Badges",
+      "url": "https://www.cloudskillsboost.google/",
+      "description": "Practical labs covering Gemini API, Vertex AI, BigQuery data pipelines, and Kubernetes engine deployments.",
+      "recommended_for": [
+        "Google Cloud",
+        "Generative AI",
+        "Kubernetes"
+      ]
+    },
+    {
+      "id": "portal-oracle",
+      "name": "Oracle MyLearn & Java Foundations",
+      "provider": "Oracle",
+      "badge": "Official Oracle",
+      "category": "Backend",
+      "free_tier": "Free OCI Foundations Training",
+      "url": "https://mylearn.oracle.com/",
+      "description": "Official training on Oracle Cloud Infrastructure (OCI), Java SE 17/21 language foundations, and Autonomous Database.",
+      "recommended_for": [
+        "Oracle Cloud",
+        "Java",
+        "SQL & RDBMS"
+      ]
+    }
+  ],
+  "youtube_videos": [
+    {
+      "id": "yt-fcc-python",
+      "title": "Python & Backend Architecture Full Course",
+      "channel": "freeCodeCamp.org",
+      "subscribers": "10M+ Subscribers",
+      "duration": "4.5 Hours Deep Dive",
+      "category": "Backend",
+      "badge": "Famous Course",
+      "url": "https://www.youtube.com/watch?v=rfscVS0vtbw",
+      "description": "Comprehensive masterclass covering Python programming from basics to object-oriented architecture, modular code, and APIs."
+    },
+    {
+      "id": "yt-nana-docker",
+      "title": "Docker & Kubernetes Complete Tutorial for Beginners",
+      "channel": "TechWorld with Nana",
+      "subscribers": "1M+ Subscribers",
+      "duration": "3 Hours Crash Course",
+      "category": "DevOps & Cloud",
+      "badge": "DevOps Gold Standard",
+      "url": "https://www.youtube.com/watch?v=3c-iBn73dDE",
+      "description": "Visual and practical walk-through of containerizing backend apps, image layers, multi-container compose, and k8s pods."
+    },
+    {
+      "id": "yt-hussein-backend",
+      "title": "Backend Engineering & Database Internals",
+      "channel": "Hussein Nasser",
+      "subscribers": "350K+ Subscribers",
+      "duration": "Full Channel Playlist",
+      "category": "Backend",
+      "badge": "Systems Engineering",
+      "url": "https://www.youtube.com/c/HusseinNasser-software-engineering",
+      "description": "Deep technical architectural breakdown of TCP/UDP, HTTP/2 & HTTP/3, Database indexing (B-Trees), proxies, and pooling."
+    },
+    {
+      "id": "yt-neetcode-dsa",
+      "title": "Algorithms, Data Structures & Blind 75 Breakdown",
+      "channel": "NeetCode",
+      "subscribers": "700K+ Subscribers",
+      "duration": "Curated Roadmap",
+      "category": "Algorithms & Problem Solving",
+      "badge": "Top Interview Prep",
+      "url": "https://www.youtube.com/c/NeetCode",
+      "description": "Intuitive visual explanations of two-pointer techniques, dynamic programming, tree traversals, and scalable graph algorithms."
+    },
+    {
+      "id": "yt-traversy-fastapi",
+      "title": "Python FastAPI Modern REST APIs Crash Course",
+      "channel": "Traversy Media",
+      "subscribers": "2M+ Subscribers",
+      "duration": "1.5 Hours Project Guide",
+      "category": "Backend",
+      "badge": "Hands-On Project",
+      "url": "https://www.youtube.com/watch?v=gQTRsZqc78g",
+      "description": "Building production-ready, asynchronous REST microservices with Pydantic schemas, routing, and Swagger UI integration."
+    },
+    {
+      "id": "yt-fireship-cloud",
+      "title": "100 Seconds of Code: Cloud, Containers & Architecture",
+      "channel": "Fireship",
+      "subscribers": "3M+ Subscribers",
+      "duration": "Bite-Sized Concepts",
+      "category": "DevOps & Cloud",
+      "badge": "High-Retention Visuals",
+      "url": "https://www.youtube.com/c/Fireship",
+      "description": "Fast-paced, hyper-engaging visual breakdowns of Docker, Kubernetes, Redis, Git internals, and cloud microservices."
+    },
+    {
+      "id": "yt-sap-developers",
+      "title": "SAP BTP Cloud Application Programming Model (CAP)",
+      "channel": "SAP Developers Official",
+      "subscribers": "70K+ Enterprise Devs",
+      "duration": "Hands-on Coding Series",
+      "category": "Cloud & Enterprise",
+      "badge": "SAP Official Channel",
+      "url": "https://www.youtube.com/c/sapdevs",
+      "description": "Official developer walkthroughs on creating cloud extensions, deploying microservices on SAP BTP, and integrating HANA Cloud."
     }
   ]
 }

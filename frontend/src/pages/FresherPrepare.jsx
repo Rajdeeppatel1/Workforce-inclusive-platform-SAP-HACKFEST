@@ -9,18 +9,29 @@ import {
   ArrowRight,
   FileQuestion,
   CheckCircle2,
-  Terminal,
   Bookmark,
   Layers,
+  Youtube,
+  Building2,
+  PlayCircle,
+  GraduationCap,
+  Award,
+  Search,
+  Laptop,
+  Terminal,
 } from 'lucide-react';
 
 export default function FresherPrepare() {
   const navigate = useNavigate();
 
+  const [officialPortals, setOfficialPortals] = useState([]);
+  const [youtubeVideos, setYoutubeVideos] = useState([]);
   const [platforms, setPlatforms] = useState([]);
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [domainFilter, setDomainFilter] = useState('All');
+  const [sectionFilter, setSectionFilter] = useState('All');
 
   // Fetch from backend/data/fresher_catalog.json
   useEffect(() => {
@@ -29,6 +40,8 @@ export default function FresherPrepare() {
       try {
         const res = await axios.get('/api/fresher/catalog');
         if (isMounted && res.data) {
+          setOfficialPortals(res.data.official_portals || []);
+          setYoutubeVideos(res.data.youtube_videos || []);
           setPlatforms(res.data.practice_platforms || []);
           setResources(res.data.learning_resources || []);
         }
@@ -44,210 +57,462 @@ export default function FresherPrepare() {
     };
   }, []);
 
-  const filterTabs = ['All', 'Backend', 'DevOps & Cloud', 'AI / ML', 'Algorithms'];
+  const domainTabs = [
+    'All',
+    'Cloud & Enterprise',
+    'Backend',
+    'DevOps & Cloud',
+    'Algorithms & Problem Solving',
+    'AI / ML',
+  ];
 
-  const filteredPlatforms = platforms.filter((p) => {
-    if (activeFilter === 'All') return true;
-    return p.category.toLowerCase().includes(activeFilter.toLowerCase());
-  });
+  const sectionTabs = [
+    { id: 'All', label: 'All Resources' },
+    { id: 'Portals', label: '🏛️ Official Portals (SAP, Azure, Trailhead)' },
+    { id: 'YouTube', label: '📺 YouTube Masterclasses' },
+    { id: 'Practice', label: '💻 Interactive Sandboxes' },
+    { id: 'Docs', label: '📚 Architecture Guides' },
+  ];
 
-  const filteredResources = resources.filter((r) => {
-    if (activeFilter === 'All') return true;
-    return (
-      r.topic.toLowerCase().includes(activeFilter.toLowerCase()) ||
-      r.title.toLowerCase().includes(activeFilter.toLowerCase())
-    );
-  });
+  const matchesSearch = (item, fields) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return fields.some((f) => (f || '').toLowerCase().includes(q));
+  };
+
+  const matchesDomain = (categoryOrTopic) => {
+    if (domainFilter === 'All') return true;
+    return (categoryOrTopic || '').toLowerCase().includes(domainFilter.toLowerCase());
+  };
+
+  const filteredPortals = officialPortals.filter(
+    (p) =>
+      matchesDomain(p.category) &&
+      matchesSearch(p, [p.name, p.provider, p.description, ...(p.recommended_for || [])])
+  );
+
+  const filteredVideos = youtubeVideos.filter(
+    (v) =>
+      matchesDomain(v.category) &&
+      matchesSearch(v, [v.title, v.channel, v.description, v.badge])
+  );
+
+  const filteredPlatforms = platforms.filter(
+    (p) =>
+      matchesDomain(p.category) &&
+      matchesSearch(p, [p.name, p.category, p.description, p.badge])
+  );
+
+  const filteredResources = resources.filter(
+    (r) =>
+      matchesDomain(r.topic) &&
+      matchesSearch(r, [r.title, r.topic, r.summary, r.provider])
+  );
+
+  const totalResults =
+    filteredPortals.length +
+    filteredVideos.length +
+    filteredPlatforms.length +
+    filteredResources.length;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 pb-16">
+    <div className="max-w-6xl mx-auto space-y-8 pb-16">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-neutral-200 pb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="p-1.5 bg-blue-50 text-blue-600 rounded">
               <BookOpen className="w-5 h-5" />
             </span>
             <h1 className="text-2xl font-bold tracking-tight text-neutral-900">
-              Practice Platforms &amp; Learning Resources
+              Practice Platforms &amp; Learning Hub
             </h1>
-            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded">
-              Synthetic Demo Data
+            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded">
+              Official &amp; Verified Curations
             </span>
           </div>
           <p className="text-xs text-neutral-500">
-            Verified, open-access coding playgrounds and curated engineering guides from <code className="bg-neutral-100 px-1 py-0.5 rounded">backend/data/</code>.
+            Official vendor learning portals (SAP, Azure, Salesforce, AWS), famous YouTube engineering masterclasses, and hands-on coding playgrounds.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <Link
             to="/fresher"
-            className="text-xs text-neutral-600 hover:text-black font-medium border border-neutral-300 px-3 py-1.5 rounded transition-colors"
+            className="min-h-[44px] text-xs text-neutral-600 hover:text-black font-semibold border border-neutral-300 px-3.5 py-2 rounded-sm transition-colors flex items-center gap-1"
           >
             ← Fresher Overview
           </Link>
           <Link
             to="/fresher/test"
-            className="text-xs bg-blue-600 hover:bg-blue-700 text-white font-semibold px-3.5 py-1.5 rounded transition-colors flex items-center gap-1.5 shadow-sm"
+            className="min-h-[44px] text-xs bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-sm transition-colors flex items-center gap-1.5 shadow-sm"
           >
-            <FileQuestion className="w-3.5 h-3.5" />
+            <FileQuestion className="w-4 h-4" />
             <span>Take 5-MCQ Quiz</span>
           </Link>
         </div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-neutral-200 pb-3">
-        <span className="text-xs font-semibold text-neutral-500 mr-2 flex items-center gap-1">
-          <Layers className="w-3.5 h-3.5" /> Topic Filter:
-        </span>
-        {filterTabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveFilter(tab)}
-            className={`px-3 py-1.5 rounded text-xs font-semibold transition-all cursor-pointer ${
-              activeFilter === tab
-                ? 'bg-black text-white shadow-xs'
-                : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-
-      {/* ═════════════════════════════════════════════════════════════
-          SECTION 1: Practice Platforms
-          ═════════════════════════════════════════════════════════════ */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
-            <Code2 className="w-4 h-4 text-blue-600" />
-            Interactive Practice Platforms ({filteredPlatforms.length})
-          </h2>
-          <span className="text-xs text-neutral-400 font-medium">Hands-on In-Browser Coding</span>
+      {/* Search & Filter Controls */}
+      <div className="p-4 bg-white border border-neutral-200 rounded-lg shadow-xs space-y-3.5">
+        <div className="flex flex-col sm:flex-row items-center gap-3">
+          <div className="relative w-full">
+            <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search SAP BTP, Azure, Salesforce Trailhead, YouTube tutorials, Docker, LeetCode..."
+              className="w-full pl-9 pr-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-sm text-xs text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all min-h-[44px]"
+            />
+          </div>
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="min-h-[44px] px-3 text-xs text-neutral-500 hover:text-neutral-800 underline font-medium cursor-pointer"
+            >
+              Clear
+            </button>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredPlatforms.map((plat) => (
-            <div
-              key={plat.id}
-              className="p-5 border border-neutral-200 hover:border-black rounded-lg bg-white shadow-sm transition-all flex flex-col justify-between space-y-4 group"
+        {/* Section View Tabs */}
+        <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-neutral-100">
+          <span className="text-xs font-semibold text-neutral-500 mr-1.5 flex items-center gap-1">
+            <Layers className="w-3.5 h-3.5" /> View:
+          </span>
+          {sectionTabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setSectionFilter(tab.id)}
+              className={`min-h-[38px] px-3 py-1.5 rounded-sm text-xs font-semibold transition-all cursor-pointer ${
+                sectionFilter === tab.id
+                  ? 'bg-neutral-900 text-white shadow-xs'
+                  : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+              }`}
             >
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-neutral-900 bg-neutral-100 px-2 py-0.5 rounded">
-                    {plat.category}
-                  </span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded">
-                    {plat.badge}
-                  </span>
-                </div>
-                <h3 className="text-sm font-bold text-neutral-900 group-hover:text-blue-600 transition-colors">
-                  {plat.name}
-                </h3>
-                <p className="text-xs text-neutral-600 leading-relaxed">
-                  {plat.description}
-                </p>
-                <div className="text-[11px] text-neutral-500 font-medium">
-                  Difficulty Level: <span className="text-neutral-800">{plat.difficulty}</span>
-                </div>
-              </div>
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-              <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
-                <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
-                  ✓ Open Access
-                </span>
-                <a
-                  href={plat.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 group-hover:underline"
-                >
-                  <span>Launch Practice</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              </div>
-            </div>
+        {/* Domain Filter Pills */}
+        <div className="flex flex-wrap items-center gap-1.5 pt-1">
+          <span className="text-xs font-semibold text-neutral-500 mr-1.5">Domain:</span>
+          {domainTabs.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setDomainFilter(tab)}
+              className={`min-h-[32px] px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer border ${
+                domainFilter === tab
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'bg-white text-neutral-600 border-neutral-200 hover:border-neutral-400'
+              }`}
+            >
+              {tab}
+            </button>
           ))}
         </div>
       </div>
 
       {/* ═════════════════════════════════════════════════════════════
-          SECTION 2: Learning Resources & Visual Guides
+          SECTION 1: Official Enterprise Learning Portals
           ═════════════════════════════════════════════════════════════ */}
-      <div className="space-y-4 pt-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
-            <Bookmark className="w-4 h-4 text-blue-600" />
-            Curated Learning Guides &amp; Documentation ({filteredResources.length})
-          </h2>
-          <span className="text-xs text-neutral-400 font-medium">Official Docs &amp; Roadmaps</span>
-        </div>
+      {(sectionFilter === 'All' || sectionFilter === 'Portals') && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-blue-600" />
+              Official Enterprise Learning &amp; Certification Hubs ({filteredPortals.length})
+            </h2>
+            <span className="text-xs text-neutral-400 font-medium">Direct Vendor Portals &amp; Free Tiers</span>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredResources.map((res) => (
-            <div
-              key={res.id}
-              className="p-5 border border-neutral-200 hover:border-black rounded-lg bg-white shadow-sm transition-all flex flex-col justify-between space-y-4 group"
-            >
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-neutral-900 bg-blue-50 text-blue-800 px-2 py-0.5 rounded">
-                    {res.topic}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredPortals.map((portal) => (
+              <div
+                key={portal.id}
+                className="p-5 border border-neutral-200 hover:border-neutral-900 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-4 group hover:shadow-md"
+              >
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-bold text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded">
+                      {portal.provider}
+                    </span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded">
+                      {portal.badge}
+                    </span>
+                  </div>
+
+                  <h3 className="text-sm font-bold text-neutral-900 group-hover:text-blue-600 transition-colors leading-snug">
+                    {portal.name}
+                  </h3>
+
+                  <p className="text-xs text-neutral-600 leading-relaxed">
+                    {portal.description}
+                  </p>
+
+                  {portal.recommended_for && (
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {portal.recommended_for.map((skill) => (
+                        <span
+                          key={skill}
+                          className="text-[10px] bg-neutral-50 text-neutral-700 border border-neutral-200 px-2 py-0.5 rounded-full font-medium"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
+                  <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded truncate max-w-[150px]">
+                    ✓ {portal.free_tier}
                   </span>
+                  <a
+                    href={portal.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="min-h-[44px] text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1.5 group-hover:underline cursor-pointer"
+                  >
+                    <span>Launch Portal</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ═════════════════════════════════════════════════════════════
+          SECTION 2: Famous YouTube Masterclasses & Video Courses
+          ═════════════════════════════════════════════════════════════ */}
+      {(sectionFilter === 'All' || sectionFilter === 'YouTube') && (
+        <div className="space-y-4 pt-2">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
+              <Youtube className="w-4 h-4 text-red-600" />
+              Famous YouTube Engineering Masterclasses &amp; Deep Dives ({filteredVideos.length})
+            </h2>
+            <span className="text-xs text-neutral-400 font-medium">Free High-Quality Video Courses</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredVideos.map((video) => (
+              <div
+                key={video.id}
+                className="p-5 border border-neutral-200 hover:border-neutral-900 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-4 group hover:shadow-md"
+              >
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded flex items-center gap-1">
+                      <PlayCircle className="w-3 h-3" />
+                      {video.channel}
+                    </span>
+                    <span className="text-[10px] font-medium text-neutral-500">
+                      {video.subscribers}
+                    </span>
+                  </div>
+
+                  <h3 className="text-sm font-bold text-neutral-900 group-hover:text-blue-600 transition-colors leading-snug">
+                    {video.title}
+                  </h3>
+
+                  <p className="text-xs text-neutral-600 leading-relaxed">
+                    {video.description}
+                  </p>
+
+                  <div className="text-[11px] text-neutral-500 font-medium flex items-center gap-2">
+                    <span className="bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded">
+                      ⏱ {video.duration}
+                    </span>
+                    <span className="text-neutral-400">•</span>
+                    <span className="text-blue-700 font-semibold">{video.badge}</span>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
+                  <span className="text-[11px] font-semibold text-neutral-500">
+                    100% Free on YouTube
+                  </span>
+                  <a
+                    href={video.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="min-h-[44px] text-xs font-bold text-red-600 hover:text-red-800 flex items-center gap-1.5 group-hover:underline cursor-pointer"
+                  >
+                    <span>Watch Tutorial</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ═════════════════════════════════════════════════════════════
+          SECTION 3: Interactive Practice Platforms & Coding Sandboxes
+          ═════════════════════════════════════════════════════════════ */}
+      {(sectionFilter === 'All' || sectionFilter === 'Practice') && (
+        <div className="space-y-4 pt-2">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
+              <Laptop className="w-4 h-4 text-blue-600" />
+              Interactive Practice Platforms &amp; In-Browser Sandboxes ({filteredPlatforms.length})
+            </h2>
+            <span className="text-xs text-neutral-400 font-medium">Hands-On Code Execution</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {filteredPlatforms.map((plat) => (
+              <div
+                key={plat.id}
+                className="p-4 border border-neutral-200 hover:border-neutral-900 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-3 group"
+              >
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-[10px] font-bold text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded truncate">
+                      {plat.category}
+                    </span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded">
+                      {plat.badge}
+                    </span>
+                  </div>
+
+                  <h3 className="text-xs font-bold text-neutral-900 group-hover:text-blue-600 transition-colors">
+                    {plat.name}
+                  </h3>
+
+                  <p className="text-xs text-neutral-600 line-clamp-3 leading-relaxed">
+                    {plat.description}
+                  </p>
+
+                  <div className="text-[11px] text-neutral-500 font-medium">
+                    Level: <span className="text-neutral-800">{plat.difficulty}</span>
+                  </div>
+                </div>
+
+                <div className="pt-2.5 border-t border-neutral-100 flex items-center justify-between">
+                  <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                    ✓ Open Access
+                  </span>
+                  <a
+                    href={plat.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="min-h-[44px] text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 group-hover:underline cursor-pointer"
+                  >
+                    <span>Practice</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ═════════════════════════════════════════════════════════════
+          SECTION 4: Curated Learning Resources & Visual Roadmaps
+          ═════════════════════════════════════════════════════════════ */}
+      {(sectionFilter === 'All' || sectionFilter === 'Docs') && (
+        <div className="space-y-4 pt-2">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
+              <Bookmark className="w-4 h-4 text-blue-600" />
+              Curated Architecture Guides &amp; Open Standards ({filteredResources.length})
+            </h2>
+            <span className="text-xs text-neutral-400 font-medium">Official Specs &amp; Engineering Standards</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredResources.map((res) => (
+              <div
+                key={res.id}
+                className="p-5 border border-neutral-200 hover:border-neutral-900 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-3 group"
+              >
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-neutral-900 bg-blue-50 text-blue-800 px-2 py-0.5 rounded">
+                      {res.topic}
+                    </span>
+                    <span className="text-[11px] text-neutral-500 font-medium">
+                      {res.provider}
+                    </span>
+                  </div>
+
+                  <h3 className="text-sm font-bold text-neutral-900 group-hover:text-blue-600 transition-colors">
+                    {res.title}
+                  </h3>
+
+                  <p className="text-xs text-neutral-600 leading-relaxed">
+                    {res.summary}
+                  </p>
+
+                  <div className="text-[11px] text-neutral-400 font-medium">
+                    Type: <span className="text-neutral-700">{res.type}</span>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
                   <span className="text-[11px] text-neutral-500 font-medium">
-                    {res.provider}
+                    Self-Paced Guide
                   </span>
-                </div>
-                <h3 className="text-sm font-bold text-neutral-900 group-hover:text-blue-600 transition-colors">
-                  {res.title}
-                </h3>
-                <p className="text-xs text-neutral-600 leading-relaxed">
-                  {res.summary}
-                </p>
-                <div className="text-[11px] text-neutral-400 font-medium">
-                  Type: <span className="text-neutral-700">{res.type}</span>
+                  <a
+                    href={res.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="min-h-[44px] text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 group-hover:underline cursor-pointer"
+                  >
+                    <span>Read Guide</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
                 </div>
               </div>
-
-              <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
-                <span className="text-[11px] text-neutral-500 font-medium">
-                  Self-paced Resource
-                </span>
-                <a
-                  href={res.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 group-hover:underline"
-                >
-                  <span>Open Resource</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Zero results fallback */}
+      {totalResults === 0 && (
+        <div className="p-8 text-center bg-white border border-neutral-200 rounded-lg space-y-2">
+          <p className="text-sm font-semibold text-neutral-800">
+            No resources match "{searchQuery}" under the selected filters.
+          </p>
+          <button
+            onClick={() => {
+              setSearchQuery('');
+              setDomainFilter('All');
+              setSectionFilter('All');
+            }}
+            className="min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded text-xs font-semibold cursor-pointer"
+          >
+            Reset All Filters
+          </button>
+        </div>
+      )}
 
       {/* Bottom Call to Action Card */}
       <div className="p-6 bg-neutral-900 text-white rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h3 className="text-sm font-bold text-white flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-blue-400" />
-            Ready to Validate Your Skills?
+            Ready to Validate Your Learned Skills?
           </h3>
           <p className="text-xs text-neutral-400 mt-1">
-            Take a 5-MCQ category test to save a verified competency badge onto your candidate profile.
+            Take a 5-MCQ category test to save a verified competency badge directly onto your candidate profile.
           </p>
         </div>
         <button
           onClick={() => navigate('/fresher/test')}
-          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+          className="min-h-[44px] px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer shrink-0"
         >
           <span>Start Assessment</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <ArrowRight className="w-4 h-4" />
         </button>
       </div>
     </div>
