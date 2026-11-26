@@ -313,3 +313,144 @@ async def save_quiz_score(req: SaveQuizScoreRequest):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to save quiz score: {str(e)}")
+
+
+# ═════════════════════════════════════════════════════════════
+# Certificate Mock OCR & Roles Validation (No live external API)
+# ═════════════════════════════════════════════════════════════
+
+ROLES_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "data", "roles.json")
+)
+
+
+@router.get("/roles")
+async def get_roles():
+    """
+    Returns target company roles from backend/data/roles.json (no live API).
+    """
+    if not os.path.exists(ROLES_PATH):
+        raise HTTPException(status_code=404, detail="roles.json not found")
+    try:
+        with open(ROLES_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to load roles: {str(e)}")
+
+
+class MockOcrRequest(BaseModel):
+    filename: Optional[str] = "certificate.pdf"
+    raw_text: Optional[str] = ""
+
+
+@router.post("/credentials/mock-ocr")
+async def mock_ocr(req: MockOcrRequest):
+    """
+    Mock OCR engine: parses certificate and returns naam, issuer, date, skills, and title.
+    """
+    text = (req.raw_text or "").lower()
+    fn = (req.filename or "").lower()
+
+    # Rule-based synthetic extraction
+    if "aws" in text or "cloud" in fn or "aws" in fn:
+        return {
+            "naam": "Rajdeep Patel",
+            "title": "AWS Certified Cloud Solutions Practitioner",
+            "issuer": "Amazon Web Services (AWS)",
+            "date": "2024-08",
+            "skills": ["Docker", "Cloud Basics", "REST APIs", "Python"],
+            "status": "Extracted (Needs Confirmation)"
+        }
+    elif "meta" in text or "react" in fn or "frontend" in text:
+        return {
+            "naam": "Rajdeep Patel",
+            "title": "Modern Frontend Development with React & Tailwind",
+            "issuer": "Meta / Coursera",
+            "date": "2024-07",
+            "skills": ["React", "JavaScript", "Tailwind CSS", "TypeScript"],
+            "status": "Extracted (Needs Confirmation)"
+        }
+    elif "docker" in text or "devops" in fn or "linux" in text:
+        return {
+            "naam": "Rajdeep Patel",
+            "title": "Containerization & Microservices Foundations",
+            "issuer": "Linux Foundation / CNCF",
+            "date": "2024-09",
+            "skills": ["Docker", "Linux", "CI/CD", "Python"],
+            "status": "Extracted (Needs Confirmation)"
+        }
+    else:
+        # Default Python / REST API Specialization
+        return {
+            "naam": "Rajdeep Patel",
+            "title": "Python for Everybody & Backend Microservices",
+            "issuer": "Coursera / DeepLearning",
+            "date": "2024-10",
+            "skills": ["Python", "FastAPI", "SQL", "REST APIs"],
+            "status": "Extracted (Needs Confirmation)"
+        }
+
+
+class ValidateRoleRequest(BaseModel):
+    role_id: str
+    skills: List[str] = Field(default_factory=list)
+    certificate_title: Optional[str] = None
+    profile_id: Optional[str] = "seed_rajdeep_patel_01"
+
+
+@router.post("/roles/validate")
+async def validate_role(req: ValidateRoleRequest):
+    """
+    Validates candidate certificate & skills against target role requirements in backend/data/roles.json.
+    Returns: 'Aap is role ke liye eligible hain' (apply ho gaya nahi).
+    """
+    if not os.path.exists(ROLES_PATH):
+        raise HTTPException(status_code=404, detail="roles.json not found")
+
+    try:
+        with open(ROLES_PATH, "r", encoding="utf-8") as f:
+            roles_data = json.load(f)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to read roles.json: {str(e)}")
+
+    roles_list = roles_data.get("roles", [])
+    target_role = next((r for r in roles_list if r.get("role_id") == req.role_id), None)
+
+    if not target_role:
+        target_role = roles_list[0] if roles_list else None
+
+    if not target_role:
+        raise HTTPException(status_code=404, detail="No role found in roles.json")
+
+    # Match skills (case-insensitive)
+    candidate_skills_norm = {s.strip().lower() for s in req.skills if s.strip()}
+    required_skills = target_role.get("required_skills", [])
+
+    matched = []
+    missing = []
+    for r_skill in required_skills:
+        if r_skill.strip().lower() in candidate_skills_norm:
+            matched.append(r_skill)
+        else:
+            missing.append(r_skill)
+
+    min_required = target_role.get("min_matching_skills", 3)
+    match_pct = round((len(matched) / len(required_skills)) * 100, 1) if required_skills else 100.0
+    is_eligible = len(matched) >= min_required or match_pct >= 60.0
+
+    return {
+        "role_id": target_role.get("role_id"),
+        "role_title": target_role.get("title"),
+        "company": target_role.get("company"),
+        "eligible": is_eligible,
+        "result_message": "Aap is role ke liye eligible hain" if is_eligible else "Aapko is role ke liye kuch aur skills add karne honge",
+        "notice": "Aap is role ke liye eligible hain (apply ho gaya nahi)",
+        "matched_skills": matched,
+        "missing_skills": missing,
+        "match_percentage": match_pct,
+        "required_skills": required_skills,
+        "applied_status": "Eligible Only • Not Applied",
+        "explanation": f"Matched {len(matched)} of {len(required_skills)} core skills required by {target_role.get('company')}."
+    }
+

@@ -1,0 +1,44 @@
+{
+  "roles": [
+    {
+      "role_id": "role-fsd-01",
+      "title": "Junior Full Stack Developer",
+      "company": "Inclusive Tech Enterprises",
+      "department": "Engineering",
+      "required_skills": ["Python", "React", "REST APIs", "SQL"],
+      "min_matching_skills": 3,
+      "experience_level": "Entry / Fresher",
+      "description": "Build accessible user interfaces and microservices. Evaluates demonstrable portfolio projects over college pedigree."
+    },
+    {
+      "role_id": "role-cloud-02",
+      "title": "Cloud & DevOps Associate",
+      "company": "Cloud & SaaS Startups",
+      "department": "Infrastructure",
+      "required_skills": ["Docker", "Linux", "CI/CD", "Python"],
+      "min_matching_skills": 3,
+      "experience_level": "Entry / Fresher",
+      "description": "Deploy containerized services and maintain automated CI/CD deployment pipelines."
+    },
+    {
+      "role_id": "role-backend-03",
+      "title": "Backend API Engineer",
+      "company": "Open Source & Developer Labs",
+      "department": "Platform Services",
+      "required_skills": ["FastAPI", "Python", "SQL", "Docker"],
+      "min_matching_skills": 3,
+      "experience_level": "Entry to Mid",
+      "description": "Develop high-throughput REST APIs and asynchronous database integrations with FastAPI."
+    },
+    {
+      "role_id": "role-ai-04",
+      "title": "AI & Vector Search Specialist",
+      "company": "Data & AI Product Platforms",
+      "department": "AI Labs",
+      "required_skills": ["Machine Learning", "Python", "Vector Embeddings", "SQL"],
+      "min_matching_skills": 3,
+      "experience_level": "Entry / Junior",
+      "description": "Implement semantic search, embedding clustering, and fairness-verified scoring pipelines."
+    }
+  ]
+}
