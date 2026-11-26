@@ -409,84 +409,44 @@
   ],
   "practice_platforms": [
     {
-      "id": "plat-01",
-      "name": "LeetCode Curated Starter (Blind 75)",
-      "category": "Algorithms & Problem Solving",
-      "badge": "Top Practice",
-      "difficulty": "Easy to Medium",
-      "free_access": true,
-      "url": "https://leetcode.com/problemset/all/",
-      "description": "Curated blind 75 list focusing on arrays, strings, hash maps, and two-pointer algorithms."
-    },
-    {
-      "id": "plat-02",
-      "name": "Salesforce Trailhead Playground Org",
-      "category": "Fullstack & CRM",
-      "badge": "Free Live Cloud Org",
-      "difficulty": "Beginner to Advanced",
-      "free_access": true,
-      "url": "https://trailhead.salesforce.com/",
-      "description": "Spin up free cloud developer sandboxes to write real Apex code, test automation triggers, and configure CRM schema."
-    },
-    {
-      "id": "plat-03",
-      "name": "freeCodeCamp Interactive Coding Curriculum",
-      "category": "Fullstack & Backend",
-      "badge": "100% Free",
-      "difficulty": "Beginner Friendly",
-      "free_access": true,
-      "url": "https://www.freecodecamp.org/learn",
-      "description": "Interactive in-browser coding environment with immediate test case execution and certificate projects."
-    },
-    {
-      "id": "plat-04",
-      "name": "HackerRank Skill Certification Playground",
-      "category": "Algorithms & Problem Solving",
-      "badge": "Verified Skill Badge",
-      "difficulty": "Intermediate",
-      "free_access": true,
-      "url": "https://www.hackerrank.com/skills-verification",
-      "description": "Take verified assessment tests in Python, SQL, REST APIs, and React to earn shareable capability badges."
-    },
-    {
-      "id": "plat-05",
-      "name": "Play with Docker Classroom Sandbox",
-      "category": "DevOps & Cloud",
-      "badge": "In-Browser Terminal",
+      "id": "plat-docker",
+      "name": "Play with Docker In-Browser Terminal",
+      "category": "DevOps & Docker",
+      "badge": "Live Terminal",
       "difficulty": "Beginner to Intermediate",
       "free_access": true,
       "url": "https://labs.play-with-docker.com/",
-      "description": "Free in-browser Docker terminal instances to practice multi-container networking without installing software."
+      "description": "Spin up real multi-container Docker instances directly in your web browser without installing Docker Desktop."
     },
     {
-      "id": "plat-06",
-      "name": "SQLZoo Interactive SQL Runner",
-      "category": "Backend",
-      "badge": "Database Playground",
-      "difficulty": "Beginner to Advanced",
-      "free_access": true,
-      "url": "https://sqlzoo.net/",
-      "description": "Interactive web SQL queries covering SELECT, JOIN, GROUP BY, Window Functions, and subqueries on real datasets."
-    },
-    {
-      "id": "plat-07",
-      "name": "Exercism Code Mentorship & TDD",
-      "category": "Python & Systems",
-      "badge": "Open Source",
-      "difficulty": "All Levels",
-      "free_access": true,
-      "url": "https://exercism.org/tracks/python",
-      "description": "Free fluency tracks with automated tests and friendly volunteer code feedback."
-    },
-    {
-      "id": "plat-08",
-      "name": "Play with Kubernetes Multi-Node Cluster",
-      "category": "DevOps & Cloud",
-      "badge": "Live K8s Sandbox",
+      "id": "plat-k8s",
+      "name": "Play with Kubernetes Multi-Node Lab",
+      "category": "DevOps & Docker",
+      "badge": "Multi-Node Cluster",
       "difficulty": "Intermediate to Advanced",
       "free_access": true,
       "url": "https://labs.play-with-k8s.com/",
-      "description": "Build multi-node Kubernetes clusters in browser sessions; deploy real Pods, Services, and Ingress controllers."
+      "description": "Spin up multi-node Kubernetes clusters inside your browser to practice kubectl, Deployments, Services, and Ingress routing."
+    },
+    {
+      "id": "plat-sqlzoo",
+      "name": "SQLZoo Interactive Query Runner",
+      "category": "Fullstack & Backend",
+      "badge": "Live SQL Engine",
+      "difficulty": "Beginner to Advanced",
+      "free_access": true,
+      "url": "https://sqlzoo.net/",
+      "description": "Immediate in-browser SQL evaluation covering SELECT, table JOINs, GROUP BY aggregations, and advanced Window Functions."
+    },
+    {
+      "id": "plat-exercism",
+      "name": "Exercism Python & Multi-Language Tracks",
+      "category": "Fullstack & Backend",
+      "badge": "Automated TDD",
+      "difficulty": "All Levels",
+      "free_access": true,
+      "url": "https://exercism.org/tracks/python",
+      "description": "70+ language tracks with automated test runners and free volunteer code reviews from experienced engineers."
     }
   ],
   "learning_resources": [
@@ -550,83 +510,104 @@
       "id": "portal-sap",
       "name": "SAP Learning Hub & BTP Developer Portal",
       "provider": "SAP Official",
-      "badge": "Enterprise Hub",
-      "category": "Cloud & Enterprise",
+      "category": "SAP & Enterprise",
+      "badge": "Enterprise Official",
       "free_tier": "Free Learning Journeys & BTP Trial",
       "url": "https://learning.sap.com/",
-      "description": "Official hands-on learning journeys for SAP Business Technology Platform (BTP), ABAP Cloud, SAP HANA Cloud, and CAP microservices.",
+      "description": "Direct redirect to official SAP learning journeys for SAP Business Technology Platform (BTP), ABAP Cloud, SAP HANA Cloud, and CAP microservices.",
       "recommended_for": [
         "SAP BTP",
         "HANA Cloud",
+        "ABAP Cloud",
         "Enterprise Architecture"
       ]
     },
     {
-      "id": "portal-azure",
-      "name": "Microsoft Learn & Azure Certification Portal",
-      "provider": "Microsoft",
-      "badge": "Official Certification",
-      "category": "DevOps & Cloud",
-      "free_tier": "100% Free Sandbox & Learn Modules",
-      "url": "https://learn.microsoft.com/en-us/credentials/",
-      "description": "Role-based credentials (AZ-900 Cloud Fundamentals, AZ-204 Azure Developer) with free in-browser Cloud Shell sandboxes.",
+      "id": "portal-sap-discovery",
+      "name": "SAP Discovery Center & Missions",
+      "provider": "SAP Official",
+      "category": "SAP & Enterprise",
+      "badge": "Hands-on Missions",
+      "free_tier": "Interactive Architecture Blueprints",
+      "url": "https://discovery-center.cloud.sap/",
+      "description": "Step-by-step implementation missions with free tier service guides, reference architectures, and BTP community solutions.",
       "recommended_for": [
-        "Azure",
-        "Cloud Infrastructure",
-        "DevOps"
+        "SAP BTP",
+        "Cloud Integration",
+        "Enterprise Systems"
       ]
     },
     {
-      "id": "portal-salesforce",
-      "name": "Salesforce Trailhead Learning Community",
-      "provider": "Salesforce",
-      "badge": "Gamified & Certified",
-      "category": "Fullstack & CRM",
-      "free_tier": "Free Hands-on Developer Orgs",
-      "url": "https://trailhead.salesforce.com/",
-      "description": "Gamified developer trails covering Apex, Lightning Web Components (LWC), database automation, and Salesforce ecosystem certifications.",
+      "id": "portal-azure",
+      "name": "Microsoft Learn & Azure Certification Hub",
+      "provider": "Microsoft",
+      "category": "Cloud (AWS, Azure, GCP)",
+      "badge": "Official Certification",
+      "free_tier": "100% Free Sandbox & Learn Modules",
+      "url": "https://learn.microsoft.com/en-us/training/azure/",
+      "description": "Official Microsoft portal for Azure cloud fundamentals (AZ-900), developer associate (AZ-204), and in-browser Cloud Shell sandboxes.",
       "recommended_for": [
-        "Salesforce",
-        "Apex",
-        "Enterprise CRM"
+        "Azure",
+        "Cloud Infrastructure",
+        "DevOps",
+        "Microservices"
       ]
     },
     {
       "id": "portal-aws",
       "name": "AWS Skill Builder Digital Training",
       "provider": "Amazon Web Services",
+      "category": "Cloud (AWS, Azure, GCP)",
       "badge": "Official AWS",
-      "category": "DevOps & Cloud",
       "free_tier": "600+ Free Digital Courses",
       "url": "https://explore.skillbuilder.aws/",
-      "description": "Interactive AWS digital training, Cloud Quest role-playing gamified learning, and official AWS Cloud Practitioner prep.",
+      "description": "Official AWS training portal with Cloud Quest gamified learning, serverless labs, and AWS Cloud Practitioner / Solutions Architect preparation.",
       "recommended_for": [
         "AWS",
-        "Serverless",
-        "Cloud Architectures"
+        "EC2",
+        "S3",
+        "Lambda",
+        "Serverless"
       ]
     },
     {
       "id": "portal-gcp",
-      "name": "Google Cloud Skills Boost & Vertex AI",
+      "name": "Google Cloud Skills Boost & Cloud Shell",
       "provider": "Google Cloud",
+      "category": "Cloud (AWS, Azure, GCP)",
       "badge": "Google Official",
-      "category": "AI / ML",
       "free_tier": "Free Credits & Fundamental Badges",
       "url": "https://www.cloudskillsboost.google/",
-      "description": "Practical labs covering Gemini API, Vertex AI, BigQuery data pipelines, and Kubernetes engine deployments.",
+      "description": "Interactive Google Cloud console labs covering Compute Engine, BigQuery analytics, Vertex AI, and Google Kubernetes Engine (GKE).",
       "recommended_for": [
         "Google Cloud",
-        "Generative AI",
-        "Kubernetes"
+        "BigQuery",
+        "Kubernetes",
+        "Vertex AI"
+      ]
+    },
+    {
+      "id": "portal-salesforce",
+      "name": "Salesforce Trailhead Developer Community",
+      "provider": "Salesforce",
+      "category": "SAP & Enterprise",
+      "badge": "Free Live Cloud Org",
+      "free_tier": "Hands-on Developer Sandboxes",
+      "url": "https://trailhead.salesforce.com/",
+      "description": "Gamified developer trails with real Apex, Lightning Web Components (LWC), database automation, and Salesforce ecosystem credentials.",
+      "recommended_for": [
+        "Salesforce",
+        "Apex",
+        "Enterprise CRM",
+        "Cloud Apps"
       ]
     },
     {
       "id": "portal-oracle",
       "name": "Oracle MyLearn & Java Foundations",
       "provider": "Oracle",
+      "category": "Fullstack & Backend",
       "badge": "Official Oracle",
-      "category": "Backend",
       "free_tier": "Free OCI Foundations Training",
       "url": "https://mylearn.oracle.com/",
       "description": "Official training on Oracle Cloud Infrastructure (OCI), Java SE 17/21 language foundations, and Autonomous Database.",
@@ -714,6 +695,311 @@
       "badge": "SAP Official Channel",
       "url": "https://www.youtube.com/c/sapdevs",
       "description": "Official developer walkthroughs on creating cloud extensions, deploying microservices on SAP BTP, and integrating HANA Cloud."
+    }
+  ],
+  "dsa_platforms": [
+    {
+      "id": "dsa-leetcode",
+      "name": "LeetCode Problem Solving Platform",
+      "provider": "LeetCode",
+      "category": "DSA & Algorithms",
+      "badge": "Industry Standard",
+      "free_tier": "3000+ Free Coding Problems",
+      "url": "https://leetcode.com/problemset/all/",
+      "description": "The premier coding interview practice platform. Filter by difficulty, company tags, and curated Blind 75 / NeetCode 150 lists.",
+      "recommended_for": [
+        "Arrays",
+        "Dynamic Programming",
+        "Trees",
+        "Graphs",
+        "System Design"
+      ]
+    },
+    {
+      "id": "dsa-codechef",
+      "name": "CodeChef Practice & Star Contests",
+      "provider": "CodeChef",
+      "category": "DSA & Algorithms",
+      "badge": "Rated Contests",
+      "free_tier": "100% Free Practice Tracks",
+      "url": "https://www.codechef.com/practice",
+      "description": "Popular algorithmic contest platform with topic-wise problem sets from 500-level beginner puzzles up to 2500+ rated master challenges.",
+      "recommended_for": [
+        "Math",
+        "Greedy Algorithms",
+        "Strings",
+        "Competitive Programming"
+      ]
+    },
+    {
+      "id": "dsa-hackerrank",
+      "name": "HackerRank Problem Solving & Certifications",
+      "provider": "HackerRank",
+      "category": "DSA & Algorithms",
+      "badge": "Skill Certification",
+      "free_tier": "Verified Skill Badges",
+      "url": "https://www.hackerrank.com/domains/algorithms",
+      "description": "Practice domain-specific tracks in Algorithms, Data Structures, SQL, Python, and Java with free verifiable skill badges.",
+      "recommended_for": [
+        "Algorithms",
+        "Data Structures",
+        "SQL",
+        "Python"
+      ]
+    },
+    {
+      "id": "dsa-gfg",
+      "name": "GeeksforGeeks Practice Portal (GFG)",
+      "provider": "GeeksforGeeks",
+      "category": "DSA & Algorithms",
+      "badge": "Must-Do Coding Sheet",
+      "free_tier": "Free Problem of the Day",
+      "url": "https://practice.geeksforgeeks.org/",
+      "description": "Extensive archive of company interview questions (Amazon, Microsoft, Google, TCS, Infosys) and DSA topic-wise sheets.",
+      "recommended_for": [
+        "Topic-wise DSA",
+        "Company Specific Sheets",
+        "POTD"
+      ]
+    },
+    {
+      "id": "dsa-codeforces",
+      "name": "Codeforces Competitive Arena",
+      "provider": "Codeforces",
+      "category": "DSA & Algorithms",
+      "badge": "Global Contests",
+      "free_tier": "Global Problem Archive",
+      "url": "https://codeforces.com/problemset",
+      "description": "High-difficulty algorithmic problem set used by competitive programmers worldwide to build mathematical optimization speed.",
+      "recommended_for": [
+        "Advanced Algorithms",
+        "Graph Theory",
+        "Number Theory"
+      ]
+    }
+  ],
+  "youtube_creators": [
+    {
+      "id": "yt-striver",
+      "name": "Striver (take U forward) \u2014 A2Z DSA Sheet",
+      "creator": "Raj Vikramaditya (Striver)",
+      "channel_url": "https://www.youtube.com/@takeUforward",
+      "playlist_url": "https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/",
+      "subscribers": "1.5M+ Developers",
+      "category": "DSA & Algorithms",
+      "badge": "Best DSA Sheet",
+      "description": "The most recommended step-by-step DSA roadmap in the industry. Covers 450+ curated problems with video explanations from basics to dynamic programming.",
+      "topics": [
+        "Striver A2Z Sheet",
+        "SDE Core Sheet",
+        "Graphs",
+        "Dynamic Programming",
+        "Trees"
+      ]
+    },
+    {
+      "id": "yt-codewithharry",
+      "name": "CodeWithHarry \u2014 Complete Programming Courses",
+      "creator": "Haris Khan (CodeWithHarry)",
+      "channel_url": "https://www.youtube.com/@CodeWithHarry",
+      "playlist_url": "https://www.youtube.com/@CodeWithHarry/playlists",
+      "subscribers": "6M+ Students",
+      "category": "Fullstack & Backend",
+      "badge": "Bilingual / Hindi & English",
+      "description": "World-renowned programming teacher covering Python, JavaScript, Web Development (HTML/CSS/JS/React), C++, and Java from absolute scratch in accessible language.",
+      "topics": [
+        "100 Days of Python",
+        "Full Stack Web Dev",
+        "C++ with DSA",
+        "JavaScript Masterclass"
+      ]
+    },
+    {
+      "id": "yt-freecodecamp",
+      "name": "freeCodeCamp.org \u2014 Full Length Tech Masterclasses",
+      "creator": "freeCodeCamp Open Source",
+      "channel_url": "https://www.youtube.com/@freecodecamp",
+      "playlist_url": "https://www.youtube.com/@freecodecamp/videos",
+      "subscribers": "10M+ Global Devs",
+      "category": "Fullstack & Backend",
+      "badge": "100% Free Full Courses",
+      "description": "Comprehensive 4 to 20-hour uninterrupted masterclasses on Backend Architecture, Python, Docker, React, Machine Learning, and Cloud Computing.",
+      "topics": [
+        "Python Architecture",
+        "Full Stack React",
+        "Docker & DevOps",
+        "SQL & Databases"
+      ]
+    },
+    {
+      "id": "yt-lovebabbar",
+      "name": "Love Babbar \u2014 Complete C++ & DSA Series",
+      "creator": "Love Babbar",
+      "channel_url": "https://www.youtube.com/@LoveBabbar",
+      "playlist_url": "https://www.youtube.com/playlist?list=PLDzeHZWIZsTryvtXdMr6rPh4IDexB5NIA",
+      "subscribers": "1.2M+ Students",
+      "category": "DSA & Algorithms",
+      "badge": "Top C++ DSA Course",
+      "description": "Comprehensive 150+ video lecture series on C++ programming, memory management, pointers, and essential data structures from basic to advanced.",
+      "topics": [
+        "C++ Foundations",
+        "Binary Trees",
+        "Linked Lists",
+        "Recursion",
+        "Backtracking"
+      ]
+    },
+    {
+      "id": "yt-neetcode",
+      "name": "NeetCode \u2014 Blind 75 & NeetCode 150 Visual DSA",
+      "creator": "Navdeep Singh (NeetCode)",
+      "channel_url": "https://www.youtube.com/@NeetCode",
+      "playlist_url": "https://neetcode.io/practice",
+      "subscribers": "800K+ Software Engineers",
+      "category": "DSA & Algorithms",
+      "badge": "Visual Problem Breakdown",
+      "description": "Crystal-clear visual problem breakdowns with Python implementations for LeetCode Blind 75, NeetCode 150, and System Design fundamentals.",
+      "topics": [
+        "NeetCode 150",
+        "Two Pointers",
+        "Sliding Window",
+        "Intervals",
+        "System Design"
+      ]
+    },
+    {
+      "id": "yt-krishnaik",
+      "name": "Krish Naik \u2014 Complete AI / ML & Data Science",
+      "creator": "Krish Naik",
+      "channel_url": "https://www.youtube.com/@krishnaik06",
+      "playlist_url": "https://www.youtube.com/@krishnaik06/playlists",
+      "subscribers": "1M+ AI Practitioners",
+      "category": "AI / ML & Data Science",
+      "badge": "Generative AI & Data",
+      "description": "End-to-end industry roadmaps for Data Science, Machine Learning pipelines, NLP, Vector Embeddings, LangChain, and Generative AI application deployment.",
+      "topics": [
+        "Generative AI",
+        "Machine Learning",
+        "Deep Learning",
+        "Data Science End-to-End"
+      ]
+    },
+    {
+      "id": "yt-nana",
+      "name": "TechWorld with Nana \u2014 DevOps, Docker & K8s",
+      "creator": "Nana Janashia",
+      "channel_url": "https://www.youtube.com/@TechWorldwithNana",
+      "playlist_url": "https://www.youtube.com/@TechWorldwithNana/playlists",
+      "subscribers": "1M+ DevOps Engineers",
+      "category": "DevOps & Docker",
+      "badge": "DevOps Gold Standard",
+      "description": "Visual, highly intuitive practical courses on Docker containers, Kubernetes cluster management, CI/CD with GitLab/GitHub Actions, and Terraform infrastructure as code.",
+      "topics": [
+        "Docker Deep Dive",
+        "Kubernetes Architecture",
+        "CI/CD Pipelines",
+        "Prometheus & Grafana"
+      ]
+    },
+    {
+      "id": "yt-hussein",
+      "name": "Hussein Nasser \u2014 Backend Systems & Database Internals",
+      "creator": "Hussein Nasser",
+      "channel_url": "https://www.youtube.com/@HusseinNasser-software-engineering",
+      "playlist_url": "https://www.youtube.com/@HusseinNasser-software-engineering/playlists",
+      "subscribers": "380K+ Systems Architects",
+      "category": "Fullstack & Backend",
+      "badge": "Systems Engineering",
+      "description": "Deep engineering teardowns of database internals (B-Trees, WAL, indexing), network protocols (TCP, HTTP/3, WebSockets, gRPC), and connection pooling trade-offs.",
+      "topics": [
+        "Database Internals",
+        "Networking Protocols",
+        "Proxying & Load Balancing",
+        "Nginx & Redis"
+      ]
+    },
+    {
+      "id": "yt-sapdevs",
+      "name": "SAP Developers Official \u2014 Cloud Application Programming",
+      "creator": "SAP Developer Advocates",
+      "channel_url": "https://www.youtube.com/@sapdevs",
+      "playlist_url": "https://www.youtube.com/@sapdevs/playlists",
+      "subscribers": "75K+ Enterprise Devs",
+      "category": "SAP & Enterprise",
+      "badge": "SAP Official",
+      "description": "Official hands-on video series from SAP Developer Advocates covering SAP BTP Cloud Extensions, CAP with Node/Java, and SAP HANA Cloud Vector Engine.",
+      "topics": [
+        "SAP BTP Hands-on",
+        "Cloud Application Programming (CAP)",
+        "SAP HANA Cloud",
+        "UI5"
+      ]
+    }
+  ],
+  "aiml_platforms": [
+    {
+      "id": "ai-kaggle",
+      "name": "Kaggle Machine Learning & Data Competitions",
+      "provider": "Google / Kaggle",
+      "category": "AI / ML & Data Science",
+      "badge": "Hands-on Datasets",
+      "free_tier": "Free GPU / TPU Notebooks",
+      "url": "https://www.kaggle.com/learn",
+      "description": "Bite-sized micro-courses with interactive Jupyter notebooks and real-world datasets covering Pandas, Scikit-Learn, Deep Learning, and Feature Engineering.",
+      "recommended_for": [
+        "Data Science",
+        "Machine Learning",
+        "Pandas",
+        "Jupyter"
+      ]
+    },
+    {
+      "id": "ai-deeplearning",
+      "name": "DeepLearning.AI & Andrew Ng Courses",
+      "provider": "Andrew Ng / DeepLearning.AI",
+      "category": "AI / ML & Data Science",
+      "badge": "Industry Authority",
+      "free_tier": "Free Short Courses on LLMs & RAG",
+      "url": "https://www.deeplearning.ai/",
+      "description": "World-standard AI education founded by Andrew Ng. Offers free 1-hour courses on LangChain, Vector Databases, Retrieval-Augmented Generation, and Fine-Tuning.",
+      "recommended_for": [
+        "Generative AI",
+        "RAG",
+        "Vector Search",
+        "Deep Learning"
+      ]
+    },
+    {
+      "id": "ai-huggingface",
+      "name": "Hugging Face Open Source AI Community & Courses",
+      "provider": "Hugging Face",
+      "category": "AI / ML & Data Science",
+      "badge": "Open Source Hub",
+      "free_tier": "100% Free Open Models & Spaces",
+      "url": "https://huggingface.co/learn",
+      "description": "The GitHub of Machine Learning. Free interactive courses on Natural Language Processing (Transformers), Audio, Computer Vision, and Reinforcement Learning.",
+      "recommended_for": [
+        "Transformers",
+        "NLP",
+        "Open Source Models",
+        "PyTorch"
+      ]
+    },
+    {
+      "id": "ai-fastai",
+      "name": "Fast.ai \u2014 Practical Deep Learning for Coders",
+      "provider": "Jeremy Howard / Fast.ai",
+      "category": "AI / ML & Data Science",
+      "badge": "Top-Down Learning",
+      "free_tier": "100% Free Course",
+      "url": "https://course.fast.ai/",
+      "description": "Revolutionary top-down deep learning course for practical developers. Learn computer vision, NLP, and tabular models with clean PyTorch-based fastai code.",
+      "recommended_for": [
+        "Deep Learning",
+        "PyTorch",
+        "Computer Vision",
+        "Practical AI"
+      ]
     }
   ]
 }

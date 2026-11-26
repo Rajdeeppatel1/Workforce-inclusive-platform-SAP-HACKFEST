@@ -19,15 +19,20 @@ import {
   Search,
   Laptop,
   Terminal,
+  Cpu,
+  Cloud,
+  Compass,
 } from 'lucide-react';
 
 export default function FresherPrepare() {
   const navigate = useNavigate();
 
   const [officialPortals, setOfficialPortals] = useState([]);
-  const [youtubeVideos, setYoutubeVideos] = useState([]);
-  const [platforms, setPlatforms] = useState([]);
-  const [resources, setResources] = useState([]);
+  const [dsaPlatforms, setDsaPlatforms] = useState([]);
+  const [youtubeCreators, setYoutubeCreators] = useState([]);
+  const [aimlPlatforms, setAimlPlatforms] = useState([]);
+  const [practicePlatforms, setPracticePlatforms] = useState([]);
+  const [learningResources, setLearningResources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [domainFilter, setDomainFilter] = useState('All');
@@ -41,12 +46,14 @@ export default function FresherPrepare() {
         const res = await axios.get('/api/fresher/catalog');
         if (isMounted && res.data) {
           setOfficialPortals(res.data.official_portals || []);
-          setYoutubeVideos(res.data.youtube_videos || []);
-          setPlatforms(res.data.practice_platforms || []);
-          setResources(res.data.learning_resources || []);
+          setDsaPlatforms(res.data.dsa_platforms || []);
+          setYoutubeCreators(res.data.youtube_creators || []);
+          setAimlPlatforms(res.data.aiml_platforms || []);
+          setPracticePlatforms(res.data.practice_platforms || []);
+          setLearningResources(res.data.learning_resources || []);
         }
       } catch (err) {
-        console.warn('Could not load prepare data from server', err);
+        console.warn('Could not load prepare catalog from server', err);
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -59,19 +66,20 @@ export default function FresherPrepare() {
 
   const domainTabs = [
     'All',
-    'Cloud & Enterprise',
-    'Backend',
-    'DevOps & Cloud',
-    'Algorithms & Problem Solving',
-    'AI / ML',
+    'SAP & Enterprise',
+    'Cloud & DevOps',
+    'DSA & Algorithms',
+    'Fullstack & Backend',
+    'AI / ML & Data Science',
   ];
 
   const sectionTabs = [
     { id: 'All', label: 'All Resources' },
-    { id: 'Portals', label: '🏛️ Official Portals (SAP, Azure, Trailhead)' },
-    { id: 'YouTube', label: '📺 YouTube Masterclasses' },
-    { id: 'Practice', label: '💻 Interactive Sandboxes' },
-    { id: 'Docs', label: '📚 Architecture Guides' },
+    { id: 'Portals', label: '🏛️ Official Portals (SAP, Azure, AWS, GCP)' },
+    { id: 'DSA', label: '💻 DSA Practice (LeetCode, CodeChef, GFG)' },
+    { id: 'YouTube', label: '📺 Top YouTube Educators (Striver, Harry, Nana)' },
+    { id: 'AIML', label: '🤖 AI / ML & Data Science Hubs' },
+    { id: 'Sandboxes', label: '🛠️ Interactive Sandboxes & Standards' },
   ];
 
   const matchesSearch = (item, fields) => {
@@ -82,7 +90,24 @@ export default function FresherPrepare() {
 
   const matchesDomain = (categoryOrTopic) => {
     if (domainFilter === 'All') return true;
-    return (categoryOrTopic || '').toLowerCase().includes(domainFilter.toLowerCase());
+    const val = (categoryOrTopic || '').toLowerCase();
+    const filter = domainFilter.toLowerCase();
+    if (filter === 'sap & enterprise') {
+      return val.includes('sap') || val.includes('enterprise');
+    }
+    if (filter === 'cloud & devops') {
+      return val.includes('cloud') || val.includes('devops') || val.includes('docker');
+    }
+    if (filter === 'dsa & algorithms') {
+      return val.includes('dsa') || val.includes('algorithm') || val.includes('problem');
+    }
+    if (filter === 'fullstack & backend') {
+      return val.includes('backend') || val.includes('fullstack') || val.includes('web');
+    }
+    if (filter === 'ai / ml & data science') {
+      return val.includes('ai') || val.includes('ml') || val.includes('data');
+    }
+    return val.includes(filter);
   };
 
   const filteredPortals = officialPortals.filter(
@@ -91,19 +116,31 @@ export default function FresherPrepare() {
       matchesSearch(p, [p.name, p.provider, p.description, ...(p.recommended_for || [])])
   );
 
-  const filteredVideos = youtubeVideos.filter(
-    (v) =>
-      matchesDomain(v.category) &&
-      matchesSearch(v, [v.title, v.channel, v.description, v.badge])
+  const filteredDsa = dsaPlatforms.filter(
+    (d) =>
+      matchesDomain(d.category) &&
+      matchesSearch(d, [d.name, d.provider, d.description, ...(d.recommended_for || [])])
   );
 
-  const filteredPlatforms = platforms.filter(
+  const filteredCreators = youtubeCreators.filter(
+    (c) =>
+      matchesDomain(c.category) &&
+      matchesSearch(c, [c.name, c.creator, c.description, ...(c.topics || [])])
+  );
+
+  const filteredAiml = aimlPlatforms.filter(
+    (a) =>
+      matchesDomain(a.category) &&
+      matchesSearch(a, [a.name, a.provider, a.description, ...(a.recommended_for || [])])
+  );
+
+  const filteredSandboxes = practicePlatforms.filter(
     (p) =>
       matchesDomain(p.category) &&
       matchesSearch(p, [p.name, p.category, p.description, p.badge])
   );
 
-  const filteredResources = resources.filter(
+  const filteredDocs = learningResources.filter(
     (r) =>
       matchesDomain(r.topic) &&
       matchesSearch(r, [r.title, r.topic, r.summary, r.provider])
@@ -111,9 +148,11 @@ export default function FresherPrepare() {
 
   const totalResults =
     filteredPortals.length +
-    filteredVideos.length +
-    filteredPlatforms.length +
-    filteredResources.length;
+    filteredDsa.length +
+    filteredCreators.length +
+    filteredAiml.length +
+    filteredSandboxes.length +
+    filteredDocs.length;
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-16">
@@ -128,11 +167,11 @@ export default function FresherPrepare() {
               Practice Platforms &amp; Learning Hub
             </h1>
             <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded">
-              Official &amp; Verified Curations
+              Verified Direct Links
             </span>
           </div>
           <p className="text-xs text-neutral-500">
-            Official vendor learning portals (SAP, Azure, Salesforce, AWS), famous YouTube engineering masterclasses, and hands-on coding playgrounds.
+            One-click direct redirects to official vendor portals (SAP, Azure, AWS, GCP), DSA coding platforms (LeetCode, CodeChef), famous educator playlists (Striver, CodeWithHarry, Nana), and AI/ML learning hubs.
           </p>
         </div>
 
@@ -162,7 +201,7 @@ export default function FresherPrepare() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search SAP BTP, Azure, Salesforce Trailhead, YouTube tutorials, Docker, LeetCode..."
+              placeholder="Search SAP Learning Hub, LeetCode, Striver A2Z Sheet, CodeWithHarry, Azure, AWS, Kaggle, Docker..."
               className="w-full pl-9 pr-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-sm text-xs text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all min-h-[44px]"
             />
           </div>
@@ -216,14 +255,14 @@ export default function FresherPrepare() {
       </div>
 
       {/* ═════════════════════════════════════════════════════════════
-          SECTION 1: Official Enterprise Learning Portals
+          SECTION 1: Official Enterprise & Cloud Portals (SAP, Azure, AWS, GCP, Trailhead)
           ═════════════════════════════════════════════════════════════ */}
       {(sectionFilter === 'All' || sectionFilter === 'Portals') && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
               <Building2 className="w-4 h-4 text-blue-600" />
-              Official Enterprise Learning &amp; Certification Hubs ({filteredPortals.length})
+              Official Vendor Learning &amp; Certification Hubs ({filteredPortals.length})
             </h2>
             <span className="text-xs text-neutral-400 font-medium">Direct Vendor Portals &amp; Free Tiers</span>
           </div>
@@ -266,15 +305,15 @@ export default function FresherPrepare() {
                   )}
                 </div>
 
-                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
-                  <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded truncate max-w-[150px]">
+                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2">
+                  <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded truncate max-w-[160px]">
                     ✓ {portal.free_tier}
                   </span>
                   <a
                     href={portal.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="min-h-[44px] text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1.5 group-hover:underline cursor-pointer"
+                    className="min-h-[44px] px-3 text-xs font-bold bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white rounded transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
                   >
                     <span>Launch Portal</span>
                     <ExternalLink className="w-3.5 h-3.5" />
@@ -287,63 +326,153 @@ export default function FresherPrepare() {
       )}
 
       {/* ═════════════════════════════════════════════════════════════
-          SECTION 2: Famous YouTube Masterclasses & Video Courses
+          SECTION 2: DSA & Problem-Solving Coding Arenas (LeetCode, CodeChef, HackerRank, GFG, Codeforces)
+          ═════════════════════════════════════════════════════════════ */}
+      {(sectionFilter === 'All' || sectionFilter === 'DSA') && (
+        <div className="space-y-4 pt-2">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
+              <Code2 className="w-4 h-4 text-emerald-600" />
+              DSA &amp; Problem Solving Coding Platforms ({filteredDsa.length})
+            </h2>
+            <span className="text-xs text-neutral-400 font-medium">Algorithmic Arenas &amp; Contest Trackers</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredDsa.map((item) => (
+              <div
+                key={item.id}
+                className="p-5 border border-neutral-200 hover:border-emerald-600 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-4 group hover:shadow-md"
+              >
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      {item.provider}
+                    </span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-neutral-100 text-neutral-700 rounded">
+                      {item.badge}
+                    </span>
+                  </div>
+
+                  <h3 className="text-sm font-bold text-neutral-900 group-hover:text-emerald-700 transition-colors leading-snug">
+                    {item.name}
+                  </h3>
+
+                  <p className="text-xs text-neutral-600 leading-relaxed">
+                    {item.description}
+                  </p>
+
+                  {item.recommended_for && (
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {item.recommended_for.map((skill) => (
+                        <span
+                          key={skill}
+                          className="text-[10px] bg-neutral-50 text-neutral-700 border border-neutral-200 px-2 py-0.5 rounded-full font-medium"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2">
+                  <span className="text-[11px] font-semibold text-neutral-600 truncate max-w-[150px]">
+                    {item.free_tier}
+                  </span>
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="min-h-[44px] px-3.5 text-xs font-bold bg-emerald-50 hover:bg-emerald-600 text-emerald-800 hover:text-white rounded transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
+                  >
+                    <span>Practice DSA</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ═════════════════════════════════════════════════════════════
+          SECTION 3: Famous YouTube Educators & Curated Playlists (Striver, CodeWithHarry, freeCodeCamp, Love Babbar, NeetCode, etc.)
           ═════════════════════════════════════════════════════════════ */}
       {(sectionFilter === 'All' || sectionFilter === 'YouTube') && (
         <div className="space-y-4 pt-2">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
               <Youtube className="w-4 h-4 text-red-600" />
-              Famous YouTube Engineering Masterclasses &amp; Deep Dives ({filteredVideos.length})
+              Famous YouTube Educators &amp; Curated Free Playlists ({filteredCreators.length})
             </h2>
-            <span className="text-xs text-neutral-400 font-medium">Free High-Quality Video Courses</span>
+            <span className="text-xs text-neutral-400 font-medium">Free High-Quality Video Series</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredVideos.map((video) => (
+            {filteredCreators.map((creator) => (
               <div
-                key={video.id}
-                className="p-5 border border-neutral-200 hover:border-neutral-900 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-4 group hover:shadow-md"
+                key={creator.id}
+                className="p-5 border border-neutral-200 hover:border-red-500 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-4 group hover:shadow-md"
               >
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[11px] font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded flex items-center gap-1">
                       <PlayCircle className="w-3 h-3" />
-                      {video.channel}
+                      {creator.creator}
                     </span>
                     <span className="text-[10px] font-medium text-neutral-500">
-                      {video.subscribers}
+                      {creator.subscribers}
                     </span>
                   </div>
 
-                  <h3 className="text-sm font-bold text-neutral-900 group-hover:text-blue-600 transition-colors leading-snug">
-                    {video.title}
+                  <h3 className="text-sm font-bold text-neutral-900 group-hover:text-red-600 transition-colors leading-snug">
+                    {creator.name}
                   </h3>
 
                   <p className="text-xs text-neutral-600 leading-relaxed">
-                    {video.description}
+                    {creator.description}
                   </p>
 
-                  <div className="text-[11px] text-neutral-500 font-medium flex items-center gap-2">
+                  {creator.topics && (
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {creator.topics.map((t) => (
+                        <span
+                          key={t}
+                          className="text-[10px] bg-neutral-50 text-neutral-700 border border-neutral-200 px-2 py-0.5 rounded-full font-medium"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="text-[11px] text-neutral-500 font-medium flex items-center gap-2 pt-1">
                     <span className="bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded">
-                      ⏱ {video.duration}
+                      Category: {creator.category}
                     </span>
                     <span className="text-neutral-400">•</span>
-                    <span className="text-blue-700 font-semibold">{video.badge}</span>
+                    <span className="text-red-700 font-semibold">{creator.badge}</span>
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
-                  <span className="text-[11px] font-semibold text-neutral-500">
-                    100% Free on YouTube
-                  </span>
+                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2">
                   <a
-                    href={video.url}
+                    href={creator.channel_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="min-h-[44px] text-xs font-bold text-red-600 hover:text-red-800 flex items-center gap-1.5 group-hover:underline cursor-pointer"
+                    className="min-h-[44px] text-xs font-semibold text-neutral-600 hover:text-neutral-900 flex items-center gap-1 hover:underline cursor-pointer"
                   >
-                    <span>Watch Tutorial</span>
+                    <span>Channel</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                  <a
+                    href={creator.playlist_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="min-h-[44px] px-3.5 text-xs font-bold bg-red-50 hover:bg-red-600 text-red-700 hover:text-white rounded transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
+                  >
+                    <span>Watch Series / Sheet</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -354,58 +483,67 @@ export default function FresherPrepare() {
       )}
 
       {/* ═════════════════════════════════════════════════════════════
-          SECTION 3: Interactive Practice Platforms & Coding Sandboxes
+          SECTION 4: AI / ML & Data Science Platforms (Kaggle, DeepLearning.AI, Hugging Face, Fast.ai)
           ═════════════════════════════════════════════════════════════ */}
-      {(sectionFilter === 'All' || sectionFilter === 'Practice') && (
+      {(sectionFilter === 'All' || sectionFilter === 'AIML') && (
         <div className="space-y-4 pt-2">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
-              <Laptop className="w-4 h-4 text-blue-600" />
-              Interactive Practice Platforms &amp; In-Browser Sandboxes ({filteredPlatforms.length})
+              <Cpu className="w-4 h-4 text-purple-600" />
+              AI / Machine Learning &amp; Data Science Hubs ({filteredAiml.length})
             </h2>
-            <span className="text-xs text-neutral-400 font-medium">Hands-On Code Execution</span>
+            <span className="text-xs text-neutral-400 font-medium">Free Notebooks, RAG Guides &amp; Open Models</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {filteredPlatforms.map((plat) => (
+            {filteredAiml.map((ai) => (
               <div
-                key={plat.id}
-                className="p-4 border border-neutral-200 hover:border-neutral-900 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-3 group"
+                key={ai.id}
+                className="p-5 border border-neutral-200 hover:border-purple-600 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-4 group hover:shadow-md"
               >
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="text-[10px] font-bold text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded truncate">
-                      {plat.category}
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-bold text-purple-800 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+                      {ai.provider}
                     </span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded">
-                      {plat.badge}
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 bg-neutral-100 text-neutral-700 rounded">
+                      {ai.badge}
                     </span>
                   </div>
 
-                  <h3 className="text-xs font-bold text-neutral-900 group-hover:text-blue-600 transition-colors">
-                    {plat.name}
+                  <h3 className="text-sm font-bold text-neutral-900 group-hover:text-purple-700 transition-colors leading-snug">
+                    {ai.name}
                   </h3>
 
-                  <p className="text-xs text-neutral-600 line-clamp-3 leading-relaxed">
-                    {plat.description}
+                  <p className="text-xs text-neutral-600 leading-relaxed">
+                    {ai.description}
                   </p>
 
-                  <div className="text-[11px] text-neutral-500 font-medium">
-                    Level: <span className="text-neutral-800">{plat.difficulty}</span>
-                  </div>
+                  {ai.recommended_for && (
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {ai.recommended_for.map((skill) => (
+                        <span
+                          key={skill}
+                          className="text-[10px] bg-neutral-50 text-neutral-700 border border-neutral-200 px-2 py-0.5 rounded-full font-medium"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-                <div className="pt-2.5 border-t border-neutral-100 flex items-center justify-between">
-                  <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
-                    ✓ Open Access
+                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2">
+                  <span className="text-[10px] font-semibold text-neutral-500 truncate max-w-[130px]">
+                    {ai.free_tier}
                   </span>
                   <a
-                    href={plat.url}
+                    href={ai.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="min-h-[44px] text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 group-hover:underline cursor-pointer"
+                    className="min-h-[44px] px-3 text-xs font-bold bg-purple-50 hover:bg-purple-600 text-purple-800 hover:text-white rounded transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
                   >
-                    <span>Practice</span>
+                    <span>Learn AI</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -416,64 +554,127 @@ export default function FresherPrepare() {
       )}
 
       {/* ═════════════════════════════════════════════════════════════
-          SECTION 4: Curated Learning Resources & Visual Roadmaps
+          SECTION 5: Interactive Practice Sandboxes & Architecture Standards
           ═════════════════════════════════════════════════════════════ */}
-      {(sectionFilter === 'All' || sectionFilter === 'Docs') && (
-        <div className="space-y-4 pt-2">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
-              <Bookmark className="w-4 h-4 text-blue-600" />
-              Curated Architecture Guides &amp; Open Standards ({filteredResources.length})
-            </h2>
-            <span className="text-xs text-neutral-400 font-medium">Official Specs &amp; Engineering Standards</span>
+      {(sectionFilter === 'All' || sectionFilter === 'Sandboxes') && (
+        <div className="space-y-6 pt-2">
+          {/* Sandboxes */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
+                <Laptop className="w-4 h-4 text-blue-600" />
+                In-Browser Interactive Sandboxes ({filteredSandboxes.length})
+              </h2>
+              <span className="text-xs text-neutral-400 font-medium">Zero-Setup Browser Terminal &amp; Code Execution</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {filteredSandboxes.map((plat) => (
+                <div
+                  key={plat.id}
+                  className="p-4 border border-neutral-200 hover:border-neutral-900 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-3 group"
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="text-[10px] font-bold text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded truncate">
+                        {plat.category}
+                      </span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded">
+                        {plat.badge}
+                      </span>
+                    </div>
+
+                    <h3 className="text-xs font-bold text-neutral-900 group-hover:text-blue-600 transition-colors">
+                      {plat.name}
+                    </h3>
+
+                    <p className="text-xs text-neutral-600 line-clamp-3 leading-relaxed">
+                      {plat.description}
+                    </p>
+
+                    <div className="text-[11px] text-neutral-500 font-medium">
+                      Level: <span className="text-neutral-800">{plat.difficulty}</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-2.5 border-t border-neutral-100 flex items-center justify-between">
+                    <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                      ✓ Open Access
+                    </span>
+                    <a
+                      href={plat.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="min-h-[44px] text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 group-hover:underline cursor-pointer"
+                    >
+                      <span>Launch Sandbox</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredResources.map((res) => (
-              <div
-                key={res.id}
-                className="p-5 border border-neutral-200 hover:border-neutral-900 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-3 group"
-              >
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-neutral-900 bg-blue-50 text-blue-800 px-2 py-0.5 rounded">
-                      {res.topic}
-                    </span>
-                    <span className="text-[11px] text-neutral-500 font-medium">
-                      {res.provider}
-                    </span>
-                  </div>
-
-                  <h3 className="text-sm font-bold text-neutral-900 group-hover:text-blue-600 transition-colors">
-                    {res.title}
-                  </h3>
-
-                  <p className="text-xs text-neutral-600 leading-relaxed">
-                    {res.summary}
-                  </p>
-
-                  <div className="text-[11px] text-neutral-400 font-medium">
-                    Type: <span className="text-neutral-700">{res.type}</span>
-                  </div>
-                </div>
-
-                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
-                  <span className="text-[11px] text-neutral-500 font-medium">
-                    Self-Paced Guide
-                  </span>
-                  <a
-                    href={res.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="min-h-[44px] text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 group-hover:underline cursor-pointer"
-                  >
-                    <span>Read Guide</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                </div>
+          {/* Architecture Guides */}
+          {filteredDocs.length > 0 && (
+            <div className="space-y-4 pt-2">
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
+                  <Bookmark className="w-4 h-4 text-blue-600" />
+                  Engineering Standards &amp; Architecture Guides ({filteredDocs.length})
+                </h2>
+                <span className="text-xs text-neutral-400 font-medium">Production Architecture References</span>
               </div>
-            ))}
-          </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredDocs.map((res) => (
+                  <div
+                    key={res.id}
+                    className="p-5 border border-neutral-200 hover:border-neutral-900 rounded-lg bg-white shadow-xs transition-all flex flex-col justify-between space-y-3 group"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-neutral-900 bg-blue-50 text-blue-800 px-2 py-0.5 rounded">
+                          {res.topic}
+                        </span>
+                        <span className="text-[11px] text-neutral-500 font-medium">
+                          {res.provider}
+                        </span>
+                      </div>
+
+                      <h3 className="text-sm font-bold text-neutral-900 group-hover:text-blue-600 transition-colors">
+                        {res.title}
+                      </h3>
+
+                      <p className="text-xs text-neutral-600 leading-relaxed">
+                        {res.summary}
+                      </p>
+
+                      <div className="text-[11px] text-neutral-400 font-medium">
+                        Type: <span className="text-neutral-700">{res.type}</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-neutral-100 flex items-center justify-between">
+                      <span className="text-[11px] text-neutral-500 font-medium">
+                        Standard Reference
+                      </span>
+                      <a
+                        href={res.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="min-h-[44px] text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 group-hover:underline cursor-pointer"
+                      >
+                        <span>Read Guide</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
