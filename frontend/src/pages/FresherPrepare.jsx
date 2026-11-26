@@ -55,24 +55,41 @@ export default function FresherPrepare() {
   const [activeQuizSkill, setActiveQuizSkill] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
+  const [submissionResult, setSubmissionResult] = useState(null);
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [savingScore, setSavingScore] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Fetch from backend/data/fresher_catalog.json
+  // Fetch from backend/data/fresher_catalog.json and /api/quiz/categories
   useEffect(() => {
     let isMounted = true;
     const fetchCatalog = async () => {
       try {
-        const res = await axios.get('/api/fresher/catalog');
-        if (isMounted && res.data) {
-          setOfficialPortals(res.data.official_portals || []);
-          setDsaPlatforms(res.data.dsa_platforms || []);
-          setYoutubeCreators(res.data.youtube_creators || []);
-          setAimlPlatforms(res.data.aiml_platforms || []);
-          setPracticePlatforms(res.data.practice_platforms || []);
-          setLearningResources(res.data.learning_resources || []);
-          setSkillQuizzes(res.data.skill_quizzes || res.data.test_categories || []);
+        const [catRes, quizRes] = await Promise.allSettled([
+          axios.get('/api/fresher/catalog'),
+          axios.get('/api/quiz/categories'),
+        ]);
+
+        if (isMounted && catRes.status === 'fulfilled' && catRes.value.data) {
+          const data = catRes.value.data;
+          setOfficialPortals(data.official_portals || []);
+          setDsaPlatforms(data.dsa_platforms || []);
+          setYoutubeCreators(data.youtube_creators || []);
+          setAimlPlatforms(data.aiml_platforms || []);
+          setPracticePlatforms(data.practice_platforms || []);
+          setLearningResources(data.learning_resources || []);
+          if (data.skill_quizzes_20 && data.skill_quizzes_20.length > 0) {
+            setSkillQuizzes(data.skill_quizzes_20);
+          } else if (data.skill_quizzes && data.skill_quizzes.length > 0) {
+            setSkillQuizzes(data.skill_quizzes);
+          }
+        }
+
+        if (isMounted && quizRes.status === 'fulfilled' && quizRes.value.data?.quizzes) {
+          setSkillQuizzes((prev) => {
+            if (prev && prev.length >= 20) return prev;
+            return quizRes.value.data.quizzes;
+          });
         }
       } catch (err) {
         console.warn('Could not load prepare catalog from server', err);
@@ -190,10 +207,22 @@ export default function FresherPrepare() {
     filteredDocs.length;
 
   // Quiz Handling
-  const handleStartSkillQuiz = (quiz) => {
-    setActiveQuizSkill(quiz);
+  const handleStartSkillQuiz = async (quiz) => {
+    let fullQuiz = quiz;
+    if (!quiz.questions || quiz.questions.length === 0) {
+      try {
+        const res = await axios.get(`/api/quiz/${quiz.id}`);
+        if (res.data && res.data.questions) {
+          fullQuiz = { ...quiz, ...res.data };
+        }
+      } catch (err) {
+        console.warn('Could not fetch quiz questions', err);
+      }
+    }
+    setActiveQuizSkill(fullQuiz);
     setCurrentQuestionIndex(0);
     setUserAnswers({});
+    setSubmissionResult(null);
     setQuizSubmitted(false);
     setSaveSuccess(false);
     setSectionFilter('Quizzes');
@@ -204,7 +233,7 @@ export default function FresherPrepare() {
     if (quizSubmitted) return;
     setUserAnswers((prev) => ({
       ...prev,
-      [questionId]: optionIndex,
+      [String(questionId)]: optionIndex,
     }));
   };
 
@@ -212,43 +241,57 @@ export default function FresherPrepare() {
     if (!activeQuizSkill || !activeQuizSkill.questions) return 0;
     let correct = 0;
     activeQuizSkill.questions.forEach((q) => {
-      if (userAnswers[q.id] === q.correctIndex) {
+      if (userAnswers[String(q.id)] === q.correctIndex) {
         correct += 1;
       }
     });
     return correct;
   };
 
-  const handleSubmitQuiz = () => {
+  const handleSubmitQuiz = async () => {
     setQuizSubmitted(true);
-    window.scrollTo({ top: 180, behavior: 'smooth' });
-  };
-
-  const handleSaveScoreToProfile = async () => {
-    if (!activeQuizSkill) return;
     setSavingScore(true);
-    const score = calculateScore();
-    const total = activeQuizSkill.questions.length;
-    const passed = score >= Math.ceil(total * 0.6); // 12/20 = 60%
+    const clientScore = calculateScore();
+    const total = activeQuizSkill?.questions?.length || 20;
+
     try {
-      const res = await axios.post('/api/profile/quiz-score', {
-        profile_id: profile?.profile_id || 'guest',
-        category: activeQuizSkill.name,
-        score,
-        total,
-        passed,
+      const res = await axios.post(`/api/quiz/${activeQuizSkill.id}/submit`, {
+        profile_id: profile?.profile_id || 'seed_priya_sharma_01',
+        answers: userAnswers,
       });
-      if (res.data?.profile) {
-        setProfile((prev) => ({
-          ...prev,
-          ...res.data.profile,
-        }));
+      if (res.data) {
+        setSubmissionResult(res.data);
+        if (res.data.quiz_scores) {
+          setProfile((prev) => ({
+            ...prev,
+            quiz_scores: res.data.quiz_scores,
+            skills: res.data.skills_added && res.data.skills_added.length > 0
+              ? Array.from(new Set([...(prev.skills || []), ...res.data.skills_added]))
+              : prev.skills,
+          }));
+        }
+        setSaveSuccess(Boolean(res.data.saved));
       }
-      setSaveSuccess(true);
     } catch (err) {
-      console.error('Failed to save score to profile', err);
+      console.warn('Server grading submission failed, using local result', err);
+      setSubmissionResult({
+        score: clientScore,
+        total,
+        percentage: Math.round((clientScore / total) * 100),
+        passed: clientScore >= Math.ceil(total * 0.6),
+        breakdown: activeQuizSkill.questions.map((q) => ({
+          id: q.id,
+          question: q.question,
+          options: q.options,
+          selected_index: userAnswers[String(q.id)],
+          correct_index: q.correctIndex,
+          is_correct: userAnswers[String(q.id)] === q.correctIndex,
+          explanation: q.explanation || '',
+        })),
+      });
     } finally {
       setSavingScore(false);
+      window.scrollTo({ top: 180, behavior: 'smooth' });
     }
   };
 
@@ -412,10 +455,12 @@ export default function FresherPrepare() {
               {quizSubmitted ? (
                 <div className="space-y-6">
                   {(() => {
-                    const score = calculateScore();
-                    const total = activeQuizSkill.questions.length;
-                    const pct = Math.round((score / total) * 100);
-                    const passed = score >= Math.ceil(total * 0.6); // 12 / 20 = 60%
+                    const score = submissionResult ? submissionResult.score : calculateScore();
+                    const total = submissionResult ? submissionResult.total : (activeQuizSkill.questions?.length || 20);
+                    const pct = submissionResult ? Math.round(submissionResult.percentage) : Math.round((score / total) * 100);
+                    const passed = submissionResult ? submissionResult.passed : score >= Math.ceil(total * 0.6); // 60% pass mark
+
+                    const reviewItems = submissionResult?.breakdown || activeQuizSkill.questions || [];
 
                     return (
                       <div className="space-y-6">
@@ -449,11 +494,12 @@ export default function FresherPrepare() {
                                       : 'bg-amber-200 text-amber-900'
                                   }`}
                                 >
-                                  {passed ? 'Verified Competency' : 'Needs Practice (60% required)'}
+                                  {passed ? 'Verified Competency (≥60%)' : 'Needs Practice (<60%)'}
                                 </span>
                               </div>
                               <p className="text-xs text-neutral-600 mt-1">
                                 You scored <strong>{score}</strong> out of <strong>{total}</strong> questions correctly ({pct}%).
+                                {saveSuccess && ' Verified score is saved to your candidate profile.'}
                               </p>
                             </div>
                           </div>
@@ -486,6 +532,7 @@ export default function FresherPrepare() {
                             <button
                               onClick={() => {
                                 setUserAnswers({});
+                                setSubmissionResult(null);
                                 setQuizSubmitted(false);
                                 setCurrentQuestionIndex(0);
                                 setSaveSuccess(false);
@@ -499,6 +546,7 @@ export default function FresherPrepare() {
                             <button
                               onClick={() => {
                                 setActiveQuizSkill(null);
+                                setSubmissionResult(null);
                                 setQuizSubmitted(false);
                               }}
                               className="min-h-[44px] px-4 py-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 rounded text-xs font-semibold transition-colors cursor-pointer"
@@ -512,18 +560,18 @@ export default function FresherPrepare() {
                         <div className="space-y-4">
                           <h4 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
                             <FileQuestion className="w-4 h-4 text-blue-600" />
-                            Question-by-Question Review &amp; Explanations
+                            Question-by-Question Review &amp; Explanations ({reviewItems.length} Questions)
                           </h4>
 
                           <div className="space-y-3">
-                            {activeQuizSkill.questions.map((q, idx) => {
-                              const chosen = userAnswers[q.id];
-                              const isCorrect = chosen === q.correctIndex;
-                              const isUnanswered = chosen === undefined;
+                            {reviewItems.map((q, idx) => {
+                              const chosen = q.selected_index !== undefined ? q.selected_index : userAnswers[String(q.id)];
+                              const correctIdx = q.correct_index !== undefined ? q.correct_index : q.correctIndex;
+                              const isCorrect = q.is_correct !== undefined ? q.is_correct : chosen === correctIdx;
 
                               return (
                                 <div
-                                  key={q.id}
+                                  key={q.id || idx}
                                   className={`p-4 rounded-lg border transition-all ${
                                     isCorrect
                                       ? 'border-emerald-200 bg-emerald-50/30'
@@ -548,7 +596,7 @@ export default function FresherPrepare() {
                                         <div className="mt-2 space-y-1">
                                           {q.options.map((opt, optIdx) => {
                                             const wasChosen = chosen === optIdx;
-                                            const isThisCorrect = optIdx === q.correctIndex;
+                                            const isThisCorrect = optIdx === correctIdx;
 
                                             let badgeClass = 'text-neutral-600 border-neutral-200 bg-white';
                                             if (isThisCorrect) {

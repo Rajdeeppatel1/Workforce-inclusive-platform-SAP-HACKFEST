@@ -8,7 +8,7 @@
   "is_synthetic": false,
   "demo_label": "Candidate Profile (Priya Sharma - Software Developer)",
   "consent_given": true,
-  "consent_timestamp": "2026-11-26T15:04:01.453901Z",
+  "consent_timestamp": "2026-11-26T16:05:42.515534Z",
   "skills": [
     "Python",
     "FastAPI",
@@ -96,13 +96,18 @@
       "completed_at": "2026-11-26T12:15:00.321061Z"
     },
     {
+      "quiz_id": "python",
       "category": "Python",
-      "score": 5,
+      "display_name": "Python Programming",
+      "score": 0,
       "total": 5,
-      "percentage": 100.0,
+      "percentage": 0.0,
       "passed": true,
-      "completed_at": "2026-11-26T15:04:01.495205Z"
+      "completed_at": "2026-11-26T16:05:42.569352Z",
+      "attempts": 3,
+      "best_percentage": 100.0,
+      "last_attempt_passed": false
     }
   ],
-  "updated_at": "2026-11-26T15:04:01.495248Z"
+  "updated_at": "2026-11-26T16:05:42.569352Z"
 }
