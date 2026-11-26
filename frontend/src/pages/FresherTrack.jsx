@@ -104,6 +104,49 @@ export default function FresherTrack() {
         </Link>
       </div>
 
+      {/* Quick Launchpad to /fresher/test and /fresher/prepare */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Link
+          to="/fresher/test"
+          className="p-4 border-2 border-blue-600/30 hover:border-blue-600 bg-blue-50/40 rounded-lg flex items-center justify-between group transition-all"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded bg-blue-600 text-white flex items-center justify-center font-bold">
+              5
+            </div>
+            <div>
+              <div className="text-xs font-bold text-neutral-900 group-hover:text-blue-600">
+                Category Assessments (5-MCQ Quiz)
+              </div>
+              <div className="text-[11px] text-neutral-500">
+                Backend, Cloud, AI/ML live • Verified score saves to profile
+              </div>
+            </div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-blue-600 group-hover:translate-x-1 transition-transform" />
+        </Link>
+
+        <Link
+          to="/fresher/prepare"
+          className="p-4 border-2 border-neutral-300 hover:border-black bg-white rounded-lg flex items-center justify-between group transition-all"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded bg-black text-white flex items-center justify-center font-bold">
+              📚
+            </div>
+            <div>
+              <div className="text-xs font-bold text-neutral-900 group-hover:text-black">
+                Practice Platforms &amp; Learning
+              </div>
+              <div className="text-[11px] text-neutral-500">
+                In-browser playgrounds, roadmap guides, and open courses
+              </div>
+            </div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-neutral-600 group-hover:translate-x-1 transition-transform" />
+        </Link>
+      </div>
+
       {/* ═════════════════════════════════════════════════════════════
           SECTION 1: Interested Skill & Target Company Dropdown
           ═════════════════════════════════════════════════════════════ */}

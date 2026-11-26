@@ -20,6 +20,8 @@ import {
   LogIn,
   GraduationCap,
   ArrowRight,
+  BookOpen,
+  FileQuestion,
 } from 'lucide-react';
 
 export default function Layout({ children }) {
@@ -58,6 +60,18 @@ export default function Layout({ children }) {
       labelEn: 'Fresher Track',
       labelHi: 'फ्रेशर ट्रैक',
       icon: GraduationCap,
+    },
+    {
+      to: '/fresher/test',
+      labelEn: 'Skill Quiz (5 MCQs)',
+      labelHi: 'स्किल टेस्ट (5 MCQs)',
+      icon: FileQuestion,
+    },
+    {
+      to: '/fresher/prepare',
+      labelEn: 'Practice & Prepare',
+      labelHi: 'अभ्यास और सामग्री',
+      icon: BookOpen,
     },
     {
       to: '/employed',

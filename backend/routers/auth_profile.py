@@ -45,6 +45,15 @@ class Goals(BaseModel):
     preferred_topics: List[str] = Field(default_factory=list)
 
 
+class QuizScore(BaseModel):
+    category: str
+    score: int
+    total: int
+    percentage: float
+    passed: bool
+    completed_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat() + "Z")
+
+
 class UserProfile(BaseModel):
     profile_id: str
     name: str = "Rajdeep Patel"
@@ -58,6 +67,7 @@ class UserProfile(BaseModel):
     education: List[EducationEntry] = Field(default_factory=list)
     goals: Goals = Field(default_factory=Goals)
     alternative_evidence: List[Dict[str, Any]] = Field(default_factory=list)
+    quiz_scores: List[QuizScore] = Field(default_factory=list)
     updated_at: Optional[str] = None
 
 
@@ -237,3 +247,69 @@ async def get_fresher_catalog():
             return data
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to read fresher catalog: {str(e)}")
+
+
+class SaveQuizScoreRequest(BaseModel):
+    profile_id: str
+    category: str
+    score: int
+    total: int = 5
+    passed: bool
+
+
+@router.post("/profile/quiz-score")
+async def save_quiz_score(req: SaveQuizScoreRequest):
+    """
+    Saves candidate MCQ quiz score into backend/data/profiles/<profile_id>.json.
+    Also adds verified skill tag if score >= 60%.
+    """
+    filepath = _get_profile_file_path(req.profile_id)
+    profile_data = dict(SEEDED_MOCK_PROFILE)
+
+    if os.path.exists(filepath):
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                profile_data = json.load(f)
+        except Exception:
+            pass
+
+    if "quiz_scores" not in profile_data:
+        profile_data["quiz_scores"] = []
+
+    percentage = round((req.score / req.total) * 100, 1)
+    new_entry = {
+        "category": req.category,
+        "score": req.score,
+        "total": req.total,
+        "percentage": percentage,
+        "passed": req.passed,
+        "completed_at": datetime.utcnow().isoformat() + "Z"
+    }
+
+    # Update or append category score
+    existing_idx = next((i for i, q in enumerate(profile_data["quiz_scores"]) if q.get("category") == req.category), -1)
+    if existing_idx >= 0:
+        profile_data["quiz_scores"][existing_idx] = new_entry
+    else:
+        profile_data["quiz_scores"].append(new_entry)
+
+    # If passed (>= 60%), add skill tag if not present
+    if req.passed:
+        current_skills = profile_data.get("skills", [])
+        if req.category not in current_skills:
+            current_skills.append(req.category)
+            profile_data["skills"] = current_skills
+
+    profile_data["updated_at"] = datetime.utcnow().isoformat() + "Z"
+
+    try:
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(profile_data, f, indent=2)
+        return {
+            "status": "success",
+            "message": f"Quiz score ({req.score}/{req.total}) saved to profile.",
+            "quiz_scores": profile_data["quiz_scores"],
+            "profile": profile_data
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save quiz score: {str(e)}")

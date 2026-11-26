@@ -149,5 +149,285 @@
       "popularity": "Medium",
       "reason": "High priority across distributed systems and public API gateways"
     }
+  ],
+  "test_categories": [
+    {
+      "id": "backend",
+      "name": "Backend",
+      "displayName": "Backend Engineering",
+      "status": "live",
+      "description": "REST APIs, Database design, HTTP status codes, and server-side logic.",
+      "total_questions": 5,
+      "estimated_minutes": 10,
+      "questions": [
+        {
+          "id": 1,
+          "question": "Which HTTP status code should be returned when a resource is successfully created via a POST request?",
+          "options": ["200 OK", "201 Created", "204 No Content", "202 Accepted"],
+          "correctIndex": 1,
+          "explanation": "201 Created is the standard HTTP response status code for successful resource creation."
+        },
+        {
+          "id": 2,
+          "question": "What is the primary advantage of database indexing on frequently queried columns?",
+          "options": [
+            "Increases disk storage speed",
+            "Significantly reduces query search time from O(N) to O(log N)",
+            "Guarantees database encryption",
+            "Automatically cleans corrupted data"
+          ],
+          "correctIndex": 1,
+          "explanation": "Indexes (like B-Trees) provide fast lookup access paths, drastically speeding up SELECT queries."
+        },
+        {
+          "id": 3,
+          "question": "In FastAPI, what library is used under the hood for schema validation and request serialization?",
+          "options": ["Marshmallow", "Pydantic", "SQLAlchemy", "Celery"],
+          "correctIndex": 1,
+          "explanation": "FastAPI is deeply integrated with Pydantic for data parsing, type validation, and documentation."
+        },
+        {
+          "id": 4,
+          "question": "What does ACID stand for in relational database management systems?",
+          "options": [
+            "Atomicity, Consistency, Isolation, Durability",
+            "Accuracy, Concurrency, Integrity, Delivery",
+            "Asynchronous, Coordinated, Indexed, Distributed",
+            "Authentication, Confidentiality, Identity, Decryption"
+          ],
+          "correctIndex": 0,
+          "explanation": "ACID properties ensure database transactions are processed reliably."
+        },
+        {
+          "id": 5,
+          "question": "Which HTTP method is idempotent according to REST conventions?",
+          "options": ["POST", "PUT", "PATCH (with side-effects)", "CONNECT"],
+          "correctIndex": 1,
+          "explanation": "PUT is idempotent: multiple identical requests have the exact same effect as a single request."
+        }
+      ]
+    },
+    {
+      "id": "cloud",
+      "name": "Cloud",
+      "displayName": "Cloud & DevOps",
+      "status": "live",
+      "description": "Containers, Docker, CI/CD pipelines, and cloud resilience.",
+      "total_questions": 5,
+      "estimated_minutes": 10,
+      "questions": [
+        {
+          "id": 1,
+          "question": "What is the primary difference between a Docker container and a Virtual Machine (VM)?",
+          "options": [
+            "Containers virtualize the hardware; VMs virtualize the OS",
+            "Containers share the host OS kernel and are lightweight; VMs run a full guest OS",
+            "Containers only work on Linux servers; VMs only work on Windows",
+            "VMs don't require hypervisors"
+          ],
+          "correctIndex": 1,
+          "explanation": "Containers share the host operating system kernel, making them lightweight and fast to start."
+        },
+        {
+          "id": 2,
+          "question": "In a Dockerfile, which instruction specifies the command executed when the container starts?",
+          "options": ["RUN", "CMD", "FROM", "EXPOSE"],
+          "correctIndex": 1,
+          "explanation": "CMD provides defaults for an executing container, whereas RUN executes during image build time."
+        },
+        {
+          "id": 3,
+          "question": "What does CI/CD stand for in modern cloud software engineering?",
+          "options": [
+            "Central Infrastructure / Central Deployment",
+            "Continuous Integration / Continuous Delivery (or Deployment)",
+            "Container Isolation / Container Distribution",
+            "Cloud Instances / Cloud Databases"
+          ],
+          "correctIndex": 1,
+          "explanation": "CI/CD automates code integration, testing, build artifacts, and deployment pipelines."
+        },
+        {
+          "id": 4,
+          "question": "What is horizontal scaling in cloud architecture?",
+          "options": [
+            "Adding more CPU and RAM to a single existing server instance",
+            "Adding more server instances or containers to distribute load across a pool",
+            "Migrating all data to cold archival storage",
+            "Switching from relational SQL to non-relational NoSQL"
+          ],
+          "correctIndex": 1,
+          "explanation": "Horizontal scaling (scale out) means adding more machine nodes or container replicas to share traffic."
+        },
+        {
+          "id": 5,
+          "question": "Which principle is a core pillar of the Twelve-Factor App methodology for cloud applications?",
+          "options": [
+            "Store configuration in environment variables",
+            "Hardcode credentials in source code",
+            "Rely on local state in persistent disk",
+            "Execute background processes synchronously in the main thread"
+          ],
+          "correctIndex": 0,
+          "explanation": "Twelve-Factor App rule III states: store configuration in the environment, never in versioned code."
+        }
+      ]
+    },
+    {
+      "id": "aiml",
+      "name": "AI/ML",
+      "displayName": "AI / Machine Learning",
+      "status": "live",
+      "description": "Vector embeddings, cosine similarity, data preprocessing, and model basics.",
+      "total_questions": 5,
+      "estimated_minutes": 10,
+      "questions": [
+        {
+          "id": 1,
+          "question": "What does a dense vector embedding represent in modern semantic AI systems?",
+          "options": [
+            "An encrypted password hash",
+            "A numerical vector in continuous multi-dimensional space capturing semantic meaning",
+            "A compressed zip archive of text",
+            "A binary tree structure for disk storage"
+          ],
+          "correctIndex": 1,
+          "explanation": "Vector embeddings represent text or entities as coordinates in semantic embedding space where similar concepts cluster together."
+        },
+        {
+          "id": 2,
+          "question": "What metric is most commonly used to measure angular similarity between two normalized vectors?",
+          "options": ["Hamming distance", "Cosine similarity", "Levenshtein distance", "MD5 check"],
+          "correctIndex": 1,
+          "explanation": "Cosine similarity calculates the cosine of the angle between two vectors, ranging from -1 to 1."
+        },
+        {
+          "id": 3,
+          "question": "What is 'overfitting' in machine learning?",
+          "options": [
+            "When a model performs exceptionally on training data but poorly on unseen test data",
+            "When a dataset has too few rows to train an algorithm",
+            "When the model's loss function never decreases during training",
+            "When training completes faster than expected"
+          ],
+          "correctIndex": 0,
+          "explanation": "Overfitting happens when a model learns noise and specific training details rather than generalized patterns."
+        },
+        {
+          "id": 4,
+          "question": "In Retrieval-Augmented Generation (RAG), what is the primary role of the vector database?",
+          "options": [
+            "To train the foundational model from scratch",
+            "To retrieve the most relevant contextual documents based on user query similarity",
+            "To render HTML components in the frontend",
+            "To manage user passwords and JWT sessions"
+          ],
+          "correctIndex": 1,
+          "explanation": "The vector database performs fast similarity retrieval to pass relevant context chunks into the LLM prompt."
+        },
+        {
+          "id": 5,
+          "question": "Why is demographic data (such as gender, age, college tier) stripped in blind AI matching algorithms?",
+          "options": [
+            "To reduce memory usage by 90%",
+            "To prevent historical bias and ensure candidates are evaluated strictly on demonstrable skills",
+            "Because vector databases cannot store text",
+            "To make API calls run faster"
+          ],
+          "correctIndex": 1,
+          "explanation": "Stripping protected attributes prevents algorithmic bias and ensures evaluation is skills-first and fair."
+        }
+      ]
+    },
+    {
+      "id": "embedded",
+      "name": "Embedded",
+      "displayName": "Embedded Systems & IoT",
+      "status": "coming_soon",
+      "description": "Microcontrollers, RTOS, memory-constrained C/C++, and hardware protocols.",
+      "total_questions": 5,
+      "estimated_minutes": 10,
+      "questions": []
+    }
+  ],
+  "practice_platforms": [
+    {
+      "id": "plat-01",
+      "name": "LeetCode Curated Starter",
+      "category": "Algorithms & Problem Solving",
+      "badge": "Hands-on Practice",
+      "difficulty": "Easy to Medium",
+      "free_access": true,
+      "url": "https://leetcode.com/problemset/all/",
+      "description": "Curated blind 75 list focusing on arrays, strings, hash maps, and two-pointer algorithms."
+    },
+    {
+      "id": "plat-02",
+      "name": "freeCodeCamp Coding Challenges",
+      "category": "Fullstack & Backend",
+      "badge": "100% Free",
+      "difficulty": "Beginner Friendly",
+      "free_access": true,
+      "url": "https://www.freecodecamp.org/learn",
+      "description": "Interactive in-browser coding environment with immediate test case execution and certificate projects."
+    },
+    {
+      "id": "plat-03",
+      "name": "Exercism Code Mentorship",
+      "category": "Python & Systems",
+      "badge": "Open Source",
+      "difficulty": "All Levels",
+      "free_access": true,
+      "url": "https://exercism.org/tracks/python",
+      "description": "Free fluency tracks with automated tests and friendly volunteer code feedback."
+    },
+    {
+      "id": "plat-04",
+      "name": "Play with Docker Classroom",
+      "category": "DevOps & Cloud",
+      "badge": "Interactive Labs",
+      "difficulty": "Beginner to Intermediate",
+      "free_access": true,
+      "url": "https://labs.play-with-docker.com/",
+      "description": "Free in-browser Docker terminal instances to practice multi-container networking without installing software."
+    }
+  ],
+  "learning_resources": [
+    {
+      "id": "res-01",
+      "title": "FastAPI Official Interactive Tutorial",
+      "topic": "Backend",
+      "type": "Interactive Documentation",
+      "provider": "Tiangolo / FastAPI",
+      "url": "https://fastapi.tiangolo.com/tutorial/",
+      "summary": "Step-by-step interactive documentation covering request bodies, dependency injection, and Pydantic validation."
+    },
+    {
+      "id": "res-02",
+      "title": "FullStackOpen: Modern Web Development",
+      "topic": "Frontend & Fullstack",
+      "type": "Comprehensive Course",
+      "provider": "University of Helsinki",
+      "url": "https://fullstackopen.com/en/",
+      "summary": "Deep dive into React, Redux, Node.js, REST APIs, GraphQL, TypeScript, and CI/CD."
+    },
+    {
+      "id": "res-03",
+      "title": "Roadmap.sh Backend Developer Guide",
+      "topic": "Architecture",
+      "type": "Visual Learning Map",
+      "provider": "Roadmap.sh",
+      "url": "https://roadmap.sh/backend",
+      "summary": "Visual skill tree outlining databases, caching, message queues, containerization, and API security."
+    },
+    {
+      "id": "res-04",
+      "title": "Google Cloud Skills Boost: ML Foundations",
+      "topic": "AI / ML",
+      "type": "Self-Paced Labs",
+      "provider": "Google Cloud",
+      "url": "https://www.cloudskillsboost.google/",
+      "summary": "Practical hands-on exploration of embeddings, machine learning pipelines, and Responsible AI principles."
+    }
   ]
 }

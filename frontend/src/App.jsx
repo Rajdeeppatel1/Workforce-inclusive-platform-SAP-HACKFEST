@@ -13,6 +13,8 @@ import AiReadinessAndSap from './pages/AiReadinessAndSap';
 import Profile from './pages/Profile';
 import FresherTrack from './pages/FresherTrack';
 import EmployedTrack from './pages/EmployedTrack';
+import FresherTest from './pages/FresherTest';
+import FresherPrepare from './pages/FresherPrepare';
 
 export default function App() {
   return (
@@ -23,6 +25,8 @@ export default function App() {
             <Route path="/" element={<Navigate to="/onboarding" replace />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/fresher" element={<FresherTrack />} />
+            <Route path="/fresher/test" element={<FresherTest />} />
+            <Route path="/fresher/prepare" element={<FresherPrepare />} />
             <Route path="/employed" element={<EmployedTrack />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/evidence" element={<Evidence />} />
