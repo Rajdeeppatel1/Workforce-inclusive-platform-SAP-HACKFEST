@@ -139,7 +139,7 @@ export default function Profile() {
             <h1 className="text-2xl font-bold tracking-tight text-neutral-900">Candidate Profile</h1>
           </div>
           <p className="text-xs text-neutral-500">
-            Profile ID: <code className="bg-neutral-100 px-1.5 py-0.5 rounded text-neutral-800">{profile.profile_id}</code> • Stored in <code className="bg-neutral-100 px-1.5 py-0.5 rounded text-neutral-800">backend/data/profiles/</code>
+            Profile ID: <code className="bg-neutral-100 px-1.5 py-0.5 rounded text-neutral-800">{profile.profile_id}</code>
           </p>
         </div>
 
@@ -147,7 +147,7 @@ export default function Profile() {
           {saveStatus === 'saved' && (
             <span className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded flex items-center gap-1.5 font-medium">
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              Saved to backend/data/profiles/{profile.profile_id}.json
+              Profile saved
             </span>
           )}
           {saveStatus === 'error' && (

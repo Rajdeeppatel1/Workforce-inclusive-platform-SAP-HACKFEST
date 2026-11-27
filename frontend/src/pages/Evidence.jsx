@@ -276,7 +276,7 @@ export default function Evidence() {
             </h1>
           </div>
           <p className="text-xs text-neutral-500">
-            Extract certificate metadata via mock OCR, confirm details, and validate eligibility against target roles from <code className="bg-neutral-100 px-1 py-0.5 rounded">backend/data/roles.json</code>.
+            Extract certificate details, confirm them, and validate eligibility against target role requirements.
           </p>
         </div>
 
@@ -295,9 +295,9 @@ export default function Evidence() {
           <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
             <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-900 flex items-center gap-2">
               <UploadCloud className="w-4 h-4 text-blue-600" />
-              1. Certificate Upload &amp; Mock OCR
+              1. Certificate Upload &amp; Text Extraction
             </h2>
-            <span className="text-[10px] text-neutral-400 font-medium">Mock OCR Engine</span>
+            <span className="text-[10px] text-neutral-400 font-medium">You confirm every field</span>
           </div>
 
           {/* Sample Preloader */}
@@ -348,7 +348,7 @@ export default function Evidence() {
               className="px-4 py-2 bg-neutral-900 hover:bg-black text-white rounded text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${ocrLoading ? 'animate-spin' : ''}`} />
-              <span>{ocrLoading ? 'Running Mock OCR...' : 'Run Mock OCR'}</span>
+              <span>{ocrLoading ? 'Extracting details...' : 'Extract Details'}</span>
             </button>
           </div>
 
@@ -558,11 +558,11 @@ export default function Evidence() {
               Role Requirement Validation
             </h2>
             <p className="text-xs text-neutral-500 mt-0.5">
-              Match your confirmed certificate and skills against real target company role requirements from <code className="bg-neutral-100 px-1 py-0.5 rounded font-mono">backend/data/roles.json</code> (no live external API).
+              Match your confirmed certificate and skills against target company role requirements.
             </p>
           </div>
           <span className="text-xs font-semibold px-2.5 py-1 bg-neutral-100 text-neutral-700 border border-neutral-300 rounded">
-            Local roles.json catalog
+            Role catalog
           </span>
         </div>
 
