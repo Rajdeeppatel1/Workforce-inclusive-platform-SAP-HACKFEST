@@ -53,6 +53,19 @@ A built-in stress-test audit panel that proves zero bias by cloning identical te
   - Modal key-trapping and `Escape` key handlers.
 - **Cognitive & Vision Controls:** Accessibility drawer with High Contrast mode, Dyslexia-friendly fonts (OpenDyslexic), and Text-to-Speech (Web Speech API).
 
+### 5. Workforce Equity Audit (`/employed/audit`)
+Bias doesn't stop at hiring. HR uploads a CSV of an existing team and SkillNav checks whether **employees with the same skill level get the same outcomes** across gender, age band, career gap, disability, college tier and location tier:
+
+| Check | Compared against | Fails when |
+| :--- | :--- | :--- |
+| **Promotion parity** | Promotions expected for each person's skill band | Worst/best group ratio < 0.80 (four-fifths rule) |
+| **Skill-adjusted pay gap** | Median pay of peers in the same role **and** skill band | Gap ≥ 10% |
+| **Performance rating gap** | Mean rating of the same skill band | Gap ≥ 0.5 points |
+
+- **Privacy:** file processed in memory and never stored; groups under 5 people are never scored; the individual pay-review list never shows protected attributes.
+- **API:** `POST /api/workforce/audit` (multipart `file`). Logic in `backend/services/workforce_audit.py`, tests in `backend/tests/test_workforce_audit.py`.
+- **Try it:** "Try example dataset" loads `frontend/public/workforce_sample.csv` (120 synthetic employees with a career-gap promotion gap and a gender pay gap built in); "Download template" gives the CSV format for real data.
+
 ---
 
 ## 🧭 Priya Sharma End-to-End Walkthrough

@@ -9,6 +9,7 @@ import {
   User,
   LayoutDashboard,
   ShieldCheck,
+  Scale,
 } from 'lucide-react';
 
 export default function EmployedTrack() {
@@ -50,6 +51,27 @@ export default function EmployedTrack() {
           This evaluation is strictly skills-first. Career break durations, past employer pedigree, and location are excluded from matching algorithms.
         </p>
       </div>
+
+      {/* Workforce Equity Audit (team-level bias check) */}
+      <Link
+        to="/employed/audit"
+        className="block p-5 rounded-lg bg-black text-white hover:bg-neutral-900 transition-colors group focus-visible:ring-2 focus-visible:ring-blue-600"
+      >
+        <div className="flex items-start gap-3">
+          <span className="w-9 h-9 rounded bg-blue-600 flex items-center justify-center shrink-0">
+            <Scale className="w-5 h-5" aria-hidden="true" />
+          </span>
+          <div className="flex-1">
+            <span className="text-[10px] text-blue-300 font-semibold uppercase">For HR & team leads</span>
+            <h2 className="text-sm font-bold">Workforce Equity Audit</h2>
+            <p className="text-xs text-neutral-300 mt-1">
+              Upload your team's CSV and check whether employees with the same skills get the same promotions, pay and
+              performance ratings across gender, age and career breaks.
+            </p>
+          </div>
+          <ArrowRight className="w-4 h-4 mt-1 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+        </div>
+      </Link>
 
       {/* Navigation Grid (Layout & Navigation Only) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

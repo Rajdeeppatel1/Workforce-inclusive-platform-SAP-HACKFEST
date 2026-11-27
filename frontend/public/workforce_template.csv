@@ -1,0 +1,2 @@
+employee_id,role,skill_score,performance_rating,promoted_last_cycle,annual_salary,gender,age_band,career_gap,disability,college_tier,location_tier
+EMP001,Backend Engineer,82,4,no,1450000,female,31-40,yes,no,tier-3,tier-2

@@ -26,6 +26,7 @@ import {
   Users,
   Languages,
   ExternalLink,
+  Scale,
 } from 'lucide-react';
 
 export default function Layout({ children }) {
@@ -100,6 +101,12 @@ export default function Layout({ children }) {
       labelEn: 'Employed Track',
       labelHi: 'एम्प्लॉयड ट्रैक',
       icon: Briefcase,
+    },
+    {
+      to: '/employed/audit',
+      labelEn: 'Workforce Equity Audit',
+      labelHi: 'वर्कफ़ोर्स समानता ऑडिट',
+      icon: Scale,
     },
     {
       to: '/profile',

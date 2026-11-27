@@ -17,6 +17,7 @@ import FresherTest from './pages/FresherTest';
 import FresherPrepare from './pages/FresherPrepare';
 import LearningHub from './pages/LearningHub';
 import Mentorship from './pages/Mentorship';
+import WorkforceAudit from './pages/WorkforceAudit';
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
             <Route path="/fresher/prepare" element={<FresherPrepare />} />
             <Route path="/learning-hub" element={<LearningHub />} />
             <Route path="/employed" element={<EmployedTrack />} />
+            <Route path="/employed/audit" element={<WorkforceAudit />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/evidence" element={<Evidence />} />
             <Route path="/mentors" element={<Mentorship />} />

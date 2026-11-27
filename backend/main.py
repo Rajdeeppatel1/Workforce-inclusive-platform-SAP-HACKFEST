@@ -29,6 +29,7 @@ from routers.quiz import router as quiz_router
 from routers.resources import router as resources_router
 from routers.onboarding_pipeline import router as onboarding_pipeline_router
 from db.migrate import run_migration
+from routers.workforce import router as workforce_router
 
 
 # ═══════════════════════════════════════════
@@ -81,6 +82,7 @@ app.include_router(voice_router)
 app.include_router(quiz_router)
 app.include_router(resources_router)
 app.include_router(onboarding_pipeline_router)
+app.include_router(workforce_router)
 
 
 # ═══════════════════════════════════════════
