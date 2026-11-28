@@ -202,7 +202,7 @@ export default function VoiceNavigator() {
     { label: '📚 "Prepare Page"', command: 'prepare page', desc: 'Open Learning Hub' },
     { label: '📊 "Dashboard Dikhao"', command: 'dashboard dikhao', desc: 'Candidate Dashboard' },
     { label: '📜 "Evidence Kholo"', command: 'evidence kholo', desc: 'Verified Evidence' },
-    { label: '💼 "Job Matches"', command: 'job matches', desc: 'Fair Job Match' },
+    { label: '💼 "Job Matches"', command: 'job matches', desc: 'Job Match' },
     { label: '👥 "Mentor Se Milao"', command: 'mentor se milao', desc: 'Mentors & Doubt Box' },
   ];
 

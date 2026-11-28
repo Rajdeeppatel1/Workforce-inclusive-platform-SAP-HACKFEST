@@ -134,7 +134,7 @@ export default function Layout({ children }) {
     },
     {
       to: '/matches',
-      labelEn: 'Fair Job Match',
+      labelEn: 'Job Match',
       labelHi: 'निष्पक्ष मिलान',
       icon: Briefcase,
     },

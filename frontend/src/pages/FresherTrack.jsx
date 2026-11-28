@@ -1,61 +1,86 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import fallbackCatalog from '../data/fresher_catalog.json';
 import {
   GraduationCap,
   Sparkles,
   ArrowRight,
   FileCheck2,
   Briefcase,
-  User,
   LayoutDashboard,
-  ShieldCheck,
   Award,
   TrendingUp,
   Building2,
   CheckCircle2,
   Clock,
-  ExternalLink,
+  BookOpen,
 } from 'lucide-react';
+
+const COMPANY_ECOSYSTEM_FOCUS = {
+  'Inclusive Tech Enterprises': 'Fullstack & Accessible Web (Python, React, SQL, TypeScript)',
+  'Open Source & Developer Labs': 'API Engineering & Developer Tooling (FastAPI, Python, Docker, Git)',
+  'Cloud & SaaS Startups': 'Cloud Native & DevOps Resilience (Docker, Cloud Basics, FastAPI, SQL)',
+  'Data & AI Product Platforms': 'Applied AI, Vector Search & Analytics (Python, Machine Learning, SQL)',
+  'Modern Engineering Studios': 'Frontend Architecture & Product Delivery (React, TypeScript, REST APIs)',
+};
 
 export default function FresherTrack() {
   const navigate = useNavigate();
 
-  // State for data from backend/data/fresher_catalog.json
+  // Initialize from bundled catalog so dropdowns and certificates work immediately
   const [catalog, setCatalog] = useState({
-    skills: ['Python', 'React', 'Docker', 'FastAPI', 'SQL', 'Cloud Basics'],
-    target_companies: [
+    skills: fallbackCatalog.skills || ['Python', 'React', 'Docker', 'FastAPI', 'SQL', 'Cloud Basics', 'Machine Learning', 'TypeScript'],
+    target_companies: fallbackCatalog.target_companies || [
       'Inclusive Tech Enterprises',
       'Open Source & Developer Labs',
       'Cloud & SaaS Startups',
+      'Data & AI Product Platforms',
+      'Modern Engineering Studios',
     ],
-    recommended_certificates: [],
-    trending_skills: [],
+    recommended_certificates: fallbackCatalog.recommended_certificates || [],
+    trending_skills: fallbackCatalog.trending_skills || [],
   });
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Dropdown states
-  const [selectedSkill, setSelectedSkill] = useState('Python');
-  const [selectedCompany, setSelectedCompany] = useState('Inclusive Tech Enterprises');
+  const [selectedSkill, setSelectedSkill] = useState(
+    fallbackCatalog.skills?.[0] || 'Python'
+  );
+  const [selectedCompany, setSelectedCompany] = useState(
+    fallbackCatalog.target_companies?.[0] || 'Inclusive Tech Enterprises'
+  );
 
-  // Fetch catalog from backend/data/
+  // Refresh catalog from backend when available, guarding against non-JSON responses
   useEffect(() => {
     let isMounted = true;
     const fetchCatalog = async () => {
       try {
         const res = await axios.get('/api/fresher/catalog');
-        if (isMounted && res.data) {
-          setCatalog(res.data);
-          if (res.data.skills?.length > 0) {
-            setSelectedSkill(res.data.skills[0]);
-          }
-          if (res.data.target_companies?.length > 0) {
-            setSelectedCompany(res.data.target_companies[0]);
-          }
+        const data = res.data;
+        if (
+          isMounted &&
+          data &&
+          typeof data === 'object' &&
+          !Array.isArray(data) &&
+          Array.isArray(data.skills)
+        ) {
+          setCatalog({
+            skills: data.skills,
+            target_companies: Array.isArray(data.target_companies)
+              ? data.target_companies
+              : fallbackCatalog.target_companies || [],
+            recommended_certificates: Array.isArray(data.recommended_certificates)
+              ? data.recommended_certificates
+              : fallbackCatalog.recommended_certificates || [],
+            trending_skills: Array.isArray(data.trending_skills)
+              ? data.trending_skills
+              : fallbackCatalog.trending_skills || [],
+          });
         }
       } catch (err) {
-        console.warn('Could not load fresher catalog from server, using local fallback', err);
+        console.warn('Using bundled fresher catalog fallback', err);
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -66,14 +91,27 @@ export default function FresherTrack() {
     };
   }, []);
 
-  // Filter recommended certificates by selected skill
-  const matchedCerts = catalog.recommended_certificates?.filter(
-    (c) => c.skill?.toLowerCase() === selectedSkill.toLowerCase()
-  ) || [];
+  // Match certificates by primary skill first, then by skills_covered
+  const allCerts = Array.isArray(catalog.recommended_certificates)
+    ? catalog.recommended_certificates
+    : [];
 
-  const displayCert = matchedCerts.length > 0
-    ? matchedCerts[0]
-    : (catalog.recommended_certificates?.[0] || null);
+  const exactMatches = allCerts.filter(
+    (c) => c.skill?.toLowerCase() === selectedSkill.toLowerCase()
+  );
+  const relatedMatches = allCerts.filter(
+    (c) =>
+      c.skill?.toLowerCase() !== selectedSkill.toLowerCase() &&
+      Array.isArray(c.skills_covered) &&
+      c.skills_covered.some((sk) => sk.toLowerCase().includes(selectedSkill.toLowerCase()))
+  );
+
+  const matchedCerts = [...exactMatches, ...relatedMatches];
+  const displayCert = matchedCerts.length > 0 ? matchedCerts[0] : (allCerts[0] || null);
+  const additionalCerts = matchedCerts.slice(1);
+  const ecosystemFocus =
+    COMPANY_ECOSYSTEM_FOCUS[selectedCompany] ||
+    'Degree-agnostic, blind skills evaluation across core engineering stacks.';
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-16">
@@ -108,15 +146,15 @@ export default function FresherTrack() {
           className="p-4 border-2 border-blue-600/30 hover:border-blue-600 bg-blue-50/40 rounded-lg flex items-center justify-between group transition-all"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded bg-blue-600 text-white flex items-center justify-center font-bold">
-              5
+            <div className="w-10 h-10 rounded bg-blue-600 text-white flex items-center justify-center font-bold text-xs">
+              20×
             </div>
             <div>
               <div className="text-xs font-bold text-neutral-900 group-hover:text-blue-600">
-                Category Assessments (5-MCQ Quiz)
+                Skill Assessments &amp; Quizzes
               </div>
               <div className="text-[11px] text-neutral-500">
-                Backend, Cloud, AI/ML live • Verified score saves to profile
+                Server-graded quizzes • Verified score saves to profile
               </div>
             </div>
           </div>
@@ -159,7 +197,7 @@ export default function FresherTrack() {
             </p>
           </div>
           <span className="text-[11px] text-blue-700 font-medium bg-blue-50 px-2.5 py-1 rounded border border-blue-200">
-            Data from backend/data/
+            Live Pathway Configurator
           </span>
         </div>
 
@@ -173,7 +211,8 @@ export default function FresherTrack() {
             <select
               value={selectedSkill}
               onChange={(e) => setSelectedSkill(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-xs font-medium border border-neutral-300 rounded-md bg-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 cursor-pointer"
+              aria-label="Interested Skill"
+              className="w-full min-h-[44px] px-3.5 py-2.5 text-xs font-medium border border-neutral-300 rounded-md bg-white text-neutral-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 cursor-pointer"
             >
               {catalog.skills?.map((sk) => (
                 <option key={sk} value={sk}>
@@ -195,7 +234,8 @@ export default function FresherTrack() {
             <select
               value={selectedCompany}
               onChange={(e) => setSelectedCompany(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-xs font-medium border border-neutral-300 rounded-md bg-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 cursor-pointer"
+              aria-label="Target Company Ecosystem"
+              className="w-full min-h-[44px] px-3.5 py-2.5 text-xs font-medium border border-neutral-300 rounded-md bg-white text-neutral-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 cursor-pointer"
             >
               {catalog.target_companies?.map((tc) => (
                 <option key={tc} value={tc}>
@@ -203,8 +243,8 @@ export default function FresherTrack() {
                 </option>
               ))}
             </select>
-            <p className="text-[11px] text-neutral-400 mt-1">
-              All partner companies practice degree-agnostic, blind skills matching.
+            <p className="text-[11px] text-blue-700 font-medium mt-1">
+              {selectedCompany} Focus: {ecosystemFocus}
             </p>
           </div>
         </div>
@@ -231,52 +271,93 @@ export default function FresherTrack() {
         </div>
 
         {displayCert ? (
-          <div className="p-5 bg-neutral-50 border border-neutral-200 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-5">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-neutral-900 bg-white border border-neutral-300 px-2 py-0.5 rounded">
-                  {displayCert.issuer}
-                </span>
-                <span className="text-[11px] text-blue-700 font-semibold bg-blue-50 border border-blue-200 px-2 py-0.5 rounded">
-                  {displayCert.relevance_score}% Relevance Match
-                </span>
-              </div>
-              <h3 className="text-base font-bold text-neutral-900">{displayCert.title}</h3>
-              <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-600">
-                <span className="flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5 text-neutral-500" />
-                  {displayCert.duration}
-                </span>
-                <span>•</span>
-                <span className="text-neutral-700 font-medium">{displayCert.cost_type}</span>
-              </div>
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {displayCert.skills_covered?.map((sk, idx) => (
-                  <span
-                    key={idx}
-                    className="px-2 py-0.5 bg-white border border-neutral-200 rounded text-neutral-800 text-[11px] font-medium"
-                  >
-                    {sk}
+          <div className="space-y-4">
+            <div className="p-5 bg-neutral-50 border border-neutral-200 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-5">
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-bold text-neutral-900 bg-white border border-neutral-300 px-2 py-0.5 rounded">
+                    {displayCert.issuer}
                   </span>
-                ))}
+                  <span className="text-[11px] text-blue-700 font-semibold bg-blue-50 border border-blue-200 px-2 py-0.5 rounded">
+                    {displayCert.relevance_score}% Relevance Match
+                  </span>
+                  <span className="text-[11px] text-neutral-600 font-medium bg-white border border-neutral-200 px-2 py-0.5 rounded">
+                    Aligned with {selectedCompany}
+                  </span>
+                </div>
+                <h3 className="text-base font-bold text-neutral-900">{displayCert.title}</h3>
+                <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-600">
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5 text-neutral-500" />
+                    {displayCert.duration}
+                  </span>
+                  <span>•</span>
+                  <span className="text-neutral-700 font-medium">{displayCert.cost_type}</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {displayCert.skills_covered?.map((sk, idx) => (
+                    <span
+                      key={idx}
+                      className="px-2 py-0.5 bg-white border border-neutral-200 rounded text-neutral-800 text-[11px] font-medium"
+                    >
+                      {sk}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 shrink-0">
+                <button
+                  onClick={() => navigate('/evidence')}
+                  className="min-h-[40px] px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <span>Upload to Evidence Ledger</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => navigate('/learning-hub')}
+                  className="min-h-[40px] px-4 py-2 bg-neutral-900 hover:bg-black text-white rounded text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>Explore Learning Hub</span>
+                </button>
+                <button
+                  onClick={() => navigate('/matches')}
+                  className="min-h-[40px] px-4 py-2 bg-white hover:bg-neutral-100 text-neutral-900 border border-neutral-300 rounded text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <span>Check Match Impact</span>
+                </button>
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 shrink-0">
-              <button
-                onClick={() => navigate('/evidence')}
-                className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-              >
-                <span>Upload to Evidence Ledger</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => navigate('/matches')}
-                className="px-4 py-2 bg-white hover:bg-neutral-100 text-neutral-900 border border-neutral-300 rounded text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-              >
-                <span>Check Match Impact</span>
-              </button>
-            </div>
+            {additionalCerts.length > 0 && (
+              <div className="space-y-2 pt-1">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">
+                  Related Certificates Covering {selectedSkill} ({additionalCerts.length})
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {additionalCerts.map((cert) => (
+                    <div
+                      key={cert.id}
+                      className="p-3.5 bg-white border border-neutral-200 rounded-lg flex flex-col justify-between gap-2"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[11px] font-bold text-neutral-700">{cert.issuer}</span>
+                          <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">
+                            {cert.relevance_score}% Match
+                          </span>
+                        </div>
+                        <div className="text-xs font-bold text-neutral-900 mt-1">{cert.title}</div>
+                      </div>
+                      <div className="text-[11px] text-neutral-500">
+                        {cert.duration} • {cert.cost_type}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <p className="text-xs text-neutral-500">No specific certificate found for {selectedSkill}.</p>
@@ -304,7 +385,7 @@ export default function FresherTrack() {
             </p>
           </div>
           <span className="text-[11px] text-neutral-400">
-            Updated weekly from backend/data/
+            Updated weekly
           </span>
         </div>
 
@@ -366,7 +447,7 @@ export default function FresherTrack() {
             </div>
             <div>
               <div className="text-xs font-bold text-neutral-900 group-hover:text-blue-600">
-                Fair Job Match
+                Job Match
               </div>
               <div className="text-[11px] text-neutral-500">Degree-Agnostic Matching</div>
             </div>
