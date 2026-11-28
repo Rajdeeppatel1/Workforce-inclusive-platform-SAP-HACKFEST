@@ -116,7 +116,7 @@ export default function Mentorship() {
       console.warn('Doubt summary error, using local fallback', err);
       setSummaryResult({
         summary: `FastAPI Async Connection Pooling & Docker Networking issue under concurrent load.`,
-        draft_message: `Hi ${selectedMentor?.name || selectedMentor?.naam || 'Mentor'},\n\nI am running into a database connection pool timeout issue in my FastAPI microservice running inside Docker when concurrent requests scale up.\n\nCould we review connection pooling best practices and Docker network configuration during our 1:1 session?\n\nThank you,\nPriya`,
+        draft_message: `Hi ${selectedMentor?.name || selectedMentor?.naam || 'Mentor'},\n\nI am running into a database connection pool timeout issue in my FastAPI microservice running inside Docker when concurrent requests scale up.\n\nCould we review connection pooling best practices and Docker network configuration during our 1:1 session?\n\nThank you,\nRajdeep`,
         key_topics: ['FastAPI', 'Docker', 'Async SQL', 'Microservices'],
         suggested_agenda: '1. Diagnose connection pooling pool size • 2. Check Docker network bridge • 3. Scalable production pattern',
         engine: 'Gemini Resilient Local Engine',

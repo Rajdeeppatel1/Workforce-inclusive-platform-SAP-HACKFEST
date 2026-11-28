@@ -335,7 +335,7 @@ export default function FresherPrepare() {
 
     try {
       const res = await axios.post(`/api/quiz/${activeQuizSkill.id}/submit`, {
-        profile_id: profile?.profile_id || 'seed_priya_sharma_01',
+        profile_id: profile?.profile_id || 'seed_rajdeep_patel_01',
         answers: userAnswers,
       });
       if (res.data && typeof res.data === 'object' && Array.isArray(res.data.breakdown)) {
@@ -522,7 +522,7 @@ export default function FresherPrepare() {
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-[11px] font-bold text-blue-900 bg-blue-100 px-2.5 py-0.5 rounded border border-blue-300 flex items-center gap-1">
                         <Target className="w-3 h-3 text-blue-700" />
-                        aapki gap: {item.primaryGap}
+                        Skill gap: {item.primaryGap}
                       </span>
 
                       {/* Verification Status */}

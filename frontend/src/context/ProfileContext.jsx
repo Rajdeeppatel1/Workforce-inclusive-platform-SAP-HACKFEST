@@ -6,14 +6,14 @@ const ProfileContext = createContext(null);
 const STORAGE_KEY = 'skillnav_candidate_profile';
 
 const INITIAL_PROFILE = {
-  profile_id: 'seed_priya_sharma_01',
-  name: 'Priya Sharma',
-  email: 'priya.sharma@skillnav.io',
-  gender: 'Female',
+  profile_id: 'seed_rajdeep_patel_01',
+  name: 'Rajdeep Patel',
+  email: 'rajdeep.patel@skillnav.io',
+  gender: 'Male',
   age: 27,
   location: 'Bhopal, MP',
   is_synthetic: false,
-  demo_label: 'Candidate Profile (Priya Sharma - Software Developer)',
+  demo_label: 'Candidate Profile (Rajdeep Patel - Software Developer)',
   consent_given: false,
   pathway: 'First-Gen Student',
   skills: ['Python', 'FastAPI', 'React', 'SQL', 'Docker', 'REST APIs'],
@@ -44,7 +44,7 @@ const INITIAL_PROFILE = {
       title: 'Fullstack Microservices Demo',
       description: 'Production microservice with authentication and Docker orchestration',
       skills_demonstrated: ['Python', 'FastAPI', 'Docker'],
-      verification_url: 'https://github.com/priyasharma/microservices-demo',
+      verification_url: 'https://github.com/rajdeeppatel/microservices-demo',
       confidence: 'High',
       weight_multiplier: 1.2,
       status: 'Verified',

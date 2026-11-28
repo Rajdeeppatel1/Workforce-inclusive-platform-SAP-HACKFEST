@@ -37,7 +37,7 @@ export default function Onboarding() {
       ? '"मैं भोपाल से हूँ, मुझे Python, React, FastAPI और SQL आता है"'
       : '"I am from Bhopal, I have built projects with Python, React, FastAPI, and SQL"'
   );
-  const [detectedLang, setDetectedLang] = useState('Hinglish + English');
+  const [detectedLang, setDetectedLang] = useState('English (en-IN)');
   const [newSkillInput, setNewSkillInput] = useState('');
   const recognitionRef = useRef(null);
 

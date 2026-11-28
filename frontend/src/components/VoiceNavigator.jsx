@@ -53,7 +53,7 @@ export default function VoiceNavigator() {
 
       recognition.onstart = () => {
         setIsListening(true);
-        setStatusMessage('Listening... Speak now ("test kholo", "trending skills suno")');
+        setStatusMessage('Listening... Speak now ("open quiz", "trending skills")');
       };
 
       recognition.onresult = (event) => {
@@ -197,13 +197,13 @@ export default function VoiceNavigator() {
   };
 
   const sampleButtons = [
-    { label: '🧪 "Test Kholo"', command: 'test kholo', desc: 'Open 5-MCQ Quiz' },
-    { label: '📈 "Trending Skills Suno"', command: 'trending skills suno', desc: 'Listen to Trending Skills (TTS)' },
-    { label: '📚 "Prepare Page"', command: 'prepare page', desc: 'Open Learning Hub' },
-    { label: '📊 "Dashboard Dikhao"', command: 'dashboard dikhao', desc: 'Candidate Dashboard' },
-    { label: '📜 "Evidence Kholo"', command: 'evidence kholo', desc: 'Verified Evidence' },
+    { label: '🧪 "Open Quiz"', command: 'take test', desc: 'Open Skill Quizzes' },
+    { label: '📈 "Trending Skills"', command: 'trending skills', desc: 'Listen to Trending Skills (TTS)' },
+    { label: '📚 "Prepare Page"', command: 'prepare page', desc: 'Open Practice & Prepare' },
+    { label: '📊 "Open Dashboard"', command: 'open dashboard', desc: 'Candidate Dashboard' },
+    { label: '📜 "Open Evidence"', command: 'open evidence', desc: 'Verified Evidence' },
     { label: '💼 "Job Matches"', command: 'job matches', desc: 'Job Match' },
-    { label: '👥 "Mentor Se Milao"', command: 'mentor se milao', desc: 'Mentors & Doubt Box' },
+    { label: '👥 "Open Mentors"', command: 'mentorship', desc: 'Mentors & Doubt Box' },
   ];
 
   return (

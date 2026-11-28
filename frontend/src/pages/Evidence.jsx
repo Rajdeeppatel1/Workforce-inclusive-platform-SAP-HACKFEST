@@ -70,8 +70,8 @@ export default function Evidence() {
 
   // Extracted Mock OCR Data
   const [ocrData, setOcrData] = useState({
-    candidate_name: 'Priya Sharma',
-    naam: 'Priya Sharma',
+    candidate_name: 'Rajdeep Patel',
+    naam: 'Rajdeep Patel',
     title: 'Python for Everybody Specialization',
     issuer: 'Coursera / DeepLearning',
     date: '2024-10',
@@ -147,8 +147,8 @@ export default function Evidence() {
     } catch (e) {
       console.warn('Mock OCR fallback error:', e);
       setOcrData({
-        candidate_name: profile.name || 'Priya Sharma',
-        naam: profile.name || 'Priya Sharma',
+        candidate_name: profile.name || 'Rajdeep Patel',
+        naam: profile.name || 'Rajdeep Patel',
         title: 'Python for Backend & Microservices',
         issuer: 'Coursera / DeepLearning',
         date: '2024-10',

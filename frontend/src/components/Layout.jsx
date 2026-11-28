@@ -54,7 +54,7 @@ export default function Layout({ children }) {
 
   const handleMockSignIn = async () => {
     setSigningIn(true);
-    await loginMock('seed_priya_sharma_01');
+    await loginMock('seed_rajdeep_patel_01');
     setSigningIn(false);
     // Show Fresher vs Employed choice modal right after login
     setShowStatusModal(true);
@@ -306,10 +306,10 @@ export default function Layout({ children }) {
               onClick={handleMockSignIn}
               disabled={signingIn || profileLoading}
               className="min-h-[44px] min-w-[44px] px-4 py-2 bg-black hover:bg-neutral-800 text-white rounded-sm text-xs font-semibold flex items-center gap-2 shadow-sm transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-              title="Loads seeded candidate profile (Priya Sharma - Tier-3 Graduate) and prompts status selection"
+              title="Loads candidate profile (Rajdeep Patel) and prompts status selection"
             >
               <LogIn className="w-4 h-4 text-blue-400 shrink-0" />
-              <span>{signingIn ? 'Signing In...' : 'Sign In (Priya Sharma)'}</span>
+              <span>{signingIn ? 'Signing In...' : 'Sign In (Rajdeep)'}</span>
             </button>
 
             {/* Accessibility Drawer Toggle */}

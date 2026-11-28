@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 
 export default function OnboardingPipelinePanel({ profile, transcript, onSkillsConfirmed }) {
-  const userId = profile?.profile_id || 'seed_priya_sharma_01';
+  const userId = profile?.profile_id || 'seed_rajdeep_patel_01';
   const authHeaders = { 'X-User-Id': userId };
 
   // Step 1: Resume Upload
